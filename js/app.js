@@ -6,7 +6,7 @@ var ST={all:{idx:0,answers:[],done:false},now:{idx:0,answers:[],done:false}};
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
-function show(v){views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
+function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
   window.scrollTo(0,0);}
@@ -53,19 +53,33 @@ function renderQ(){
   });
   $("q-back").style.visibility=t.idx===0?"hidden":"visible";
 }
-function choose(v){var t=st(),n=S().q.length;t.answers[t.idx]=v;
-  if(t.idx<n-1){renderQ();setTimeout(function(){t.idx++;renderQ()},160)}
-  else{setTimeout(function(){t.done=true;renderResult();show("result")},160)}}
+// Input lock: while a move to the next question (or to the results) is pending, quiz input is ignored.
+// This stops two quick presses writing to the same question and leaving another one unanswered.
+var pending=null;
+function clearPending(){if(pending){clearTimeout(pending);pending=null}}
+function choose(v){
+  var t=st(),last=t.idx>=S().q.length-1;
+  if(pending||t.done)return;
+  t.answers[t.idx]=v;
+  renderQ();
+  pending=setTimeout(function(){
+    pending=null;
+    if(last){if(t.done)return;t.done=true;renderResult();show("result")} // results are built once
+    else{t.idx++;renderQ()}
+  },160);
+}
+function back(){if(pending||st().idx<=0)return;st().idx--;renderQ()}
 document.addEventListener("keydown",function(e){
-  if($("v-quiz").hidden)return;
-  if(e.key>="1"&&e.key<="5"){choose(parseInt(e.key,10))}
-  if(e.key==="ArrowLeft"&&st().idx>0){st().idx--;renderQ()}
+  if($("v-quiz").hidden||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;
+  if(e.key>="1"&&e.key<="5")choose(parseInt(e.key,10));
+  else if(e.key==="ArrowLeft")back();
 });
 
 function userScores(){
   var s={},c={},q=S().q,a=st().answers;
   DIMS.forEach(function(d){s[d.k]=0;c[d.k]=0});
-  q.forEach(function(x,i){s[x[0]]+=(a[i]-3)*x[1];c[x[0]]++});
+  // Skip unanswered questions so a gap can never turn a score into NaN.
+  q.forEach(function(x,i){var v=a[i];if(!(v>=1&&v<=5))return;s[x[0]]+=(v-3)*x[1];c[x[0]]++});
   DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
   return s;
 }
@@ -189,7 +203,7 @@ function openLeader(id){var l=L.filter(function(x){return x.id===id})[0];
 $("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+d.name+':</b> '+d.lo+' to '+d.hi+'</li>'}).join('');
 function start(){ST[cur]={idx:0,answers:[],done:false};show("quiz");renderQ()}
 $("home").addEventListener("click",function(){show("home")});
-$("q-back").addEventListener("click",function(){if(st().idx>0){st().idx--;renderQ()}});
+$("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){
   var t=b.dataset.tab; if(t==="all"||t==="now")openSet(t); else{if(t==="records")renderRecords();show(t)}
 })});
