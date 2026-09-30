@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Siasa Compass</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -157,7 +162,8 @@ button.chip{cursor:pointer}
 .foot{margin-top:60px;color:var(--muted);font-size:.85rem;max-width:70ch}
 @media (prefers-reduced-motion: reduce){.bar span{transition:none}}
 </style>
-
+</head>
+<body>
 <div class="wrap">
   <div class="nav">
     <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
@@ -237,8 +243,9 @@ button.chip{cursor:pointer}
 
   <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? Send it in and the profile can be corrected.</p>
 </div>
-
 <script>
+/* Siasa Compass data: dimensions, questions, quiz sets and leader records. Edit here; see README.md. */
+var SIASA=(function(){
 var DIMS=[
  {k:"econ",name:"Role of the state in the economy",lo:"Market-led",hi:"State-led"},
  {k:"redis",name:"Land, wealth and taxes",lo:"Low redistribution",hi:"Strong redistribution"},
@@ -743,6 +750,12 @@ var SETS={
   lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Those who have governed are placed on their record in office. The rest are placed on their record and, where that is thin, what they say they would do."}
 };
 
+return {DIMS:DIMS,TOPIC:TOPIC,QN:QN,QA:QA,ANS:ANS,W:W,CONF:CONF,L:L,SETS:SETS};
+})();
+if(typeof module!=="undefined"&&module.exports)module.exports=SIASA;
+</script>
+<script>
+var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS;
 var $=function(id){return document.getElementById(id)};
 var views=["home","intro","quiz","result","records","method"];
 var cur="all", rset="all";
@@ -941,3 +954,5 @@ document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListe
 renderHome();
 show("home");
 </script>
+</body>
+</html>

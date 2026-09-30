@@ -12,28 +12,27 @@
 <body>
 <div class="wrap">
   <div class="nav">
-    <div class="brand"><i></i>Siasa Compass</div>
-    <div class="tabs" role="tablist" aria-label="Sections">
-      <button type="button" data-tab="quiz" aria-current="true">Quiz</button>
-      <button type="button" data-tab="leaders" aria-current="false">Leaders</button>
+    <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
+    <div class="tabs" aria-label="Sections">
+      <button type="button" data-tab="all" aria-current="false">Every leader</button>
+      <button type="button" data-tab="now" aria-current="false">Current climate</button>
+      <button type="button" data-tab="records" aria-current="false">Records</button>
       <button type="button" data-tab="method" aria-current="false">Method</button>
     </div>
   </div>
 
-  <section id="v-intro" class="hero">
+  <section id="v-home" class="hero">
     <h1>Match your views to what leaders <span class="mark">did</span>.</h1>
-    <p class="lede">Answer 18 short questions. We compare you with 14 Kenyan politicians using their documented record: laws, votes, decisions and how they used power. Slogans and party labels do not count.</p>
-    <div class="cta">
-      <button type="button" class="btn" id="start">Start the quiz</button>
-      <button type="button" class="btn ghost" id="browse">Read the evidence first</button>
-    </div>
-    <div class="facts"><span><b>18</b> questions</span><span><b>6</b> dimensions</span><span><b>14</b> leaders</span><span>About 4 minutes</span></div>
+    <p class="lede">Two quizzes, one rule. If a leader has held power, we judge them only by what they did with it. Promises, slogans and party labels do not count. If they have never held power, their stated positions and manifestos are all there is to go on, so we use them and label them.</p>
+    <div class="paths" id="paths"></div>
     <div class="rules">
-      <div><h3>Actions over labels</h3><p>A leader calling themselves a socialist or a capitalist tells us what they claim. We place them by what they voted for, signed, blocked or funded.</p></div>
-      <div><h3>Gaps are shown</h3><p>Where the record is thin, the leader is marked as insufficient evidence and left out of your matches instead of being guessed at.</p></div>
-      <div><h3>No verdicts</h3><p>This does not tell you who to vote for or who is best. It shows where you and each record overlap and where they do not.</p></div>
+      <div><h3>Power is judged by action</h3><p>Presidents, deputies, prime ministers, ministers and governors are placed on the laws they signed, the decisions they made and how they used the state. What they promised is shown next to it, but it is not counted.</p></div>
+      <div><h3>No power yet? Words count</h3><p>MPs, activists and aspirants who never held executive office can be placed on their stated positions. Those placements are tagged <span class="tg S">S</span> so you can tell them apart.</p></div>
+      <div><h3>Gaps are shown</h3><p>Where the record is thin, the leader is left out of your matches instead of being guessed at. Nothing here tells you who to vote for.</p></div>
     </div>
   </section>
+
+  <section id="v-intro" class="hero" hidden></section>
 
   <section id="v-quiz" hidden>
     <div class="q-meta"><span id="q-count"></span><span id="q-topic" class="topic" style="margin:0"></span></div>
@@ -45,15 +44,28 @@
 
   <section id="v-result" class="res" hidden></section>
 
-  <section id="v-leaders" hidden>
-    <h2 style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
-    <p class="notice" style="margin-bottom:22px">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see the reasoning and sources.</p>
+  <section id="v-records" hidden>
+    <div class="rhead">
+      <h2 style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
+      <div class="tabs" id="rtoggle" aria-label="Which leaders">
+        <button type="button" data-r="all" aria-current="true">Every leader</button>
+        <button type="button" data-r="now" aria-current="false">Current climate</button>
+      </div>
+    </div>
+    <p class="notice" style="margin-bottom:10px">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see what they said they would do next to what they did.</p>
     <div id="leader-list"></div>
   </section>
 
   <section id="v-method" class="m" hidden>
     <h2 style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
-    <p>Each leader is placed on six dimensions using a fixed order of evidence: what they did in office, the policies and laws they backed or opposed, how they treated institutions and opponents, the documented effects, then their repeated public positions. Party ideology and self-description come last.</p>
+    <p>There are two quizzes. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to people in office today. <b>Current climate</b> compares you only with the people shaping politics now and in the race for 2027. Both use the same six dimensions, so a result in one can be read next to the other.</p>
+    <h3 style="margin-top:32px;font-size:1.4rem">The core rule: power is judged by action</h3>
+    <p>Every leader is sorted into one of two groups.</p>
+    <ul>
+      <li><b>Has held executive power</b> (President, Vice or Deputy President, Prime Minister, Cabinet Minister or Cabinet Secretary, Governor). Placements come only from what they did: laws signed or blocked, decisions, spending, appointments, and how they treated courts, media and opponents. Their promises appear in a "said / did" list so you can see the gap, but promises never move their placement. The code drops any words-based placement for this group.</li>
+      <li><b>Has not held executive power</b> (MPs, senators, assistant ministers, activists, aspirants). Their votes, bills and actions come first. Where those are thin, their stated positions and manifestos can be used, tagged <span class="tg S">S</span> and drawn as dotted circles.</li>
+    </ul>
+    <p>Self-descriptions and party labels are never evidence. Kenya's 1965 blueprint was called "African Socialism" while it protected private property and courted foreign investors. Here, the policy counts and the label does not.</p>
     <h3 style="margin-top:32px;font-size:1.4rem">The six dimensions</h3>
     <ul id="m-dims"></ul>
     <h3 style="margin-top:32px;font-size:1.4rem">Reading the tags</h3>
@@ -62,21 +74,21 @@
       <li><span class="tg A">A</span> Attributed: a claim made by a named source such as a journalist, group or rival. Not established fact.</li>
       <li><span class="tg I">I</span> Interpretation: our reading of several actions together. Open to challenge.</li>
       <li><span class="tg U">U</span> Not re-checked in this pass: written from general knowledge and needs verification before you rely on it.</li>
+      <li><span class="tg S">S</span> Stated position: what someone who has not held executive power says they would do. Used only for that group.</li>
     </ul>
     <h3 style="margin-top:32px;font-size:1.4rem">Matching</h3>
-    <p>Your answers give you a position on each dimension. A leader is compared with you only on dimensions where the evidence supports a placement, and solid evidence counts for more than thin evidence. A leader needs at least three comparable dimensions to appear in your matches. The others stay in the Leaders tab.</p>
+    <p>Your answers give you a position on each dimension. A leader is compared with you only on dimensions where the evidence supports a placement, and solid evidence counts for more than thin evidence. A leader needs at least three comparable dimensions to appear in your matches. The others stay in Records.</p>
     <h3 style="margin-top:32px;font-size:1.4rem">Limits</h3>
     <ul>
-      <li>Kenyan politics moves fast. Alliances and parties in this draft reflect reporting up to 30 September 2026.</li>
-      <li>Many placements rest on a small number of documented actions. Dashed circles mark low confidence.</li>
+      <li>Current profiles reflect reporting up to 30 September 2026. Alliances move fast.</li>
+      <li>Historical profiles were drafted from the established historical record, with reference overviews linked as starting points. A few details are tagged U and still need checking against primary sources.</li>
+      <li>Some leaders had long careers across very different roles. A single placement per dimension flattens that, so read the profile.</li>
       <li>A court allegation is not a finding. Where an outcome was not verified, the profile says so.</li>
-      <li>Media sources have their own interests. Where possible profiles cite more than one outlet, but this is a first pass, not a finished audit.</li>
     </ul>
   </section>
 
   <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? Send it in and the profile can be corrected.</p>
 </div>
-
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 </body>
