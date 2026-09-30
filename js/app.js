@@ -10,14 +10,56 @@ function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){retur
 function safeUrl(u){return /^https?:\/\//i.test(u)?u:"#"}
 var views=["home","intro","quiz","result","records","method"];
 var cur="all", rset="all";
-var ST={all:{idx:0,answers:[],done:false},now:{idx:0,answers:[],done:false}};
+// Quiz answers live in memory only, so they survive moving between views but not a page reload.
+var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
 function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
-  window.scrollTo(0,0);}
+}
+// Hash routing: #home, #quiz-all, #quiz-now, #result-all, #result-now, #records, #method, #leader-<id>.
+// go() changes the route; replace=true swaps the current history entry so Back never lands on a redirect.
+function go(hash,replace){
+  if(location.hash===hash){route();return}
+  if(replace)location.replace(hash);else location.hash=hash;
+}
+function setHash(k){return ST[k].done?"#result-"+k:"#quiz-"+k}
+var firstRoute=true;
+function focusHeading(v){
+  var h=$("v-"+v).querySelector('[tabindex="-1"]');
+  if(h)h.focus({preventScroll:true});
+}
+function route(){
+  var h=(location.hash||"#home").slice(1), m, v;
+  if(m=/^(quiz|result)-(all|now)$/.exec(h)){
+    cur=m[2]; var t=st();
+    if(m[1]==="quiz"){
+      if(t.done){go("#result-"+cur,true);return}
+      if(t.started){v="quiz";renderQ()} else {v="intro";renderIntro()}
+    }else{
+      if(!t.done){go("#quiz-"+cur,true);return}
+      v="result";renderResult();
+    }
+  }else if(h==="records"){v="records";renderRecords()}
+  else if(h==="method"){v="method"}
+  else if(m=/^leader-(.+)$/.exec(h)){
+    var id=decodeURIComponent(m[1]), l=L.filter(function(x){return x.id===id})[0];
+    if(!l){go("#records",true);return}
+    if(!l.now)rset="all"; else if(rset!=="all")rset=cur;
+    v="records";renderRecords();
+    var el=$("lead-"+id); el.open=true;
+    show(v); window.scrollTo(0,0);
+    // A leader link puts focus on that leader's summary, which is their name, rather than the page heading.
+    el.scrollIntoView({block:"start"}); el.querySelector("summary").focus({preventScroll:true});
+    firstRoute=false; return;
+  }else if(h==="home"){v="home"}
+  else{go("#home",true);return}
+  show(v); window.scrollTo(0,0);
+  if(!firstRoute)focusHeading(v);
+  firstRoute=false;
+}
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
 function matchable(l){return Object.keys(l.dims).length>=3}
@@ -32,22 +74,18 @@ function renderHome(){
 }
 function bindGo(root){
   root.querySelectorAll("[data-go]").forEach(function(b){b.addEventListener("click",function(){cur=b.dataset.go;start()})});
-  root.querySelectorAll("[data-rec]").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.rec;renderRecords();show("records")})});
+  root.querySelectorAll("[data-rec]").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.rec;go("#records")})});
 }
 function renderIntro(){
   var s=S(),p=s.pool();
-  $("v-intro").innerHTML='<h1>'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
+  $("v-intro").innerHTML='<h1 tabindex="-1">'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
     '<div class="cta"><button type="button" class="btn" data-go="'+esc(s.key)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(s.key)+'">Read the records first</button></div>'+
     '<div class="facts"><span><b>'+s.q.length+'</b> questions</span><span><b>'+DIMS.length+'</b> dimensions</span><span><b>'+p.length+'</b> leaders</span><span><b>'+p.filter(matchable).length+'</b> with enough evidence to match</span><span>About 4 minutes</span></div>';
   bindGo($("v-intro"));
 }
-function openSet(k){cur=k;var t=ST[k];
-  if(t.done){renderResult();show("result")}
-  else if(t.answers.length){show("quiz");renderQ()}
-  else{renderIntro();show("intro")}}
-
 function renderQ(){
   var s=S(),t=st(),q=s.q[t.idx];
+  $("quiz-h").textContent=s.name+" quiz";
   $("q-count").textContent=s.name+" · Question "+(t.idx+1)+" of "+s.q.length;
   $("q-topic").textContent=TOPIC[q[0]];
   $("q-bar").style.width=(t.idx/s.q.length*100)+"%";
@@ -72,7 +110,7 @@ function choose(v){
   renderQ();
   pending=setTimeout(function(){
     pending=null;
-    if(last){if(t.done)return;t.done=true;renderResult();show("result")} // results are built once
+    if(last){if(t.done)return;t.done=true;go("#result-"+cur,true)} // results are built once
     else{t.idx++;renderQ()}
   },160);
 }
@@ -119,7 +157,7 @@ function renderResult(){
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match needs solid evidence (roughly three medium-confidence dimensions); thin records still appear in the list.
   var b=ranked.filter(function(r){return r.den>=2.4})[0]||ranked[0], html='';
-  html+='<h2>Here is where you land</h2>';
+  html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
     html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p>'+
@@ -150,8 +188,8 @@ function renderResult(){
     try{navigator.clipboard.writeText(sm).then(done,function(){$("sum").select()})}catch(e){$("sum").select()}
   });
   $("retake").addEventListener("click",start);
-  $("other").addEventListener("click",function(){openSet(cur==="all"?"now":"all")});
-  $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){openLeader(x.dataset.open)})});
+  $("other").addEventListener("click",function(){go(setHash(cur==="all"?"now":"all"))});
+  $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){go("#leader-"+encodeURIComponent(x.dataset.open))})});
 }
 
 function drawTracks(u,top3){
@@ -177,15 +215,15 @@ function drawTracks(u,top3){
       var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"");
       var label=it.you?"You":it.l.ini;
       var lab=it.you?"You":it.l.n;
-      return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+esc(lab)+'">'+esc(label)+'</button>';
+      return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+esc(lab)+'" title="'+esc(lab)+'" aria-pressed="false">'+esc(label)+'</button>';
     }).join('');
     sec.innerHTML='<h4>'+esc(d.name)+'</h4><p class="yours">You: '+esc(words(d.k,u[d.k]).toLowerCase())+'</p>'+
       '<div class="tw"><div class="inner" style="height:'+h+'px"><div class="rail"></div>'+dots+'</div></div>'+
-      '<div class="poles"><span>'+esc(d.lo)+'</span><span>'+esc(d.hi)+'</span></div><p class="dnote">Select a circle for the evidence.</p>';
+      '<div class="poles"><span>'+esc(d.lo)+'</span><span>'+esc(d.hi)+'</span></div><p class="dnote" aria-live="polite">Select a circle for the evidence.</p>';
     out.appendChild(sec);
     sec.querySelectorAll(".dot").forEach(function(b){b.addEventListener("click",function(){
       var it=items[+b.dataset.i];
-      sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel")}); b.classList.add("sel");
+      sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel");x.setAttribute("aria-pressed","false")}); b.classList.add("sel"); b.setAttribute("aria-pressed","true");
       sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":", based on actions")+"). "+it.note);
     })});
   });
@@ -215,18 +253,15 @@ function renderRecords(){
   box.innerHTML=rset==="now"?'<div>'+now.map(leaderHTML).join('')+'</div>':
     '<p class="grp">In today\'s political climate</p><div>'+now.map(leaderHTML).join('')+'</div><p class="grp">Earlier leaders</p><div>'+past.map(leaderHTML).join('')+'</div>';
 }
-function openLeader(id){var l=L.filter(function(x){return x.id===id})[0];
-  if(l&&!l.now)rset="all"; else if(rset!=="all")rset=cur;
-  renderRecords();show("records");var el=$("lead-"+id);if(el){el.open=true;setTimeout(function(){el.scrollIntoView({block:"start"})},30)}}
-
 $("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+esc(d.name)+':</b> '+esc(d.lo)+' to '+esc(d.hi)+'</li>'}).join('');
-function start(){ST[cur]={idx:0,answers:[],done:false};show("quiz");renderQ()}
-$("home").addEventListener("click",function(){show("home")});
+function start(){ST[cur]={idx:0,answers:[],done:false,started:true};go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
+$("home").addEventListener("click",function(){go("#home")});
 $("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){
-  var t=b.dataset.tab; if(t==="all"||t==="now")openSet(t); else{if(t==="records")renderRecords();show(t)}
+  var t=b.dataset.tab; go(t==="all"||t==="now"?setHash(t):"#"+t);
 })});
 document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.r;renderRecords()})});
+window.addEventListener("hashchange",route);
 renderHome();
-show("home");
+route();
 })();

@@ -26,6 +26,8 @@ p{margin:0}
 a{color:var(--ink)}
 button{font-family:inherit;font-size:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:28px}
 .brand{font-family:var(--display);font-weight:800;font-size:1.25rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer}
@@ -62,7 +64,8 @@ button{font-family:inherit;font-size:inherit;color:inherit}
 .opts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:26px}
 .opt{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:16px 6px;cursor:pointer;font-weight:600;font-size:.9rem;min-height:66px;line-height:1.2}
 .opt:hover{border-color:var(--ink)}
-.opt[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.opt[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink);box-shadow:0 0 0 3px var(--ink-soft)}
+.opt[aria-pressed="true"]::before{content:"✓ "}
 .q-foot{display:flex;justify-content:space-between;margin-top:22px;color:var(--muted);font-size:.9rem}
 .linkbtn{background:none;border:0;padding:6px 0;cursor:pointer;color:var(--muted);text-decoration:underline}
 @media (max-width:600px){

@@ -13,16 +13,16 @@
 <div class="wrap">
   <div class="nav">
     <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
-    <div class="tabs" aria-label="Sections">
+    <nav class="tabs" aria-label="Sections">
       <button type="button" data-tab="all" aria-current="false">Every leader</button>
       <button type="button" data-tab="now" aria-current="false">Current climate</button>
       <button type="button" data-tab="records" aria-current="false">Records</button>
       <button type="button" data-tab="method" aria-current="false">Method</button>
-    </div>
+    </nav>
   </div>
 
   <section id="v-home" class="hero">
-    <h1>Match your views to what leaders <span class="mark">did</span>.</h1>
+    <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two quizzes, one rule. If a leader has held power, we judge them only by what they did with it. Promises, slogans and party labels do not count. If they have never held power, their stated positions and manifestos are all there is to go on, so we use them and label them.</p>
     <div class="paths" id="paths"></div>
     <div class="rules">
@@ -35,6 +35,7 @@
   <section id="v-intro" class="hero" hidden></section>
 
   <section id="v-quiz" hidden>
+    <h1 class="sr" id="quiz-h" tabindex="-1"></h1>
     <div class="q-meta"><span id="q-count"></span><span id="q-topic" class="topic" style="margin:0"></span></div>
     <div class="bar"><span id="q-bar" style="width:0"></span></div>
     <p class="q-text" id="q-text" aria-live="polite"></p>
@@ -46,8 +47,8 @@
 
   <section id="v-records" hidden>
     <div class="rhead">
-      <h2 style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
-      <div class="tabs" id="rtoggle" aria-label="Which leaders">
+      <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
+      <div class="tabs" id="rtoggle" role="group" aria-label="Which leaders">
         <button type="button" data-r="all" aria-current="true">Every leader</button>
         <button type="button" data-r="now" aria-current="false">Current climate</button>
       </div>
@@ -57,7 +58,7 @@
   </section>
 
   <section id="v-method" class="m" hidden>
-    <h2 style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
+    <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
     <p>There are two quizzes. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to people in office today. <b>Current climate</b> compares you only with the people shaping politics now and in the race for 2027. Both use the same six dimensions, so a result in one can be read next to the other.</p>
     <h3 style="margin-top:32px;font-size:1.4rem">The core rule: power is judged by action</h3>
     <p>Every leader is sorted into one of two groups.</p>
