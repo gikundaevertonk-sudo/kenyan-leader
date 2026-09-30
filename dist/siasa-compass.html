@@ -36,6 +36,8 @@ p{margin:0}
 a{color:var(--ink)}
 button{font-family:inherit;font-size:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:28px}
 .brand{font-family:var(--display);font-weight:800;font-size:1.25rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer}
@@ -72,7 +74,8 @@ button{font-family:inherit;font-size:inherit;color:inherit}
 .opts{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:26px}
 .opt{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:16px 6px;cursor:pointer;font-weight:600;font-size:.9rem;min-height:66px;line-height:1.2}
 .opt:hover{border-color:var(--ink)}
-.opt[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.opt[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink);box-shadow:0 0 0 3px var(--ink-soft)}
+.opt[aria-pressed="true"]::before{content:"✓ "}
 .q-foot{display:flex;justify-content:space-between;margin-top:22px;color:var(--muted);font-size:.9rem}
 .linkbtn{background:none;border:0;padding:6px 0;cursor:pointer;color:var(--muted);text-decoration:underline}
 @media (max-width:600px){
@@ -102,7 +105,9 @@ button.chip{cursor:pointer}
 .match:first-child{border-top:0}
 .match .nm{font-weight:700;font-size:1.05rem}
 .match .nm small{font-weight:500;color:var(--muted);font-size:.8rem;margin-left:6px}
-.match .cl{color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.match .cl{color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums;text-align:right}
+.match .cl b{color:var(--fg);font-size:1.05rem}
+.match .cl small{font-size:.8rem}
 .match .meter{grid-column:1/-1;height:8px;background:var(--ink-soft);border-radius:4px;overflow:hidden}
 .match .meter span{display:block;height:100%;background:var(--ink);border-radius:4px}
 .dim{padding:22px 0;border-top:1px solid var(--line)}
@@ -136,6 +141,7 @@ button.chip{cursor:pointer}
 .lead .cls{grid-row:1/3;grid-column:2;font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:999px;background:var(--ink-soft);text-align:center;max-width:170px}
 .lead .body{padding:4px 0 28px;display:grid;gap:22px}
 .lead h5{margin:0 0 8px;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta{font-size:.85rem;color:var(--muted)}
 .basis{font-size:.9rem;padding:10px 14px;border-radius:10px;background:var(--ink-soft)}
 .basis b{font-weight:700}
 .rec{list-style:none;margin:0;padding:0;display:grid;gap:10px}
@@ -167,16 +173,16 @@ button.chip{cursor:pointer}
 <div class="wrap">
   <div class="nav">
     <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
-    <div class="tabs" aria-label="Sections">
+    <nav class="tabs" aria-label="Sections">
       <button type="button" data-tab="all" aria-current="false">Every leader</button>
       <button type="button" data-tab="now" aria-current="false">Current climate</button>
       <button type="button" data-tab="records" aria-current="false">Records</button>
       <button type="button" data-tab="method" aria-current="false">Method</button>
-    </div>
+    </nav>
   </div>
 
   <section id="v-home" class="hero">
-    <h1>Match your views to what leaders <span class="mark">did</span>.</h1>
+    <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two quizzes, one rule. If a leader has held power, we judge them only by what they did with it. Promises, slogans and party labels do not count. If they have never held power, their stated positions and manifestos are all there is to go on, so we use them and label them.</p>
     <div class="paths" id="paths"></div>
     <div class="rules">
@@ -189,6 +195,7 @@ button.chip{cursor:pointer}
   <section id="v-intro" class="hero" hidden></section>
 
   <section id="v-quiz" hidden>
+    <h1 class="sr" id="quiz-h" tabindex="-1"></h1>
     <div class="q-meta"><span id="q-count"></span><span id="q-topic" class="topic" style="margin:0"></span></div>
     <div class="bar"><span id="q-bar" style="width:0"></span></div>
     <p class="q-text" id="q-text" aria-live="polite"></p>
@@ -200,8 +207,8 @@ button.chip{cursor:pointer}
 
   <section id="v-records" hidden>
     <div class="rhead">
-      <h2 style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
-      <div class="tabs" id="rtoggle" aria-label="Which leaders">
+      <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
+      <div class="tabs" id="rtoggle" role="group" aria-label="Which leaders">
         <button type="button" data-r="all" aria-current="true">Every leader</button>
         <button type="button" data-r="now" aria-current="false">Current climate</button>
       </div>
@@ -211,7 +218,7 @@ button.chip{cursor:pointer}
   </section>
 
   <section id="v-method" class="m" hidden>
-    <h2 style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
+    <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
     <p>There are two quizzes. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to people in office today. <b>Current climate</b> compares you only with the people shaping politics now and in the race for 2027. Both use the same six dimensions, so a result in one can be read next to the other.</p>
     <h3 style="margin-top:32px;font-size:1.4rem">The core rule: power is judged by action</h3>
     <p>Every leader is sorted into one of two groups.</p>
@@ -231,7 +238,9 @@ button.chip{cursor:pointer}
       <li><span class="tg S">S</span> Stated position: what someone who has not held executive power says they would do. Used only for that group.</li>
     </ul>
     <h3 style="margin-top:32px;font-size:1.4rem">Matching</h3>
-    <p>Your answers give you a position on each dimension. A leader is compared with you only on dimensions where the evidence supports a placement, and solid evidence counts for more than thin evidence. A leader needs at least three comparable dimensions to appear in your matches. The others stay in Records.</p>
+    <p>Your answers give you a position on each dimension, from -2 to +2. A leader is compared with you only on dimensions where the evidence supports a placement, and a leader needs at least three of them to appear in your matches. The others stay in Records.</p>
+    <p>Solid evidence counts for more than thin evidence. Before your position is compared with a leader's, the leader's placement is pulled toward the neutral midpoint by its confidence: high confidence keeps it as is, medium keeps 80% of it and low keeps 50%. A leader with thin evidence therefore looks closer to neutral and cannot outrank a well-evidenced one just by sitting on your exact position.</p>
+    <p>For each dimension, the overlap is 100% when you and the leader are at the same point and falls in a straight line to 0% when they are 3 points apart. A leader's overall bar is the average of those overlaps, so opposite positions read near 0% instead of being squeezed into the top half. The main figure beside each bar is how many dimensions you are close on, meaning within 1 point of the leader's placement before any pull toward the midpoint. The headline match also needs enough evidence overall, roughly three medium-confidence dimensions.</p>
     <h3 style="margin-top:32px;font-size:1.4rem">Limits</h3>
     <ul>
       <li>Current profiles reflect reporting up to 30 September 2026. Alliances move fast.</li>
@@ -241,7 +250,7 @@ button.chip{cursor:pointer}
     </ul>
   </section>
 
-  <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? Send it in and the profile can be corrected.</p>
+  <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a> and the profile can be corrected.</p>
 </div>
 <script>
 /* Siasa Compass data: dimensions, questions, quiz sets and leader records. Edit here; see README.md. */
@@ -256,6 +265,8 @@ var DIMS=[
 ];
 var TOPIC={econ:"Economy",redis:"Land and wealth",social:"Values",inst:"Institutions",style:"Political style",liberty:"Rights"};
 
+// Question coverage check (step 3): every dimension has 3 questions in each quiz, and each dimension has both
+// directions (+1 and -1) in both quizzes. No gaps found, so no questions were added. scripts/validate-data.js re-checks this.
 // Current-climate questions
 var QN=[
  ["econ",-1,"Private business, not government, should lead job creation and growth."],
@@ -304,11 +315,13 @@ var CONF={H:"high",M:"medium",L:"low"};
 
 /* Leader fields:
    now: part of the current political climate. exec: has held executive power.
+   reviewed: date (YYYY-MM-DD) the profile was last checked against sources; "" where unknown.
    dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, only allowed when exec is false.
-   said: [what they said they would do, what they did (or null), tag for the second part]. */
+   said: [what they said they would do, what they did (or null), tag for the second part].
+   rec: [tag, text] lines, tag one of D A I U S. A U line has not been re-checked. */
 var L=[
 // ---------- Current climate ----------
-{id:"ruto",now:1,exec:1,n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
+{id:"ruto",now:1,exec:1,reviewed:"",n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
  dims:{
   econ:[0,"M","Finance Acts and levies raised the tax take, while the state also funds or runs housing, health cover (SHA) and input subsidies. The record points both ways."],
   redis:[-1,"L","Signed Finance Acts whose levies were criticised as falling on consumers and payrolls. The Hustler Fund and subsidies point the other way. Contested."],
@@ -328,7 +341,7 @@ var L=[
  suggests:"Pragmatic, executive-centred developmentalism with IMF-aligned fiscal consolidation, adjusting to coalition needs. Confidence is high that the record is large, and only medium that any single label fits.",
  src:[["Kenyans.co.ke: Ruto signs 2026 Finance Bill","https://www.kenyans.co.ke/news/124557-ruto-signs-2026-finance-bill-law"],["Nation: ODM, UDA joint talks team","https://nation.africa/kenya/news/politics/odm-uda-to-form-joint-talks-team-as-oburu-signals-start-of-2027-coalition-negotiations-5323202"]]},
 
-{id:"gachagua",now:1,exec:1,n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Insufficient (partial)",
+{id:"gachagua",now:1,exec:1,reviewed:"",n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","As Deputy President he led state-driven coffee-sector reform efforts (verify specific measures)."],
   style:[1,"M","Former second-in-command now leads an opposition party."]},
@@ -342,7 +355,7 @@ var L=[
  suggests:"Insufficient evidence for a full placement. His faith-based and regional messaging is not counted, because he has held executive power. The clearest documented pattern is a shift from government insider to opposition leader.",
  src:[["Standard: court orders Gachagua to surrender Sh202m","https://www.standardmedia.co.ke/national/article/2001451803/corruption-court-orders-rigathi-gachagua-to-surrender-sh202m"],["Standard: Gachagua gets back seized millions","https://www.standardmedia.co.ke/health/politics/article/2001466359/dp-gachagua-gets-back-his-seized-millions"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"]]},
 
-{id:"kalonzo",now:1,exec:1,n:"Kalonzo Musyoka",ini:"KM",role:"Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.",cls:"Insufficient evidence",
+{id:"kalonzo",now:1,exec:1,reviewed:"",n:"Kalonzo Musyoka",ini:"KM",role:"Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.",cls:"Insufficient evidence",
  dims:{
   inst:[1,"L","Served in the Grand Coalition government that delivered the 2010 Constitution (verify his specific role)."],
   style:[0,"M","A career insider, in and out of government across administrations."]},
@@ -355,7 +368,7 @@ var L=[
  suggests:"Insufficient evidence to place him beyond a long-serving establishment figure now in opposition. His ministerial decisions are the next thing to compile.",
  src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"]]},
 
-{id:"matiangi",now:1,exec:1,n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
+{id:"matiangi",now:1,exec:1,reviewed:"",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","Led state-driven delivery programmes such as the exam overhaul and school-transition policy (interpretation; verify)."],
   inst:[-1,"L","A 2018 dispute over compliance with court orders happened under his Interior docket. Outcome not verified here."],
@@ -370,7 +383,7 @@ var L=[
  suggests:"A technocratic, state-delivery style of governing. Most placements here are low confidence.",
  src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"]]},
 
-{id:"karua",now:1,exec:1,n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
+{id:"karua",now:1,exec:1,reviewed:"",n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
  dims:{
   inst:[1,"M","Resigned as Justice Minister in April 2009, citing judicial appointments made without her. During the 2007 to 2008 crisis she was a leading defender of the disputed PNU result (attributed). Mixed, but leans towards checks."],
   liberty:[1,"M","Has acted as defence lawyer for opposition figures in the region, including Kizza Besigye in Uganda. Tanzania deported her in May 2025 when she arrived to represent Tundu Lissu."],
@@ -386,7 +399,7 @@ var L=[
  suggests:"On what she did in and after office: a constitutionalist with a rights-first bent. Her economic positions are words only and are not counted.",
  src:[["Standard: Karua's alternative budget","https://www.standardmedia.co.ke/national/article/2001549877/karua-rejects-key-finance-bill-proposals-unveils-plps-alternative-budget-plan"],["Kenyans.co.ke: Finance Bill 2026 claim","https://www.kenyans.co.ke/news/123960-karua-accuses-govt-reintroducing-2024-finance-bill-through-finance-bill-2026"],["France 24: Karua deported from Tanzania","https://www.france24.com/en/live-news/20250518-kenyan-politician-lawyer-for-tanzania"],["Wikipedia: Martha Karua (overview)","https://en.wikipedia.org/wiki/Martha_Karua"]]},
 
-{id:"sifuna",now:1,exec:0,n:"Edwin Sifuna",ini:"ES",role:"Nairobi Senator since 2017. Removed as ODM Secretary-General. Linda Mwananchi presidential candidate.",cls:"Moderately identifiable (style)",
+{id:"sifuna",now:1,exec:0,reviewed:"",n:"Edwin Sifuna",ini:"ES",role:"Nairobi Senator since 2017. Removed as ODM Secretary-General. Linda Mwananchi presidential candidate.",cls:"Moderately identifiable (style)",
  dims:{
   inst:[1,"L","Has used the Senate seat and party platform to challenge party and government positions (interpretation)."],
   style:[2,"M","Removed from ODM's secretary-general post twice, upheld by the Political Parties Disputes Tribunal, and now heads a rival movement."],
@@ -401,7 +414,7 @@ var L=[
  suggests:"The documented pattern is a clear anti-establishment turn within party politics. Policy placements are thin.",
  src:[["Nation: Linda Mwananchi on Sifuna's second expulsion","https://nation.africa/kenya/news/politics/linda-mwananchi-to-fight-odm-over-sifuna-s-second-expulsion--5505924"],["The Online Kenyan: tribunal upholds removal","https://www.theonlinekenyan.com/daily/2026-09-10/tribunal-upholds-sifuna-s-removal-as-odm-secretary-general"],["The Online Kenyan: nomination","https://www.theonlinekenyan.com/daily/2026-09-28/sifuna-secures-linda-mwananchi-presidential-nomination"],["Kenyans.co.ke: TIFA survey","https://www.kenyans.co.ke/news/125558-tifa-survey-ranks-sifuna-most-preferred-odm-flag-bearer-ahead-2027-polls"]]},
 
-{id:"nyoro",now:1,exec:0,n:"Ndindi Nyoro",ini:"NN",role:"Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.",cls:"Insufficient evidence",
+{id:"nyoro",now:1,exec:0,reviewed:"",n:"Ndindi Nyoro",ini:"NN",role:"Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.",cls:"Insufficient evidence",
  dims:{
   econ:[-1,"L","Fiscal-discipline messaging from his budget-committee background (verify committee decisions).","S"],
   style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."]},
@@ -414,7 +427,7 @@ var L=[
  suggests:"Insufficient evidence for a policy placement. Documented change is his move from government camp to opposition.",
  src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"]]},
 
-{id:"babu",now:1,exec:0,n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
+{id:"babu",now:1,exec:0,reviewed:"",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
  dims:{
   redis:[1,"L","Long association with student-fee and cost-of-living advocacy (verify).","S"],
   style:[1,"M","Left ODM to run for Nairobi governor under The Mwananchi Party within the Linda Mwananchi formation."],
@@ -428,7 +441,7 @@ var L=[
  suggests:"Insufficient evidence for a policy placement. Documented pattern is youth-focused, anti-establishment positioning.",
  src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"]]},
 
-{id:"salasya",now:1,exec:0,n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
+{id:"salasya",now:1,exec:0,reviewed:"",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
  dims:{
   style:[2,"L","Outspoken, populist positioning against the political class (low volume of policy evidence).","S"],
   liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified)."]},
@@ -441,7 +454,7 @@ var L=[
  suggests:"Insufficient evidence. Highly visible, but this pass found little legislative or policy record.",
  src:[["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"]]},
 
-{id:"wanga",now:1,exec:1,n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
+{id:"wanga",now:1,exec:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
  dims:{
   social:[1,"L","Organises with the G7 women governors to get more women into elective office. This is campaigning, not a governing record."],
   style:[-1,"M","Aligned with ODM's leadership and its cooperation with the government."]},
@@ -454,7 +467,7 @@ var L=[
  suggests:"Insufficient evidence. As a governor she is judged on her county record, which has not been compiled in this pass.",
  src:[["Nation: Oburu and Wanga team ratified","https://nation.africa/kenya/news/politics/power-shift-in-odm-oburu-wanga-team-ratified-osotsi-axed-in-sdc-purge-5404810"],["Nation: women in governor races","https://nation.africa/kenya/news/gender/women-politicians-storm-governor-contests-ahead-of-2027-showdown--5403030"]]},
 
-{id:"millie",now:1,exec:0,n:"Millie Odhiambo",ini:"MO",role:"Suba North MP. National Assembly Minority Chief Whip. ODM.",cls:"Insufficient (partial)",
+{id:"millie",now:1,exec:0,reviewed:"",n:"Millie Odhiambo",ini:"MO",role:"Suba North MP. National Assembly Minority Chief Whip. ODM.",cls:"Insufficient (partial)",
  dims:{
   social:[1,"L","Long-standing public advocacy on gender and children's issues (check bills sponsored).","S"],
   inst:[1,"L","Serves in a parliamentary oversight role as Minority Chief Whip."],
@@ -468,7 +481,7 @@ var L=[
  suggests:"Insufficient evidence for a full placement. Her legislative record should be compiled next.",
  src:[["Nation: rough road for ODM fence-sitters","https://nation.africa/kenya/news/politics/rough-road-for-odm-fence-sitters-in-nyanza-5595014"],["People Daily: position after Linda Ground disbanded","https://peopledaily.digital/inside-politics/millie-odhiambo-declares-her-position-after-disbandment-of-linda-ground-faction"]]},
 
-{id:"nyamu",now:1,exec:0,n:"Karen Nyamu",ini:"KN",role:"Nominated Senator (UDA) since 2022.",cls:"Insufficient evidence",
+{id:"nyamu",now:1,exec:0,reviewed:"",n:"Karen Nyamu",ini:"KN",role:"Nominated Senator (UDA) since 2022.",cls:"Insufficient evidence",
  dims:{style:[-1,"M","Publicly aligned with UDA and the government line."]},
  said:[],
  rec:[
@@ -480,7 +493,7 @@ var L=[
  suggests:"Insufficient evidence. Very visible, but this pass found one bill and mostly commentary.",
  src:[["People Daily: Ol Kalou by-election remarks","https://peopledaily.digital/inside-politics/karen-nyamu-ol-kalou-voters-rejected-uda-because-we-overdid-it"],["Nation opinion: Karen Nyamu epitomises UDA","https://nation.africa/kenya/blogs-opinion/opinion/karen-nyamu-epitomises-uda-5455088"]]},
 
-{id:"omanga",now:1,exec:0,n:"Millicent Omanga",ini:"MM",role:"Former nominated senator. Joined DCP in March 2026. Nairobi Woman Rep aspirant.",cls:"Insufficient evidence",
+{id:"omanga",now:1,exec:0,reviewed:"",n:"Millicent Omanga",ini:"MM",role:"Former nominated senator. Joined DCP in March 2026. Nairobi Woman Rep aspirant.",cls:"Insufficient evidence",
  dims:{style:[1,"L","Left UDA for the opposition."]},
  said:[["Says she left the Ruto camp over broken promises and erosion of principles.",null,"S"]],
  rec:[
@@ -491,7 +504,7 @@ var L=[
  suggests:"Insufficient evidence. The documented pattern is a defection from government to opposition.",
  src:[["Standard: Omanga ditches UDA for DCP","https://www.standardmedia.co.ke/politics/article/2001543418/millicent-omanga-ditches-uda-for-gachaguas-dcp"],["Nation: why I ditched Ruto","https://nation.africa/kenya/news/politics/millicent-omanga-why-i-ditched-ruto-for-gachagua-s-camp-5407226"]]},
 
-{id:"waiguru",now:1,exec:1,n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
+{id:"waiguru",now:1,exec:1,reviewed:"",n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
  dims:{},
  said:[],
  rec:[
@@ -503,7 +516,7 @@ var L=[
  src:[["Kirinyaga County: women governors on a female DP (government source)","https://kirinyaga.go.ke/women-governors-say-kenya-is-ready-for-a-female-deputy-president-propose-waiguru/"],["Nation: female governors' bid for inclusion","https://nation.africa/kenya/news/gender/from-g7-to-g16-inside-female-governors-bid-for-greater-political-inclusion-4548874"]]},
 
 // ---------- Earlier leaders ----------
-{id:"jomo",now:0,exec:1,n:"Jomo Kenyatta",ini:"JK",role:"Prime Minister 1963. President 1964 to 1978. KANU. Died 1978.",cls:"Clearly identifiable",
+{id:"jomo",now:0,exec:1,reviewed:"",n:"Jomo Kenyatta",ini:"JK",role:"Prime Minister 1963. President 1964 to 1978. KANU. Died 1978.",cls:"Clearly identifiable",
  dims:{
   econ:[-1,"H","Protected private property, welcomed foreign capital and Africanised ownership rather than nationalising it, under a blueprint titled 'African Socialism'."],
   redis:[-2,"M","Settler land was transferred mainly by sale (willing buyer, willing seller) with British-funded loans. The 2004 Ndung'u Commission later documented irregular allocations of public land to the politically connected, beginning in this era."],
@@ -523,7 +536,7 @@ var L=[
  suggests:"State-centred, conservative nation-building: a strong presidency, a market economy and little room for organised dissent.",
  src:[["Wikipedia: Jomo Kenyatta (overview)","https://en.wikipedia.org/wiki/Jomo_Kenyatta"],["Wikipedia: Kenya People's Union","https://en.wikipedia.org/wiki/Kenya_People%27s_Union"]]},
 
-{id:"moi",now:0,exec:1,n:"Daniel arap Moi",ini:"DM",role:"Vice President 1967 to 1978. President 1978 to 2002. KANU. Died 2020.",cls:"Clearly identifiable",
+{id:"moi",now:0,exec:1,reviewed:"",n:"Daniel arap Moi",ini:"DM",role:"Vice President 1967 to 1978. President 1978 to 2002. KANU. Died 2020.",cls:"Clearly identifiable",
  dims:{
   econ:[0,"M","Expanded parastatals and state marketing boards in the 1980s, then under donor pressure liberalised prices, maize marketing and foreign exchange in the early 1990s. The record points both ways."],
   redis:[-2,"M","The 2004 Ndung'u Commission documented widespread illegal allocation of public land, peaking in the 1980s and 1990s, largely to the politically connected."],
@@ -543,7 +556,7 @@ var L=[
  suggests:"Authoritarian, patronage-based centralism that bent only under sustained pressure.",
  src:[["Wikipedia: Daniel arap Moi (overview)","https://en.wikipedia.org/wiki/Daniel_arap_Moi"],["Wikipedia: Wagalla massacre","https://en.wikipedia.org/wiki/Wagalla_massacre"],["Wikipedia: Goldenberg scandal","https://en.wikipedia.org/wiki/Goldenberg_scandal"]]},
 
-{id:"kibaki",now:0,exec:1,n:"Mwai Kibaki",ini:"MKi",role:"Finance Minister 1969 to 1982. Vice President 1978 to 1988. President 2002 to 2013. Died 2022.",cls:"Moderately identifiable",
+{id:"kibaki",now:0,exec:1,reviewed:"",n:"Mwai Kibaki",ini:"MKi",role:"Finance Minister 1969 to 1982. Vice President 1978 to 1988. President 2002 to 2013. Died 2022.",cls:"Moderately identifiable",
  dims:{
   econ:[-1,"M","Presided over a revenue-led recovery and Vision 2030: state investment in roads and energy, with private-sector growth as the engine."],
   redis:[0,"L","Adopted a National Land Policy in 2009, and the 2010 Constitution created a National Land Commission. Little land was actually redistributed. Free primary education pushes the other way."],
@@ -563,7 +576,7 @@ var L=[
  suggests:"A technocratic, growth-first, cautious reformer. Institutional change came mostly under pressure.",
  src:[["Wikipedia: Mwai Kibaki (overview)","https://en.wikipedia.org/wiki/Mwai_Kibaki"],["Wikipedia: Anglo-Leasing scandal","https://en.wikipedia.org/wiki/Anglo-Leasing_scandal"],["Wikipedia: 2007 to 2008 Kenyan crisis","https://en.wikipedia.org/wiki/2007%E2%80%932008_Kenyan_crisis"]]},
 
-{id:"uhuru",now:0,exec:1,n:"Uhuru Kenyatta",ini:"UK",role:"Deputy Prime Minister 2008 to 2013. President 2013 to 2022. Jubilee. Retired; his record in office is complete.",cls:"Clearly identifiable",
+{id:"uhuru",now:0,exec:1,reviewed:"",n:"Uhuru Kenyatta",ini:"UK",role:"Deputy Prime Minister 2008 to 2013. President 2013 to 2022. Jubilee. Retired; his record in office is complete.",cls:"Clearly identifiable",
  dims:{
   econ:[1,"M","Pursued debt-financed, state-led megaprojects such as the Chinese-funded Standard Gauge Railway, and signed a cap on bank interest rates in 2016 (repealed 2019). Public debt rose sharply."],
   redis:[0,"L","The government reported issuing millions of title deeds (its own figures). No major redistribution."],
@@ -582,7 +595,7 @@ var L=[
  suggests:"Establishment, state-driven infrastructure developmentalism financed by debt, with a willingness to override courts and media when under pressure.",
  src:[["Wikipedia: Uhuru Kenyatta (overview)","https://en.wikipedia.org/wiki/Uhuru_Kenyatta"],["Wikipedia: Building Bridges Initiative","https://en.wikipedia.org/wiki/Building_Bridges_Initiative"]]},
 
-{id:"raila",now:0,exec:1,n:"Raila Odinga",ini:"RO",role:"Energy Minister 2001 to 2002. Roads Minister 2003 to 2005. Prime Minister 2008 to 2013. ODM. Died October 2025.",cls:"Mixed / contradictory",
+{id:"raila",now:0,exec:1,reviewed:"",n:"Raila Odinga",ini:"RO",role:"Energy Minister 2001 to 2002. Roads Minister 2003 to 2005. Prime Minister 2008 to 2013. ODM. Died October 2025.",cls:"Mixed / contradictory",
  dims:{
   econ:[0.5,"L","As Prime Minister backed state programmes such as the Kazi Kwa Vijana youth-jobs scheme. His ministerial spells left a thin economic record."],
   inst:[0.5,"M","Detained for years under Moi during the fight for multiparty politics, led the 2005 'No' campaign against a strong-presidency draft and backed the 2010 Constitution. Then co-led BBI, which courts ruled unconstitutional."],
@@ -601,7 +614,7 @@ var L=[
  suggests:"A reformer on institutions and rights whose strategy moved between confrontation and deal-making.",
  src:[["Wikipedia: Raila Odinga (overview)","https://en.wikipedia.org/wiki/Raila_Odinga"],["Wikipedia: Building Bridges Initiative","https://en.wikipedia.org/wiki/Building_Bridges_Initiative"]]},
 
-{id:"jaramogi",now:0,exec:1,n:"Jaramogi Oginga Odinga",ini:"JO",role:"Vice President 1964 to 1966. Founded KPU and later co-founded FORD. Died 1994.",cls:"Moderately identifiable",
+{id:"jaramogi",now:0,exec:1,reviewed:"",n:"Jaramogi Oginga Odinga",ini:"JO",role:"Vice President 1964 to 1966. Founded KPU and later co-founded FORD. Died 1994.",cls:"Moderately identifiable",
  dims:{
   redis:[1.5,"M","Left the government in 1966 over its direction, including a land policy that sold rather than returned land (interpretation of his reasons)."],
   inst:[1,"M","Co-founded FORD in 1991 to force a return to multiparty politics."],
@@ -619,7 +632,7 @@ var L=[
  suggests:"Left-leaning nationalist and opposition pioneer. His economic programme was never tested in office, so it is not counted.",
  src:[["Wikipedia: Jaramogi Oginga Odinga (overview)","https://en.wikipedia.org/wiki/Jaramogi_Oginga_Odinga"],["Wikipedia: Kenya People's Union","https://en.wikipedia.org/wiki/Kenya_People%27s_Union"]]},
 
-{id:"mboya",now:0,exec:1,n:"Tom Mboya",ini:"TM",role:"Trade unionist. Justice Minister 1963 to 1964. Economic Planning Minister 1964 to 1969. KANU Secretary-General. Assassinated 1969.",cls:"Moderately identifiable",
+{id:"mboya",now:0,exec:1,reviewed:"",n:"Tom Mboya",ini:"TM",role:"Trade unionist. Justice Minister 1963 to 1964. Economic Planning Minister 1964 to 1969. KANU Secretary-General. Assassinated 1969.",cls:"Moderately identifiable",
  dims:{
   econ:[-1,"M","Drafted Sessional Paper No. 10 of 1965. Titled 'African Socialism', in substance it backed a mixed economy, private property and foreign investment."],
   redis:[-1,"L","Backed the purchase-based land transfer policy (interpretation)."],
@@ -636,7 +649,7 @@ var L=[
  suggests:"A pragmatic, pro-Western modernising technocrat who built a strong central state and party.",
  src:[["Wikipedia: Tom Mboya (overview)","https://en.wikipedia.org/wiki/Tom_Mboya"]]},
 
-{id:"saitoti",now:0,exec:1,n:"George Saitoti",ini:"GS",role:"Finance Minister 1983 to 1993. Vice President 1989 to 1997 and 1999 to 2002. Internal Security Minister 2008 to 2012. Died 2012.",cls:"Moderately identifiable",
+{id:"saitoti",now:0,exec:1,reviewed:"",n:"George Saitoti",ini:"GS",role:"Finance Minister 1983 to 1993. Vice President 1989 to 1997 and 1999 to 2002. Internal Security Minister 2008 to 2012. Died 2012.",cls:"Moderately identifiable",
  dims:{
   econ:[-1.5,"M","As Finance Minister carried out IMF and World Bank structural adjustment: spending cuts, price decontrol and liberalisation."],
   inst:[-1,"M","A senior figure in the one-party KANU state."],
@@ -650,7 +663,7 @@ var L=[
  suggests:"A market-reforming technocrat inside an authoritarian establishment.",
  src:[["Wikipedia: George Saitoti (overview)","https://en.wikipedia.org/wiki/George_Saitoti"],["Wikipedia: Goldenberg scandal","https://en.wikipedia.org/wiki/Goldenberg_scandal"]]},
 
-{id:"ngala",now:0,exec:1,n:"Ronald Ngala",ini:"RN",role:"KADU leader 1960 to 1964. Leader of Government Business before independence. Later KANU minister. Died 1972.",cls:"Insufficient evidence",
+{id:"ngala",now:0,exec:1,reviewed:"",n:"Ronald Ngala",ini:"RN",role:"KADU leader 1960 to 1964. Leader of Government Business before independence. Later KANU minister. Died 1972.",cls:"Insufficient evidence",
  dims:{
   inst:[2,"H","Led KADU's push for majimbo, the regional system written into the 1963 independence constitution to protect smaller communities."],
   style:[0,"M","Led the opposition at independence, then dissolved KADU into KANU in 1964 and took a cabinet post."]},
@@ -662,7 +675,7 @@ var L=[
  suggests:"Coastal federalist who moved from opposition into government once the federal cause was lost. KADU's economic platform is not counted because he held executive power, so there are too few dimensions to match.",
  src:[["Wikipedia: Ronald Ngala (overview)","https://en.wikipedia.org/wiki/Ronald_Ngala"]]},
 
-{id:"matiba",now:0,exec:1,n:"Kenneth Matiba",ini:"KMt",role:"Minister under Moi until 1988. FORD-Asili leader. 1992 presidential runner-up. Died 2018.",cls:"Moderately identifiable",
+{id:"matiba",now:0,exec:1,reviewed:"",n:"Kenneth Matiba",ini:"KMt",role:"Minister under Moi until 1988. FORD-Asili leader. 1992 presidential runner-up. Died 2018.",cls:"Moderately identifiable",
  dims:{
   inst:[2,"H","Publicly called for multiparty democracy with Charles Rubia in May 1990, when it was illegal to organise an opposition."],
   style:[1.5,"M","A former senior civil servant, minister and businessman who broke with the regime."],
@@ -676,7 +689,7 @@ var L=[
  suggests:"A liberal democrat who took on the one-party state at great personal cost. FORD-Asili's economic platform is not counted.",
  src:[["Wikipedia: Kenneth Matiba (overview)","https://en.wikipedia.org/wiki/Kenneth_Matiba"]]},
 
-{id:"kaggia",now:0,exec:0,n:"Bildad Kaggia",ini:"BK",role:"One of the Kapenguria Six. MP and Assistant Minister 1963 to 1964. KPU Vice-President. Died 2005.",cls:"Moderately identifiable",
+{id:"kaggia",now:0,exec:0,reviewed:"",n:"Bildad Kaggia",ini:"BK",role:"One of the Kapenguria Six. MP and Assistant Minister 1963 to 1964. KPU Vice-President. Died 2005.",cls:"Moderately identifiable",
  dims:{
   redis:[2,"H","Broke with Kenyatta's government over land, demanding it go free to the landless and former fighters rather than be sold."],
   econ:[1.5,"M","Became KPU Vice-President in 1966 on a socialist platform.","S"],
@@ -690,7 +703,7 @@ var L=[
  suggests:"A consistent land-reform radical who put the land question above office.",
  src:[["Wikipedia: Bildad Kaggia (overview)","https://en.wikipedia.org/wiki/Bildad_Kaggia"]]},
 
-{id:"jmk",now:0,exec:0,n:"J.M. Kariuki",ini:"JM",role:"Nyandarua North MP and Assistant Minister. Former Mau Mau detainee. Murdered 1975.",cls:"Partial record",
+{id:"jmk",now:0,exec:0,reviewed:"",n:"J.M. Kariuki",ini:"JM",role:"Nyandarua North MP and Assistant Minister. Former Mau Mau detainee. Murdered 1975.",cls:"Partial record",
  dims:{
   redis:[1.5,"M","Campaigned against land and wealth concentrating in a new elite.","S"],
   inst:[1,"L","Used Parliament to press for accountability (interpretation)."],
@@ -705,7 +718,7 @@ var L=[
  suggests:"A populist critic of inequality from inside the ruling party.",
  src:[["Wikipedia: J.M. Kariuki (overview)","https://en.wikipedia.org/wiki/Josiah_Mwangi_Kariuki"]]},
 
-{id:"pinto",now:0,exec:0,n:"Pio Gama Pinto",ini:"PP",role:"Journalist and KANU MP. Assassinated 1965.",cls:"Partial record",
+{id:"pinto",now:0,exec:0,reviewed:"",n:"Pio Gama Pinto",ini:"PP",role:"Journalist and KANU MP. Assassinated 1965.",cls:"Partial record",
  dims:{
   econ:[1.5,"L","Organised socialist-leaning MPs and worked to set up the Lumumba Institute in 1964 to train KANU officials.","S"],
   redis:[2,"L","Pushed for land to go free to the landless rather than by purchase (attributed).","S"],
@@ -719,7 +732,7 @@ var L=[
  suggests:"A radical socialist organiser. Too short a public life for firm placements.",
  src:[["Wikipedia: Pio Gama Pinto (overview)","https://en.wikipedia.org/wiki/Pio_Gama_Pinto"]]},
 
-{id:"maathai",now:0,exec:0,n:"Wangari Maathai",ini:"WM",role:"Founder of the Green Belt Movement. Tetu MP and Assistant Environment Minister 2003 to 2005. Nobel Peace laureate. Died 2011.",cls:"Clearly identifiable",
+{id:"maathai",now:0,exec:0,reviewed:"",n:"Wangari Maathai",ini:"WM",role:"Founder of the Green Belt Movement. Tetu MP and Assistant Environment Minister 2003 to 2005. Nobel Peace laureate. Died 2011.",cls:"Clearly identifiable",
  dims:{
   social:[1,"M","Built the Green Belt Movement around rural women, paying them to plant trees and organising them politically."],
   redis:[1,"M","Fought the grabbing of public land: Uhuru Park in 1989 and Karura Forest in 1998 to 1999."],
@@ -750,23 +763,77 @@ var SETS={
   lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Those who have governed are placed on their record in office. The rest are placed on their record and, where that is thin, what they say they would do."}
 };
 
-return {DIMS:DIMS,TOPIC:TOPIC,QN:QN,QA:QA,ANS:ANS,W:W,CONF:CONF,L:L,SETS:SETS};
+// Number of lines still tagged U (not yet re-checked): record lines plus the "what they did" side of said/did pairs.
+function uCount(l){
+  return (l.rec||[]).filter(function(r){return r[0]==="U"}).length+(l.said||[]).filter(function(p){return p[1]&&p[2]==="U"}).length;
+}
+return {uCount:uCount,DIMS:DIMS,TOPIC:TOPIC,QN:QN,QA:QA,ANS:ANS,W:W,CONF:CONF,L:L,SETS:SETS};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=SIASA;
 </script>
 <script>
-var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS;
+/* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
+(function(){
+"use strict";
+var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
+// Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
+// The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
+function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+// Only http(s) links are allowed in href attributes.
+function safeUrl(u){return /^https?:\/\//i.test(u)?u:"#"}
 var views=["home","intro","quiz","result","records","method"];
 var cur="all", rset="all";
-var ST={all:{idx:0,answers:[],done:false},now:{idx:0,answers:[],done:false}};
+// Quiz answers live in memory only, so they survive moving between views but not a page reload.
+var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
-function show(v){views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
+function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
-  window.scrollTo(0,0);}
+}
+// Hash routing: #home, #quiz-all, #quiz-now, #result-all, #result-now, #records, #method, #leader-<id>.
+// go() changes the route; replace=true swaps the current history entry so Back never lands on a redirect.
+function go(hash,replace){
+  if(location.hash===hash){route();return}
+  if(replace)location.replace(hash);else location.hash=hash;
+}
+function setHash(k){return ST[k].done?"#result-"+k:"#quiz-"+k}
+var firstRoute=true;
+function focusHeading(v){
+  var h=$("v-"+v).querySelector('[tabindex="-1"]');
+  if(h)h.focus({preventScroll:true});
+}
+function route(){
+  var h=(location.hash||"#home").slice(1), m, v;
+  if(m=/^(quiz|result)-(all|now)$/.exec(h)){
+    cur=m[2]; var t=st();
+    if(m[1]==="quiz"){
+      if(t.done){go("#result-"+cur,true);return}
+      if(t.started){v="quiz";renderQ()} else {v="intro";renderIntro()}
+    }else{
+      if(!t.done){go("#quiz-"+cur,true);return}
+      v="result";renderResult();
+    }
+  }else if(h==="records"){v="records";renderRecords()}
+  else if(h==="method"){v="method"}
+  else if(m=/^leader-(.+)$/.exec(h)){
+    var id=decodeURIComponent(m[1]), l=L.filter(function(x){return x.id===id})[0];
+    if(!l){go("#records",true);return}
+    if(!l.now)rset="all"; else if(rset!=="all")rset=cur;
+    v="records";renderRecords();
+    var el=$("lead-"+id); el.open=true;
+    show(v); window.scrollTo(0,0);
+    // A leader link puts focus on that leader's summary, which is their name, rather than the page heading.
+    el.scrollIntoView({block:"start"}); el.querySelector("summary").focus({preventScroll:true});
+    firstRoute=false; return;
+  }else if(h==="home"){v="home"}
+  else{go("#home",true);return}
+  show(v); window.scrollTo(0,0);
+  if(!firstRoute)focusHeading(v);
+  firstRoute=false;
+}
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
 function matchable(l){return Object.keys(l.dims).length>=3}
@@ -774,29 +841,25 @@ function matchable(l){return Object.keys(l.dims).length>=3}
 function renderHome(){
   $("paths").innerHTML=["all","now"].map(function(k){var s=SETS[k],p=s.pool();
     var exec=p.filter(function(l){return l.exec}).length;
-    return '<div class="path"><span class="k">'+p.length+' leaders · '+exec+' judged on actions in power</span><h2>'+s.name+'</h2><p>'+s.lede+'</p>'+
-      '<div class="cta"><button type="button" class="btn" data-go="'+k+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+k+'">Read the records</button></div></div>';
+    return '<div class="path"><span class="k">'+p.length+' leaders · '+exec+' judged on actions in power</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
+      '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
   }).join('');
   bindGo($("paths"));
 }
 function bindGo(root){
   root.querySelectorAll("[data-go]").forEach(function(b){b.addEventListener("click",function(){cur=b.dataset.go;start()})});
-  root.querySelectorAll("[data-rec]").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.rec;renderRecords();show("records")})});
+  root.querySelectorAll("[data-rec]").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.rec;go("#records")})});
 }
 function renderIntro(){
   var s=S(),p=s.pool();
-  $("v-intro").innerHTML='<h1>'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
-    '<div class="cta"><button type="button" class="btn" data-go="'+s.key+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+s.key+'">Read the records first</button></div>'+
+  $("v-intro").innerHTML='<h1 tabindex="-1">'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
+    '<div class="cta"><button type="button" class="btn" data-go="'+esc(s.key)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(s.key)+'">Read the records first</button></div>'+
     '<div class="facts"><span><b>'+s.q.length+'</b> questions</span><span><b>'+DIMS.length+'</b> dimensions</span><span><b>'+p.length+'</b> leaders</span><span><b>'+p.filter(matchable).length+'</b> with enough evidence to match</span><span>About 4 minutes</span></div>';
   bindGo($("v-intro"));
 }
-function openSet(k){cur=k;var t=ST[k];
-  if(t.done){renderResult();show("result")}
-  else if(t.answers.length){show("quiz");renderQ()}
-  else{renderIntro();show("intro")}}
-
 function renderQ(){
   var s=S(),t=st(),q=s.q[t.idx];
+  $("quiz-h").textContent=s.name+" quiz";
   $("q-count").textContent=s.name+" · Question "+(t.idx+1)+" of "+s.q.length;
   $("q-topic").textContent=TOPIC[q[0]];
   $("q-bar").style.width=(t.idx/s.q.length*100)+"%";
@@ -810,61 +873,86 @@ function renderQ(){
   });
   $("q-back").style.visibility=t.idx===0?"hidden":"visible";
 }
-function choose(v){var t=st(),n=S().q.length;t.answers[t.idx]=v;
-  if(t.idx<n-1){renderQ();setTimeout(function(){t.idx++;renderQ()},160)}
-  else{setTimeout(function(){t.done=true;renderResult();show("result")},160)}}
+// Input lock: while a move to the next question (or to the results) is pending, quiz input is ignored.
+// This stops two quick presses writing to the same question and leaving another one unanswered.
+var pending=null;
+function clearPending(){if(pending){clearTimeout(pending);pending=null}}
+function choose(v){
+  var t=st(),last=t.idx>=S().q.length-1;
+  if(pending||t.done)return;
+  t.answers[t.idx]=v;
+  renderQ();
+  pending=setTimeout(function(){
+    pending=null;
+    if(last){if(t.done)return;t.done=true;go("#result-"+cur,true)} // results are built once
+    else{t.idx++;renderQ()}
+  },160);
+}
+function back(){if(pending||st().idx<=0)return;st().idx--;renderQ()}
 document.addEventListener("keydown",function(e){
-  if($("v-quiz").hidden)return;
-  if(e.key>="1"&&e.key<="5"){choose(parseInt(e.key,10))}
-  if(e.key==="ArrowLeft"&&st().idx>0){st().idx--;renderQ()}
+  if($("v-quiz").hidden||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;
+  if(e.key>="1"&&e.key<="5")choose(parseInt(e.key,10));
+  else if(e.key==="ArrowLeft")back();
 });
 
 function userScores(){
   var s={},c={},q=S().q,a=st().answers;
   DIMS.forEach(function(d){s[d.k]=0;c[d.k]=0});
-  q.forEach(function(x,i){s[x[0]]+=(a[i]-3)*x[1];c[x[0]]++});
+  // Skip unanswered questions so a gap can never turn a score into NaN.
+  q.forEach(function(x,i){var v=a[i];if(!(v>=1&&v<=5))return;s[x[0]]+=(v-3)*x[1];c[x[0]]++});
   DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
   return s;
 }
+/* Scoring. Confidence counts across leaders by shrinking each placement toward the neutral midpoint (0):
+   effective = position x W[confidence]  (H 1, M 0.8, L 0.5).
+   A thinly evidenced leader therefore reads as less extreme on a dimension, so it cannot beat a solidly
+   evidenced leader just by sitting on your exact position. (A plain weighted average would not do this: the weights
+   cancel when leaders are compared with each other.)
+   Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
+   reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
+   "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
+   "den" (evidence) is the sum of the confidence weights and gates the headline match. */
+var GAP=3;
+function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
   return S().pool().map(function(l){
-    var keys=Object.keys(l.dims), num=0, den=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k],w=W[d[1]],dist=Math.abs(u[k]-d[0]);
-      num+=w*(1-dist/4); den+=w; if(dist<=1)close++;});
-    return {l:l,n:keys.length,close:close,den:den,score:den?num/den:0};
+    var keys=Object.keys(l.dims), sum=0, ev=0, close=0;
+    keys.forEach(function(k){var d=l.dims[k];
+      sum+=similarity(u[k],d[0],d[1]); ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
+    return {l:l,n:keys.length,close:close,den:ev,score:keys.length?sum/keys.length:0};
   });
 }
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score});
+  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score||b.close-a.close});
   var left=cmp.filter(function(r){return r.n<3});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match needs solid evidence (roughly three medium-confidence dimensions); thin records still appear in the list.
   var b=ranked.filter(function(r){return r.den>=2.4})[0]||ranked[0], html='';
-  html+='<h2>Here is where you land</h2>';
-  html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+t+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
+  html+='<h2 tabindex="-1">Here is where you land</h2>';
+  html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
-    html+='<div class="best"><span class="k">'+s.name+' · closest well-evidenced record</span><h3>'+b.l.n+'</h3><p class="role">'+b.l.role+'</p>'+
-      '<p class="why">'+b.l.suggests+'</p>'+
+    html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p>'+
+      '<p class="why">'+esc(b.l.suggests)+'</p>'+
       '<p class="role">'+(b.l.exec?'Placed on what they did in power. Their promises are not counted.':'Has not held executive power, so stated positions can count where tagged.')+'</p>'+
-      '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+b.l.n.split(" ").slice(-1)[0]+'</span></div>'+
-      Object.keys(b.l.dims).map(function(k){return '<div><span>'+dimOf(k).name+'</span><span>'+words(k,u[k])+'</span><span>'+words(k,b.l.dims[k][0])+'</span></div>'}).join('')+'</div>'+
-      '<button type="button" class="btn" data-open="'+b.l.id+'">Read what they did</button></div>';
+      '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+
+      Object.keys(b.l.dims).map(function(k){return '<div><span>'+esc(dimOf(k).name)+'</span><span>'+esc(words(k,u[k]))+'</span><span>'+esc(words(k,b.l.dims[k][0]))+'</span></div>'}).join('')+'</div>'+
+      '<button type="button" class="btn" data-open="'+esc(b.l.id)+'">Read what they did</button></div>';
   }
   html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
-  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours. Only dimensions with enough evidence are compared.</p><div>';
+  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours, with thinly evidenced placements counting for less. Only dimensions with enough evidence are compared. The bar is the overall overlap: 0% means opposite positions, 100% means the same.</p><div>';
   ranked.forEach(function(r){
-    html+='<div class="match"><div class="nm">'+r.l.n+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl">close on '+r.close+' of '+r.n+' dimensions</div>'+
+    html+='<div class="match"><div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
   html+='</div></div>';
   html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle to see the evidence behind that placement.</p>'+
     '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">These leaders have too few comparable positions in this draft. For those who held power, words are not allowed to fill the gap. Read what is on record instead.</p><div class="chips">'+
-    left.map(function(r){return '<button type="button" class="chip" data-open="'+r.l.id+'">'+r.l.n+'</button>'}).join('')+'</div></div>';
-  html+='<div class="sec share"><h3>Share your result</h3><p class="sub">Copy this summary. It contains only your dimension positions and closest match.</p><textarea id="sum" readonly></textarea><div class="cta"><button type="button" class="btn" id="copy">Copy summary</button><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+SETS[cur==="all"?"now":"all"].name+'</button></div></div>';
+    left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
+  html+='<div class="sec share"><h3>Share your result</h3><p class="sub">Copy this summary. It contains only your dimension positions and closest match.</p><textarea id="sum" readonly></textarea><div class="cta"><button type="button" class="btn" id="copy">Copy summary</button><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div></div>';
   $("v-result").innerHTML=html;
   drawTracks(u,top3);
   var sm="My Siasa Compass result ("+s.name+"): "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+"."+(b?" Closest documented record: "+b.l.n+".":"");
@@ -874,8 +962,8 @@ function renderResult(){
     try{navigator.clipboard.writeText(sm).then(done,function(){$("sum").select()})}catch(e){$("sum").select()}
   });
   $("retake").addEventListener("click",start);
-  $("other").addEventListener("click",function(){openSet(cur==="all"?"now":"all")});
-  $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){openLeader(x.dataset.open)})});
+  $("other").addEventListener("click",function(){go(setHash(cur==="all"?"now":"all"))});
+  $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){go("#leader-"+encodeURIComponent(x.dataset.open))})});
 }
 
 function drawTracks(u,top3){
@@ -901,15 +989,15 @@ function drawTracks(u,top3){
       var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"");
       var label=it.you?"You":it.l.ini;
       var lab=it.you?"You":it.l.n;
-      return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+lab+'">'+label+'</button>';
+      return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+esc(lab)+'" title="'+esc(lab)+'" aria-pressed="false">'+esc(label)+'</button>';
     }).join('');
-    sec.innerHTML='<h4>'+d.name+'</h4><p class="yours">You: '+words(d.k,u[d.k]).toLowerCase()+'</p>'+
+    sec.innerHTML='<h4>'+esc(d.name)+'</h4><p class="yours">You: '+esc(words(d.k,u[d.k]).toLowerCase())+'</p>'+
       '<div class="tw"><div class="inner" style="height:'+h+'px"><div class="rail"></div>'+dots+'</div></div>'+
-      '<div class="poles"><span>'+d.lo+'</span><span>'+d.hi+'</span></div><p class="dnote">Select a circle for the evidence.</p>';
+      '<div class="poles"><span>'+esc(d.lo)+'</span><span>'+esc(d.hi)+'</span></div><p class="dnote" aria-live="polite">Select a circle for the evidence.</p>';
     out.appendChild(sec);
     sec.querySelectorAll(".dot").forEach(function(b){b.addEventListener("click",function(){
       var it=items[+b.dataset.i];
-      sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel")}); b.classList.add("sel");
+      sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel");x.setAttribute("aria-pressed","false")}); b.classList.add("sel"); b.setAttribute("aria-pressed","true");
       sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":", based on actions")+"). "+it.note);
     })});
   });
@@ -917,20 +1005,22 @@ function drawTracks(u,top3){
 
 function leaderHTML(l){
   var tend=Object.keys(l.dims).map(function(k){var d=l.dims[k];
-    return '<div><b>'+dimOf(k).name+':</b> '+words(k,d[0])+' <span class="why">('+CONF[d[1]]+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+d[2]+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
-  var rec=l.rec.map(function(r){return '<li><span class="tg '+r[0]+'">'+r[0]+'</span><span>'+r[1]+'</span></li>'}).join('');
+    return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
+  var rec=l.rec.map(function(r){return '<li><span class="tg '+esc(r[0])+'">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></li>'}).join('');
   var said=(l.said||[]).map(function(p){
-    return '<li><div class="said"><span class="lbl">'+(l.exec?'Said they would':'Says they would')+'</span>'+p[0]+'</div>'+
-      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+p[2]+'">'+p[2]+'</span><span>'+p[1]+'</span>':'<span class="tg S">S</span><span>Has not held executive power, so there is no delivery record yet. This stated position can count.</span>')+'</div></div></li>'}).join('');
-  var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+c+'</span></li>'}).join('');
-  var src=l.src.map(function(s){return '<li><a href="'+s[1]+'" target="_blank" rel="noopener noreferrer">'+s[0]+'</a></li>'}).join('');
-  return '<details class="lead" id="lead-'+l.id+'"><summary><span class="who">'+l.n+'</span><span class="cls">'+l.cls+'</span><span class="role">'+l.role+'</span></summary><div class="body">'+
+    return '<li><div class="said"><span class="lbl">'+(l.exec?'Said they would':'Says they would')+'</span>'+esc(p[0])+'</div>'+
+      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>Has not held executive power, so there is no delivery record yet. This stated position can count.</span>')+'</div></div></li>'}).join('');
+  var nu=uCount(l);
+  var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
+  var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
+  return '<details class="lead" id="lead-'+esc(l.id)+'"><summary><span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+(l.exec?'<b>Held executive power.</b> Placed only on what they did. Promises are shown next to the record, not counted.':'<b>Has not held executive power.</b> Actions come first. Stated positions can count where the record is thin and are tagged S.')+'</p>'+
+    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (said?'<div><h5>'+(l.exec?'What they said they would do, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+
     '<div><h5>Contradictions in the record</h5><ul class="rec">'+con+'</ul></div>'+
-    '<div><h5>What they appear to have stood for</h5><p>'+l.suggests+'</p></div>'+
+    '<div><h5>What they appear to have stood for</h5><p>'+esc(l.suggests)+'</p></div>'+
     '<div><h5>Sources</h5><ul class="src">'+src+'</ul></div></div></details>';
 }
 function renderRecords(){
@@ -939,20 +1029,18 @@ function renderRecords(){
   box.innerHTML=rset==="now"?'<div>'+now.map(leaderHTML).join('')+'</div>':
     '<p class="grp">In today\'s political climate</p><div>'+now.map(leaderHTML).join('')+'</div><p class="grp">Earlier leaders</p><div>'+past.map(leaderHTML).join('')+'</div>';
 }
-function openLeader(id){var l=L.filter(function(x){return x.id===id})[0];
-  if(l&&!l.now)rset="all"; else if(rset!=="all")rset=cur;
-  renderRecords();show("records");var el=$("lead-"+id);if(el){el.open=true;setTimeout(function(){el.scrollIntoView({block:"start"})},30)}}
-
-$("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+d.name+':</b> '+d.lo+' to '+d.hi+'</li>'}).join('');
-function start(){ST[cur]={idx:0,answers:[],done:false};show("quiz");renderQ()}
-$("home").addEventListener("click",function(){show("home")});
-$("q-back").addEventListener("click",function(){if(st().idx>0){st().idx--;renderQ()}});
+$("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+esc(d.name)+':</b> '+esc(d.lo)+' to '+esc(d.hi)+'</li>'}).join('');
+function start(){ST[cur]={idx:0,answers:[],done:false,started:true};go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
+$("home").addEventListener("click",function(){go("#home")});
+$("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){
-  var t=b.dataset.tab; if(t==="all"||t==="now")openSet(t); else{if(t==="records")renderRecords();show(t)}
+  var t=b.dataset.tab; go(t==="all"||t==="now"?setHash(t):"#"+t);
 })});
 document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.r;renderRecords()})});
+window.addEventListener("hashchange",route);
 renderHome();
-show("home");
+route();
+})();
 </script>
 </body>
 </html>

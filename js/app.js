@@ -1,7 +1,7 @@
 /* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
 (function(){
 "use strict";
-var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS;
+var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
 // Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
 // The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
@@ -236,10 +236,12 @@ function leaderHTML(l){
   var said=(l.said||[]).map(function(p){
     return '<li><div class="said"><span class="lbl">'+(l.exec?'Said they would':'Says they would')+'</span>'+esc(p[0])+'</div>'+
       '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>Has not held executive power, so there is no delivery record yet. This stated position can count.</span>')+'</div></div></li>'}).join('');
+  var nu=uCount(l);
   var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary><span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+(l.exec?'<b>Held executive power.</b> Placed only on what they did. Promises are shown next to the record, not counted.':'<b>Has not held executive power.</b> Actions come first. Stated positions can count where the record is thin and are tagged S.')+'</p>'+
+    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (said?'<div><h5>'+(l.exec?'What they said they would do, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+

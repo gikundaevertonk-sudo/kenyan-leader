@@ -48,19 +48,16 @@ data.L.forEach(function (l, i) {
     if (d[3] === "S" && l.exec) err(at + "stated-position (S) placement on a leader who held executive power; the app would drop it.");
   });
 
-  var u = 0;
   (l.rec || []).forEach(function (r, j) {
     var at = who + ", record line " + (j + 1) + ": ";
     if (TAGS.indexOf(r[0]) < 0) err(at + "tag must be one of D, A, I, U, S, got " + JSON.stringify(r[0]) + ".");
     if (!nonEmpty(r[1])) err(at + "missing text.");
-    if (r[0] === "U") u++;
   });
   (l.said || []).forEach(function (p, j) {
     var at = who + ", said/did line " + (j + 1) + ": ";
     if (!nonEmpty(p[0])) err(at + "missing 'said' text.");
     if (p[1] != null && !nonEmpty(p[1])) err(at + "'did' text is empty (use null if there is none).");
     if (TAGS.indexOf(p[2]) < 0) err(at + "tag must be one of D, A, I, U, S, got " + JSON.stringify(p[2]) + ".");
-    if (p[1] && p[2] === "U") u++;
   });
   if (!Array.isArray(l.contra) || !l.contra.length) err(who + ": 'contra' needs at least one line (use \"Not assessed.\").");
   if (!Array.isArray(l.src) || !l.src.length) err(who + ": needs at least one source.");
@@ -69,7 +66,7 @@ data.L.forEach(function (l, i) {
     if (!nonEmpty(s[0])) err(at + "missing title.");
     if (!isHttp(s[1])) err(at + "URL must start with http:// or https://, got " + JSON.stringify(s[1]) + ".");
   });
-  uCounts.push([l.n || id || "#" + (i + 1), u]);
+  uCounts.push([l.n || id || "#" + (i + 1), data.uCount(l)]);
 });
 
 // Questions

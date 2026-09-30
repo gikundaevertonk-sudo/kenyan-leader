@@ -60,11 +60,13 @@ var CONF={H:"high",M:"medium",L:"low"};
 
 /* Leader fields:
    now: part of the current political climate. exec: has held executive power.
+   reviewed: date (YYYY-MM-DD) the profile was last checked against sources; "" where unknown.
    dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, only allowed when exec is false.
-   said: [what they said they would do, what they did (or null), tag for the second part]. */
+   said: [what they said they would do, what they did (or null), tag for the second part].
+   rec: [tag, text] lines, tag one of D A I U S. A U line has not been re-checked. */
 var L=[
 // ---------- Current climate ----------
-{id:"ruto",now:1,exec:1,n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
+{id:"ruto",now:1,exec:1,reviewed:"",n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
  dims:{
   econ:[0,"M","Finance Acts and levies raised the tax take, while the state also funds or runs housing, health cover (SHA) and input subsidies. The record points both ways."],
   redis:[-1,"L","Signed Finance Acts whose levies were criticised as falling on consumers and payrolls. The Hustler Fund and subsidies point the other way. Contested."],
@@ -84,7 +86,7 @@ var L=[
  suggests:"Pragmatic, executive-centred developmentalism with IMF-aligned fiscal consolidation, adjusting to coalition needs. Confidence is high that the record is large, and only medium that any single label fits.",
  src:[["Kenyans.co.ke: Ruto signs 2026 Finance Bill","https://www.kenyans.co.ke/news/124557-ruto-signs-2026-finance-bill-law"],["Nation: ODM, UDA joint talks team","https://nation.africa/kenya/news/politics/odm-uda-to-form-joint-talks-team-as-oburu-signals-start-of-2027-coalition-negotiations-5323202"]]},
 
-{id:"gachagua",now:1,exec:1,n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Insufficient (partial)",
+{id:"gachagua",now:1,exec:1,reviewed:"",n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","As Deputy President he led state-driven coffee-sector reform efforts (verify specific measures)."],
   style:[1,"M","Former second-in-command now leads an opposition party."]},
@@ -98,7 +100,7 @@ var L=[
  suggests:"Insufficient evidence for a full placement. His faith-based and regional messaging is not counted, because he has held executive power. The clearest documented pattern is a shift from government insider to opposition leader.",
  src:[["Standard: court orders Gachagua to surrender Sh202m","https://www.standardmedia.co.ke/national/article/2001451803/corruption-court-orders-rigathi-gachagua-to-surrender-sh202m"],["Standard: Gachagua gets back seized millions","https://www.standardmedia.co.ke/health/politics/article/2001466359/dp-gachagua-gets-back-his-seized-millions"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"]]},
 
-{id:"kalonzo",now:1,exec:1,n:"Kalonzo Musyoka",ini:"KM",role:"Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.",cls:"Insufficient evidence",
+{id:"kalonzo",now:1,exec:1,reviewed:"",n:"Kalonzo Musyoka",ini:"KM",role:"Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.",cls:"Insufficient evidence",
  dims:{
   inst:[1,"L","Served in the Grand Coalition government that delivered the 2010 Constitution (verify his specific role)."],
   style:[0,"M","A career insider, in and out of government across administrations."]},
@@ -111,7 +113,7 @@ var L=[
  suggests:"Insufficient evidence to place him beyond a long-serving establishment figure now in opposition. His ministerial decisions are the next thing to compile.",
  src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"]]},
 
-{id:"matiangi",now:1,exec:1,n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
+{id:"matiangi",now:1,exec:1,reviewed:"",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","Led state-driven delivery programmes such as the exam overhaul and school-transition policy (interpretation; verify)."],
   inst:[-1,"L","A 2018 dispute over compliance with court orders happened under his Interior docket. Outcome not verified here."],
@@ -126,7 +128,7 @@ var L=[
  suggests:"A technocratic, state-delivery style of governing. Most placements here are low confidence.",
  src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"]]},
 
-{id:"karua",now:1,exec:1,n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
+{id:"karua",now:1,exec:1,reviewed:"",n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
  dims:{
   inst:[1,"M","Resigned as Justice Minister in April 2009, citing judicial appointments made without her. During the 2007 to 2008 crisis she was a leading defender of the disputed PNU result (attributed). Mixed, but leans towards checks."],
   liberty:[1,"M","Has acted as defence lawyer for opposition figures in the region, including Kizza Besigye in Uganda. Tanzania deported her in May 2025 when she arrived to represent Tundu Lissu."],
@@ -142,7 +144,7 @@ var L=[
  suggests:"On what she did in and after office: a constitutionalist with a rights-first bent. Her economic positions are words only and are not counted.",
  src:[["Standard: Karua's alternative budget","https://www.standardmedia.co.ke/national/article/2001549877/karua-rejects-key-finance-bill-proposals-unveils-plps-alternative-budget-plan"],["Kenyans.co.ke: Finance Bill 2026 claim","https://www.kenyans.co.ke/news/123960-karua-accuses-govt-reintroducing-2024-finance-bill-through-finance-bill-2026"],["France 24: Karua deported from Tanzania","https://www.france24.com/en/live-news/20250518-kenyan-politician-lawyer-for-tanzania"],["Wikipedia: Martha Karua (overview)","https://en.wikipedia.org/wiki/Martha_Karua"]]},
 
-{id:"sifuna",now:1,exec:0,n:"Edwin Sifuna",ini:"ES",role:"Nairobi Senator since 2017. Removed as ODM Secretary-General. Linda Mwananchi presidential candidate.",cls:"Moderately identifiable (style)",
+{id:"sifuna",now:1,exec:0,reviewed:"",n:"Edwin Sifuna",ini:"ES",role:"Nairobi Senator since 2017. Removed as ODM Secretary-General. Linda Mwananchi presidential candidate.",cls:"Moderately identifiable (style)",
  dims:{
   inst:[1,"L","Has used the Senate seat and party platform to challenge party and government positions (interpretation)."],
   style:[2,"M","Removed from ODM's secretary-general post twice, upheld by the Political Parties Disputes Tribunal, and now heads a rival movement."],
@@ -157,7 +159,7 @@ var L=[
  suggests:"The documented pattern is a clear anti-establishment turn within party politics. Policy placements are thin.",
  src:[["Nation: Linda Mwananchi on Sifuna's second expulsion","https://nation.africa/kenya/news/politics/linda-mwananchi-to-fight-odm-over-sifuna-s-second-expulsion--5505924"],["The Online Kenyan: tribunal upholds removal","https://www.theonlinekenyan.com/daily/2026-09-10/tribunal-upholds-sifuna-s-removal-as-odm-secretary-general"],["The Online Kenyan: nomination","https://www.theonlinekenyan.com/daily/2026-09-28/sifuna-secures-linda-mwananchi-presidential-nomination"],["Kenyans.co.ke: TIFA survey","https://www.kenyans.co.ke/news/125558-tifa-survey-ranks-sifuna-most-preferred-odm-flag-bearer-ahead-2027-polls"]]},
 
-{id:"nyoro",now:1,exec:0,n:"Ndindi Nyoro",ini:"NN",role:"Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.",cls:"Insufficient evidence",
+{id:"nyoro",now:1,exec:0,reviewed:"",n:"Ndindi Nyoro",ini:"NN",role:"Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.",cls:"Insufficient evidence",
  dims:{
   econ:[-1,"L","Fiscal-discipline messaging from his budget-committee background (verify committee decisions).","S"],
   style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."]},
@@ -170,7 +172,7 @@ var L=[
  suggests:"Insufficient evidence for a policy placement. Documented change is his move from government camp to opposition.",
  src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"]]},
 
-{id:"babu",now:1,exec:0,n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
+{id:"babu",now:1,exec:0,reviewed:"",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
  dims:{
   redis:[1,"L","Long association with student-fee and cost-of-living advocacy (verify).","S"],
   style:[1,"M","Left ODM to run for Nairobi governor under The Mwananchi Party within the Linda Mwananchi formation."],
@@ -184,7 +186,7 @@ var L=[
  suggests:"Insufficient evidence for a policy placement. Documented pattern is youth-focused, anti-establishment positioning.",
  src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"]]},
 
-{id:"salasya",now:1,exec:0,n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
+{id:"salasya",now:1,exec:0,reviewed:"",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
  dims:{
   style:[2,"L","Outspoken, populist positioning against the political class (low volume of policy evidence).","S"],
   liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified)."]},
@@ -197,7 +199,7 @@ var L=[
  suggests:"Insufficient evidence. Highly visible, but this pass found little legislative or policy record.",
  src:[["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"]]},
 
-{id:"wanga",now:1,exec:1,n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
+{id:"wanga",now:1,exec:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
  dims:{
   social:[1,"L","Organises with the G7 women governors to get more women into elective office. This is campaigning, not a governing record."],
   style:[-1,"M","Aligned with ODM's leadership and its cooperation with the government."]},
@@ -210,7 +212,7 @@ var L=[
  suggests:"Insufficient evidence. As a governor she is judged on her county record, which has not been compiled in this pass.",
  src:[["Nation: Oburu and Wanga team ratified","https://nation.africa/kenya/news/politics/power-shift-in-odm-oburu-wanga-team-ratified-osotsi-axed-in-sdc-purge-5404810"],["Nation: women in governor races","https://nation.africa/kenya/news/gender/women-politicians-storm-governor-contests-ahead-of-2027-showdown--5403030"]]},
 
-{id:"millie",now:1,exec:0,n:"Millie Odhiambo",ini:"MO",role:"Suba North MP. National Assembly Minority Chief Whip. ODM.",cls:"Insufficient (partial)",
+{id:"millie",now:1,exec:0,reviewed:"",n:"Millie Odhiambo",ini:"MO",role:"Suba North MP. National Assembly Minority Chief Whip. ODM.",cls:"Insufficient (partial)",
  dims:{
   social:[1,"L","Long-standing public advocacy on gender and children's issues (check bills sponsored).","S"],
   inst:[1,"L","Serves in a parliamentary oversight role as Minority Chief Whip."],
@@ -224,7 +226,7 @@ var L=[
  suggests:"Insufficient evidence for a full placement. Her legislative record should be compiled next.",
  src:[["Nation: rough road for ODM fence-sitters","https://nation.africa/kenya/news/politics/rough-road-for-odm-fence-sitters-in-nyanza-5595014"],["People Daily: position after Linda Ground disbanded","https://peopledaily.digital/inside-politics/millie-odhiambo-declares-her-position-after-disbandment-of-linda-ground-faction"]]},
 
-{id:"nyamu",now:1,exec:0,n:"Karen Nyamu",ini:"KN",role:"Nominated Senator (UDA) since 2022.",cls:"Insufficient evidence",
+{id:"nyamu",now:1,exec:0,reviewed:"",n:"Karen Nyamu",ini:"KN",role:"Nominated Senator (UDA) since 2022.",cls:"Insufficient evidence",
  dims:{style:[-1,"M","Publicly aligned with UDA and the government line."]},
  said:[],
  rec:[
@@ -236,7 +238,7 @@ var L=[
  suggests:"Insufficient evidence. Very visible, but this pass found one bill and mostly commentary.",
  src:[["People Daily: Ol Kalou by-election remarks","https://peopledaily.digital/inside-politics/karen-nyamu-ol-kalou-voters-rejected-uda-because-we-overdid-it"],["Nation opinion: Karen Nyamu epitomises UDA","https://nation.africa/kenya/blogs-opinion/opinion/karen-nyamu-epitomises-uda-5455088"]]},
 
-{id:"omanga",now:1,exec:0,n:"Millicent Omanga",ini:"MM",role:"Former nominated senator. Joined DCP in March 2026. Nairobi Woman Rep aspirant.",cls:"Insufficient evidence",
+{id:"omanga",now:1,exec:0,reviewed:"",n:"Millicent Omanga",ini:"MM",role:"Former nominated senator. Joined DCP in March 2026. Nairobi Woman Rep aspirant.",cls:"Insufficient evidence",
  dims:{style:[1,"L","Left UDA for the opposition."]},
  said:[["Says she left the Ruto camp over broken promises and erosion of principles.",null,"S"]],
  rec:[
@@ -247,7 +249,7 @@ var L=[
  suggests:"Insufficient evidence. The documented pattern is a defection from government to opposition.",
  src:[["Standard: Omanga ditches UDA for DCP","https://www.standardmedia.co.ke/politics/article/2001543418/millicent-omanga-ditches-uda-for-gachaguas-dcp"],["Nation: why I ditched Ruto","https://nation.africa/kenya/news/politics/millicent-omanga-why-i-ditched-ruto-for-gachagua-s-camp-5407226"]]},
 
-{id:"waiguru",now:1,exec:1,n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
+{id:"waiguru",now:1,exec:1,reviewed:"",n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
  dims:{},
  said:[],
  rec:[
@@ -259,7 +261,7 @@ var L=[
  src:[["Kirinyaga County: women governors on a female DP (government source)","https://kirinyaga.go.ke/women-governors-say-kenya-is-ready-for-a-female-deputy-president-propose-waiguru/"],["Nation: female governors' bid for inclusion","https://nation.africa/kenya/news/gender/from-g7-to-g16-inside-female-governors-bid-for-greater-political-inclusion-4548874"]]},
 
 // ---------- Earlier leaders ----------
-{id:"jomo",now:0,exec:1,n:"Jomo Kenyatta",ini:"JK",role:"Prime Minister 1963. President 1964 to 1978. KANU. Died 1978.",cls:"Clearly identifiable",
+{id:"jomo",now:0,exec:1,reviewed:"",n:"Jomo Kenyatta",ini:"JK",role:"Prime Minister 1963. President 1964 to 1978. KANU. Died 1978.",cls:"Clearly identifiable",
  dims:{
   econ:[-1,"H","Protected private property, welcomed foreign capital and Africanised ownership rather than nationalising it, under a blueprint titled 'African Socialism'."],
   redis:[-2,"M","Settler land was transferred mainly by sale (willing buyer, willing seller) with British-funded loans. The 2004 Ndung'u Commission later documented irregular allocations of public land to the politically connected, beginning in this era."],
@@ -279,7 +281,7 @@ var L=[
  suggests:"State-centred, conservative nation-building: a strong presidency, a market economy and little room for organised dissent.",
  src:[["Wikipedia: Jomo Kenyatta (overview)","https://en.wikipedia.org/wiki/Jomo_Kenyatta"],["Wikipedia: Kenya People's Union","https://en.wikipedia.org/wiki/Kenya_People%27s_Union"]]},
 
-{id:"moi",now:0,exec:1,n:"Daniel arap Moi",ini:"DM",role:"Vice President 1967 to 1978. President 1978 to 2002. KANU. Died 2020.",cls:"Clearly identifiable",
+{id:"moi",now:0,exec:1,reviewed:"",n:"Daniel arap Moi",ini:"DM",role:"Vice President 1967 to 1978. President 1978 to 2002. KANU. Died 2020.",cls:"Clearly identifiable",
  dims:{
   econ:[0,"M","Expanded parastatals and state marketing boards in the 1980s, then under donor pressure liberalised prices, maize marketing and foreign exchange in the early 1990s. The record points both ways."],
   redis:[-2,"M","The 2004 Ndung'u Commission documented widespread illegal allocation of public land, peaking in the 1980s and 1990s, largely to the politically connected."],
@@ -299,7 +301,7 @@ var L=[
  suggests:"Authoritarian, patronage-based centralism that bent only under sustained pressure.",
  src:[["Wikipedia: Daniel arap Moi (overview)","https://en.wikipedia.org/wiki/Daniel_arap_Moi"],["Wikipedia: Wagalla massacre","https://en.wikipedia.org/wiki/Wagalla_massacre"],["Wikipedia: Goldenberg scandal","https://en.wikipedia.org/wiki/Goldenberg_scandal"]]},
 
-{id:"kibaki",now:0,exec:1,n:"Mwai Kibaki",ini:"MKi",role:"Finance Minister 1969 to 1982. Vice President 1978 to 1988. President 2002 to 2013. Died 2022.",cls:"Moderately identifiable",
+{id:"kibaki",now:0,exec:1,reviewed:"",n:"Mwai Kibaki",ini:"MKi",role:"Finance Minister 1969 to 1982. Vice President 1978 to 1988. President 2002 to 2013. Died 2022.",cls:"Moderately identifiable",
  dims:{
   econ:[-1,"M","Presided over a revenue-led recovery and Vision 2030: state investment in roads and energy, with private-sector growth as the engine."],
   redis:[0,"L","Adopted a National Land Policy in 2009, and the 2010 Constitution created a National Land Commission. Little land was actually redistributed. Free primary education pushes the other way."],
@@ -319,7 +321,7 @@ var L=[
  suggests:"A technocratic, growth-first, cautious reformer. Institutional change came mostly under pressure.",
  src:[["Wikipedia: Mwai Kibaki (overview)","https://en.wikipedia.org/wiki/Mwai_Kibaki"],["Wikipedia: Anglo-Leasing scandal","https://en.wikipedia.org/wiki/Anglo-Leasing_scandal"],["Wikipedia: 2007 to 2008 Kenyan crisis","https://en.wikipedia.org/wiki/2007%E2%80%932008_Kenyan_crisis"]]},
 
-{id:"uhuru",now:0,exec:1,n:"Uhuru Kenyatta",ini:"UK",role:"Deputy Prime Minister 2008 to 2013. President 2013 to 2022. Jubilee. Retired; his record in office is complete.",cls:"Clearly identifiable",
+{id:"uhuru",now:0,exec:1,reviewed:"",n:"Uhuru Kenyatta",ini:"UK",role:"Deputy Prime Minister 2008 to 2013. President 2013 to 2022. Jubilee. Retired; his record in office is complete.",cls:"Clearly identifiable",
  dims:{
   econ:[1,"M","Pursued debt-financed, state-led megaprojects such as the Chinese-funded Standard Gauge Railway, and signed a cap on bank interest rates in 2016 (repealed 2019). Public debt rose sharply."],
   redis:[0,"L","The government reported issuing millions of title deeds (its own figures). No major redistribution."],
@@ -338,7 +340,7 @@ var L=[
  suggests:"Establishment, state-driven infrastructure developmentalism financed by debt, with a willingness to override courts and media when under pressure.",
  src:[["Wikipedia: Uhuru Kenyatta (overview)","https://en.wikipedia.org/wiki/Uhuru_Kenyatta"],["Wikipedia: Building Bridges Initiative","https://en.wikipedia.org/wiki/Building_Bridges_Initiative"]]},
 
-{id:"raila",now:0,exec:1,n:"Raila Odinga",ini:"RO",role:"Energy Minister 2001 to 2002. Roads Minister 2003 to 2005. Prime Minister 2008 to 2013. ODM. Died October 2025.",cls:"Mixed / contradictory",
+{id:"raila",now:0,exec:1,reviewed:"",n:"Raila Odinga",ini:"RO",role:"Energy Minister 2001 to 2002. Roads Minister 2003 to 2005. Prime Minister 2008 to 2013. ODM. Died October 2025.",cls:"Mixed / contradictory",
  dims:{
   econ:[0.5,"L","As Prime Minister backed state programmes such as the Kazi Kwa Vijana youth-jobs scheme. His ministerial spells left a thin economic record."],
   inst:[0.5,"M","Detained for years under Moi during the fight for multiparty politics, led the 2005 'No' campaign against a strong-presidency draft and backed the 2010 Constitution. Then co-led BBI, which courts ruled unconstitutional."],
@@ -357,7 +359,7 @@ var L=[
  suggests:"A reformer on institutions and rights whose strategy moved between confrontation and deal-making.",
  src:[["Wikipedia: Raila Odinga (overview)","https://en.wikipedia.org/wiki/Raila_Odinga"],["Wikipedia: Building Bridges Initiative","https://en.wikipedia.org/wiki/Building_Bridges_Initiative"]]},
 
-{id:"jaramogi",now:0,exec:1,n:"Jaramogi Oginga Odinga",ini:"JO",role:"Vice President 1964 to 1966. Founded KPU and later co-founded FORD. Died 1994.",cls:"Moderately identifiable",
+{id:"jaramogi",now:0,exec:1,reviewed:"",n:"Jaramogi Oginga Odinga",ini:"JO",role:"Vice President 1964 to 1966. Founded KPU and later co-founded FORD. Died 1994.",cls:"Moderately identifiable",
  dims:{
   redis:[1.5,"M","Left the government in 1966 over its direction, including a land policy that sold rather than returned land (interpretation of his reasons)."],
   inst:[1,"M","Co-founded FORD in 1991 to force a return to multiparty politics."],
@@ -375,7 +377,7 @@ var L=[
  suggests:"Left-leaning nationalist and opposition pioneer. His economic programme was never tested in office, so it is not counted.",
  src:[["Wikipedia: Jaramogi Oginga Odinga (overview)","https://en.wikipedia.org/wiki/Jaramogi_Oginga_Odinga"],["Wikipedia: Kenya People's Union","https://en.wikipedia.org/wiki/Kenya_People%27s_Union"]]},
 
-{id:"mboya",now:0,exec:1,n:"Tom Mboya",ini:"TM",role:"Trade unionist. Justice Minister 1963 to 1964. Economic Planning Minister 1964 to 1969. KANU Secretary-General. Assassinated 1969.",cls:"Moderately identifiable",
+{id:"mboya",now:0,exec:1,reviewed:"",n:"Tom Mboya",ini:"TM",role:"Trade unionist. Justice Minister 1963 to 1964. Economic Planning Minister 1964 to 1969. KANU Secretary-General. Assassinated 1969.",cls:"Moderately identifiable",
  dims:{
   econ:[-1,"M","Drafted Sessional Paper No. 10 of 1965. Titled 'African Socialism', in substance it backed a mixed economy, private property and foreign investment."],
   redis:[-1,"L","Backed the purchase-based land transfer policy (interpretation)."],
@@ -392,7 +394,7 @@ var L=[
  suggests:"A pragmatic, pro-Western modernising technocrat who built a strong central state and party.",
  src:[["Wikipedia: Tom Mboya (overview)","https://en.wikipedia.org/wiki/Tom_Mboya"]]},
 
-{id:"saitoti",now:0,exec:1,n:"George Saitoti",ini:"GS",role:"Finance Minister 1983 to 1993. Vice President 1989 to 1997 and 1999 to 2002. Internal Security Minister 2008 to 2012. Died 2012.",cls:"Moderately identifiable",
+{id:"saitoti",now:0,exec:1,reviewed:"",n:"George Saitoti",ini:"GS",role:"Finance Minister 1983 to 1993. Vice President 1989 to 1997 and 1999 to 2002. Internal Security Minister 2008 to 2012. Died 2012.",cls:"Moderately identifiable",
  dims:{
   econ:[-1.5,"M","As Finance Minister carried out IMF and World Bank structural adjustment: spending cuts, price decontrol and liberalisation."],
   inst:[-1,"M","A senior figure in the one-party KANU state."],
@@ -406,7 +408,7 @@ var L=[
  suggests:"A market-reforming technocrat inside an authoritarian establishment.",
  src:[["Wikipedia: George Saitoti (overview)","https://en.wikipedia.org/wiki/George_Saitoti"],["Wikipedia: Goldenberg scandal","https://en.wikipedia.org/wiki/Goldenberg_scandal"]]},
 
-{id:"ngala",now:0,exec:1,n:"Ronald Ngala",ini:"RN",role:"KADU leader 1960 to 1964. Leader of Government Business before independence. Later KANU minister. Died 1972.",cls:"Insufficient evidence",
+{id:"ngala",now:0,exec:1,reviewed:"",n:"Ronald Ngala",ini:"RN",role:"KADU leader 1960 to 1964. Leader of Government Business before independence. Later KANU minister. Died 1972.",cls:"Insufficient evidence",
  dims:{
   inst:[2,"H","Led KADU's push for majimbo, the regional system written into the 1963 independence constitution to protect smaller communities."],
   style:[0,"M","Led the opposition at independence, then dissolved KADU into KANU in 1964 and took a cabinet post."]},
@@ -418,7 +420,7 @@ var L=[
  suggests:"Coastal federalist who moved from opposition into government once the federal cause was lost. KADU's economic platform is not counted because he held executive power, so there are too few dimensions to match.",
  src:[["Wikipedia: Ronald Ngala (overview)","https://en.wikipedia.org/wiki/Ronald_Ngala"]]},
 
-{id:"matiba",now:0,exec:1,n:"Kenneth Matiba",ini:"KMt",role:"Minister under Moi until 1988. FORD-Asili leader. 1992 presidential runner-up. Died 2018.",cls:"Moderately identifiable",
+{id:"matiba",now:0,exec:1,reviewed:"",n:"Kenneth Matiba",ini:"KMt",role:"Minister under Moi until 1988. FORD-Asili leader. 1992 presidential runner-up. Died 2018.",cls:"Moderately identifiable",
  dims:{
   inst:[2,"H","Publicly called for multiparty democracy with Charles Rubia in May 1990, when it was illegal to organise an opposition."],
   style:[1.5,"M","A former senior civil servant, minister and businessman who broke with the regime."],
@@ -432,7 +434,7 @@ var L=[
  suggests:"A liberal democrat who took on the one-party state at great personal cost. FORD-Asili's economic platform is not counted.",
  src:[["Wikipedia: Kenneth Matiba (overview)","https://en.wikipedia.org/wiki/Kenneth_Matiba"]]},
 
-{id:"kaggia",now:0,exec:0,n:"Bildad Kaggia",ini:"BK",role:"One of the Kapenguria Six. MP and Assistant Minister 1963 to 1964. KPU Vice-President. Died 2005.",cls:"Moderately identifiable",
+{id:"kaggia",now:0,exec:0,reviewed:"",n:"Bildad Kaggia",ini:"BK",role:"One of the Kapenguria Six. MP and Assistant Minister 1963 to 1964. KPU Vice-President. Died 2005.",cls:"Moderately identifiable",
  dims:{
   redis:[2,"H","Broke with Kenyatta's government over land, demanding it go free to the landless and former fighters rather than be sold."],
   econ:[1.5,"M","Became KPU Vice-President in 1966 on a socialist platform.","S"],
@@ -446,7 +448,7 @@ var L=[
  suggests:"A consistent land-reform radical who put the land question above office.",
  src:[["Wikipedia: Bildad Kaggia (overview)","https://en.wikipedia.org/wiki/Bildad_Kaggia"]]},
 
-{id:"jmk",now:0,exec:0,n:"J.M. Kariuki",ini:"JM",role:"Nyandarua North MP and Assistant Minister. Former Mau Mau detainee. Murdered 1975.",cls:"Partial record",
+{id:"jmk",now:0,exec:0,reviewed:"",n:"J.M. Kariuki",ini:"JM",role:"Nyandarua North MP and Assistant Minister. Former Mau Mau detainee. Murdered 1975.",cls:"Partial record",
  dims:{
   redis:[1.5,"M","Campaigned against land and wealth concentrating in a new elite.","S"],
   inst:[1,"L","Used Parliament to press for accountability (interpretation)."],
@@ -461,7 +463,7 @@ var L=[
  suggests:"A populist critic of inequality from inside the ruling party.",
  src:[["Wikipedia: J.M. Kariuki (overview)","https://en.wikipedia.org/wiki/Josiah_Mwangi_Kariuki"]]},
 
-{id:"pinto",now:0,exec:0,n:"Pio Gama Pinto",ini:"PP",role:"Journalist and KANU MP. Assassinated 1965.",cls:"Partial record",
+{id:"pinto",now:0,exec:0,reviewed:"",n:"Pio Gama Pinto",ini:"PP",role:"Journalist and KANU MP. Assassinated 1965.",cls:"Partial record",
  dims:{
   econ:[1.5,"L","Organised socialist-leaning MPs and worked to set up the Lumumba Institute in 1964 to train KANU officials.","S"],
   redis:[2,"L","Pushed for land to go free to the landless rather than by purchase (attributed).","S"],
@@ -475,7 +477,7 @@ var L=[
  suggests:"A radical socialist organiser. Too short a public life for firm placements.",
  src:[["Wikipedia: Pio Gama Pinto (overview)","https://en.wikipedia.org/wiki/Pio_Gama_Pinto"]]},
 
-{id:"maathai",now:0,exec:0,n:"Wangari Maathai",ini:"WM",role:"Founder of the Green Belt Movement. Tetu MP and Assistant Environment Minister 2003 to 2005. Nobel Peace laureate. Died 2011.",cls:"Clearly identifiable",
+{id:"maathai",now:0,exec:0,reviewed:"",n:"Wangari Maathai",ini:"WM",role:"Founder of the Green Belt Movement. Tetu MP and Assistant Environment Minister 2003 to 2005. Nobel Peace laureate. Died 2011.",cls:"Clearly identifiable",
  dims:{
   social:[1,"M","Built the Green Belt Movement around rural women, paying them to plant trees and organising them politically."],
   redis:[1,"M","Fought the grabbing of public land: Uhuru Park in 1989 and Karura Forest in 1998 to 1999."],
@@ -506,6 +508,10 @@ var SETS={
   lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Those who have governed are placed on their record in office. The rest are placed on their record and, where that is thin, what they say they would do."}
 };
 
-return {DIMS:DIMS,TOPIC:TOPIC,QN:QN,QA:QA,ANS:ANS,W:W,CONF:CONF,L:L,SETS:SETS};
+// Number of lines still tagged U (not yet re-checked): record lines plus the "what they did" side of said/did pairs.
+function uCount(l){
+  return (l.rec||[]).filter(function(r){return r[0]==="U"}).length+(l.said||[]).filter(function(p){return p[1]&&p[2]==="U"}).length;
+}
+return {uCount:uCount,DIMS:DIMS,TOPIC:TOPIC,QN:QN,QA:QA,ANS:ANS,W:W,CONF:CONF,L:L,SETS:SETS};
 })();
 if(typeof module!=="undefined"&&module.exports)module.exports=SIASA;
