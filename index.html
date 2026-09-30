@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Siasa Compass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <div class="brand"><i></i>Siasa Compass</div>
+    <div class="tabs" role="tablist" aria-label="Sections">
+      <button type="button" data-tab="quiz" aria-current="true">Quiz</button>
+      <button type="button" data-tab="leaders" aria-current="false">Leaders</button>
+      <button type="button" data-tab="method" aria-current="false">Method</button>
+    </div>
+  </div>
+
+  <section id="v-intro" class="hero">
+    <h1>Match your views to what leaders <span class="mark">did</span>.</h1>
+    <p class="lede">Answer 18 short questions. We compare you with 14 Kenyan politicians using their documented record: laws, votes, decisions and how they used power. Slogans and party labels do not count.</p>
+    <div class="cta">
+      <button type="button" class="btn" id="start">Start the quiz</button>
+      <button type="button" class="btn ghost" id="browse">Read the evidence first</button>
+    </div>
+    <div class="facts"><span><b>18</b> questions</span><span><b>6</b> dimensions</span><span><b>14</b> leaders</span><span>About 4 minutes</span></div>
+    <div class="rules">
+      <div><h3>Actions over labels</h3><p>A leader calling themselves a socialist or a capitalist tells us what they claim. We place them by what they voted for, signed, blocked or funded.</p></div>
+      <div><h3>Gaps are shown</h3><p>Where the record is thin, the leader is marked as insufficient evidence and left out of your matches instead of being guessed at.</p></div>
+      <div><h3>No verdicts</h3><p>This does not tell you who to vote for or who is best. It shows where you and each record overlap and where they do not.</p></div>
+    </div>
+  </section>
+
+  <section id="v-quiz" hidden>
+    <div class="q-meta"><span id="q-count"></span><span id="q-topic" class="topic" style="margin:0"></span></div>
+    <div class="bar"><span id="q-bar" style="width:0"></span></div>
+    <p class="q-text" id="q-text" aria-live="polite"></p>
+    <div class="opts" id="q-opts"></div>
+    <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span>Tip: press 1 to 5 on a keyboard</span></div>
+  </section>
+
+  <section id="v-result" class="res" hidden></section>
+
+  <section id="v-leaders" hidden>
+    <h2 style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
+    <p class="notice" style="margin-bottom:22px">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see the reasoning and sources.</p>
+    <div id="leader-list"></div>
+  </section>
+
+  <section id="v-method" class="m" hidden>
+    <h2 style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
+    <p>Each leader is placed on six dimensions using a fixed order of evidence: what they did in office, the policies and laws they backed or opposed, how they treated institutions and opponents, the documented effects, then their repeated public positions. Party ideology and self-description come last.</p>
+    <h3 style="margin-top:32px;font-size:1.4rem">The six dimensions</h3>
+    <ul id="m-dims"></ul>
+    <h3 style="margin-top:32px;font-size:1.4rem">Reading the tags</h3>
+    <ul>
+      <li><span class="tg D">D</span> Documented: directly supported by a reliable report, a court record or a public record.</li>
+      <li><span class="tg A">A</span> Attributed: a claim made by a named source such as a journalist, group or rival. Not established fact.</li>
+      <li><span class="tg I">I</span> Interpretation: our reading of several actions together. Open to challenge.</li>
+      <li><span class="tg U">U</span> Not re-checked in this pass: written from general knowledge and needs verification before you rely on it.</li>
+    </ul>
+    <h3 style="margin-top:32px;font-size:1.4rem">Matching</h3>
+    <p>Your answers give you a position on each dimension. A leader is compared with you only on dimensions where the evidence supports a placement, and solid evidence counts for more than thin evidence. A leader needs at least three comparable dimensions to appear in your matches. The others stay in the Leaders tab.</p>
+    <h3 style="margin-top:32px;font-size:1.4rem">Limits</h3>
+    <ul>
+      <li>Kenyan politics moves fast. Alliances and parties in this draft reflect reporting up to 30 September 2026.</li>
+      <li>Many placements rest on a small number of documented actions. Dashed circles mark low confidence.</li>
+      <li>A court allegation is not a finding. Where an outcome was not verified, the profile says so.</li>
+      <li>Media sources have their own interests. Where possible profiles cite more than one outlet, but this is a first pass, not a finished audit.</li>
+    </ul>
+  </section>
+
+  <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? Send it in and the profile can be corrected.</p>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
