@@ -92,7 +92,9 @@ button.chip{cursor:pointer}
 .match:first-child{border-top:0}
 .match .nm{font-weight:700;font-size:1.05rem}
 .match .nm small{font-weight:500;color:var(--muted);font-size:.8rem;margin-left:6px}
-.match .cl{color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.match .cl{color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums;text-align:right}
+.match .cl b{color:var(--fg);font-size:1.05rem}
+.match .cl small{font-size:.8rem}
 .match .meter{grid-column:1/-1;height:8px;background:var(--ink-soft);border-radius:4px;overflow:hidden}
 .match .meter span{display:block;height:100%;background:var(--ink);border-radius:4px}
 .dim{padding:22px 0;border-top:1px solid var(--line)}

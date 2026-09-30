@@ -10,6 +10,8 @@ var DIMS=[
 ];
 var TOPIC={econ:"Economy",redis:"Land and wealth",social:"Values",inst:"Institutions",style:"Political style",liberty:"Rights"};
 
+// Question coverage check (step 3): every dimension has 3 questions in each quiz, and each dimension has both
+// directions (+1 and -1) in both quizzes. No gaps found, so no questions were added. scripts/validate-data.js re-checks this.
 // Current-climate questions
 var QN=[
  ["econ",-1,"Private business, not government, should lead job creation and growth."],

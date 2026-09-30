@@ -83,18 +83,29 @@ function userScores(){
   DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
   return s;
 }
+/* Scoring. Confidence counts across leaders by shrinking each placement toward the neutral midpoint (0):
+   effective = position x W[confidence]  (H 1, M 0.8, L 0.5).
+   A thinly evidenced leader therefore reads as less extreme on a dimension, so it cannot beat a solidly
+   evidenced leader just by sitting on your exact position. (A plain weighted average would not do this: the weights
+   cancel when leaders are compared with each other.)
+   Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
+   reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
+   "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
+   "den" (evidence) is the sum of the confidence weights and gates the headline match. */
+var GAP=3;
+function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
   return S().pool().map(function(l){
-    var keys=Object.keys(l.dims), num=0, den=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k],w=W[d[1]],dist=Math.abs(u[k]-d[0]);
-      num+=w*(1-dist/4); den+=w; if(dist<=1)close++;});
-    return {l:l,n:keys.length,close:close,den:den,score:den?num/den:0};
+    var keys=Object.keys(l.dims), sum=0, ev=0, close=0;
+    keys.forEach(function(k){var d=l.dims[k];
+      sum+=similarity(u[k],d[0],d[1]); ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
+    return {l:l,n:keys.length,close:close,den:ev,score:keys.length?sum/keys.length:0};
   });
 }
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score});
+  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score||b.close-a.close});
   var left=cmp.filter(function(r){return r.n<3});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
@@ -111,9 +122,9 @@ function renderResult(){
       '<button type="button" class="btn" data-open="'+b.l.id+'">Read what they did</button></div>';
   }
   html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
-  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours. Only dimensions with enough evidence are compared.</p><div>';
+  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours, with thinly evidenced placements counting for less. Only dimensions with enough evidence are compared. The bar is the overall overlap: 0% means opposite positions, 100% means the same.</p><div>';
   ranked.forEach(function(r){
-    html+='<div class="match"><div class="nm">'+r.l.n+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl">close on '+r.close+' of '+r.n+' dimensions</div>'+
+    html+='<div class="match"><div class="nm">'+r.l.n+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
   html+='</div></div>';
