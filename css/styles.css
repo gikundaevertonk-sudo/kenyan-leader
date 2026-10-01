@@ -251,6 +251,9 @@ button.chip{cursor:pointer;min-height:40px}
 /* Kenyan flag stripes: black, red, green with white fimbriation between them */
 .flag-band{grid-column:1/-1;display:grid;grid-template-rows:6px 6px 6px;gap:2px;background:#fff;padding-block:0;margin-bottom:20px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
 .flag-band span:nth-child(1){background:#000}.flag-band span:nth-child(2){background:#BB0000}.flag-band span:nth-child(3){background:#006600}
+.site-share{grid-column:2;margin:12px 0 20px;padding:20px 22px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.site-share h2{font-family:var(--display);font-size:1.25rem;letter-spacing:-.01em}
+.site-share p{color:var(--muted);font-size:.9rem;margin:4px 0 14px;max-width:62ch}
 .copy{grid-column:2;color:var(--muted);font-size:.8rem;display:flex;align-items:center;gap:10px}
 .copy .flag{width:30px;height:20px;flex:none;border-radius:2px;box-shadow:0 0 0 1px var(--line)}
 
@@ -301,6 +304,7 @@ button.chip{cursor:pointer;min-height:40px}
   .share textarea{font-size:16px}
   .site-foot{grid-template-columns:1fr;margin-top:64px}
   .copy{grid-column:1}
+  .site-share{grid-column:1;padding:18px 16px}
 }
 @media (max-width:360px){
   .hero h1{font-size:2.4rem}

@@ -127,5 +127,28 @@ function drawCard(cv,top,tags){
   });
 }
 
+// ---- Site-wide share row in the footer. About the site itself, never the user's result. ----
+function bindSite(){
+  if(!$("ss-copy"))return;
+  var enc=encodeURIComponent, title="Siasa Compass",
+    text="Siasa Compass: answer 18 short questions and see which Kenyan leaders' documented records sit closest to your views. Actions count more than words.";
+  $("ss-x").href="https://twitter.com/intent/tweet?text="+enc(text)+"&url="+enc(SITE);
+  $("ss-wa").href="https://wa.me/?text="+enc(text+" "+SITE);
+  $("ss-fb").href="https://www.facebook.com/sharer/sharer.php?u="+enc(SITE);
+  $("ss-tg").href="https://t.me/share/url?url="+enc(SITE)+"&text="+enc(text);
+  $("ss-li").href="https://www.linkedin.com/sharing/share-offsite/?url="+enc(SITE);
+  $("ss-mail").href="mailto:?subject="+enc(title)+"&body="+enc(text+"\n\n"+SITE);
+  $("ss-copy").addEventListener("click",function(){
+    var lbl=$("ss-copy").lastChild, done=function(){lbl.textContent="Link copied"};
+    var fail=function(){lbl.textContent=SITE}; // show the address so it can be copied by hand
+    try{navigator.clipboard.writeText(SITE).then(done,fail)}catch(e){fail()}
+  });
+  if(navigator.share){
+    var nb=$("ss-native"); nb.hidden=false;
+    nb.addEventListener("click",function(){navigator.share({title:title,text:text,url:SITE}).catch(function(){})});
+  }
+}
+bindSite();
+
 return {section:section,bind:bind};
 })();

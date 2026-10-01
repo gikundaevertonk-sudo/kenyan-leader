@@ -9,7 +9,7 @@ function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){retur
 // Only http(s) links are allowed in href attributes.
 function safeUrl(u){return /^https?:\/\//i.test(u)?u:"#"}
 var views=["home","intro","quiz","result","records","method"];
-var cur="all", rset="all";
+var cur="now", rset="all";
 // Quiz answers live in memory only, so they survive moving between views but not a page reload.
 var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
 function S(){return SETS[cur]}
@@ -75,7 +75,7 @@ function words(d,v){var D=dimOf(d);
 function matchable(l){return Object.keys(l.dims).length>=3}
 
 function renderHome(){
-  $("paths").innerHTML=["all","now"].map(function(k){var s=SETS[k],p=s.pool();
+  $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
     var held=p.filter(function(l){return l.exec}).length;
     return '<div class="path"><span class="k">'+p.length+' leaders · '+held+' with a record in power</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
       '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
