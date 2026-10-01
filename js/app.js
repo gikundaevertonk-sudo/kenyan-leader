@@ -1,7 +1,7 @@
 /* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
 (function(){
 "use strict";
-var DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
+var P=SiasaPhotos,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
 // Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
 // The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
@@ -170,23 +170,23 @@ function renderResult(){
   html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
   html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours, with thinly evidenced placements counting for less. Only dimensions with enough evidence are compared. The bar is the overall overlap: 0% means opposite positions, 100% means the same.</p><div>';
   ranked.forEach(function(r){
-    html+='<div class="match"><div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
+    html+='<div class="match">'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
-  html+='</div></div>';
+  var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
+  html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
   html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle to see the evidence behind that placement.</p>'+
     '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">These leaders have too few comparable positions in this draft. For those who held power, words are not allowed to fill the gap. Read what is on record instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
-  html+='<div class="sec share"><h3>Share your result</h3><p class="sub">Copy this summary. It contains only your dimension positions and closest match.</p><textarea id="sum" readonly></textarea><div class="cta"><button type="button" class="btn" id="copy">Copy summary</button><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div></div>';
+  html+=SiasaShare.section('<button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button>');
   $("v-result").innerHTML=html;
   drawTracks(u,top3);
-  var sm="My Siasa Compass result ("+s.name+"): "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+"."+(b?" Closest documented record: "+b.l.n+".":"");
-  $("sum").value=sm;
-  $("copy").addEventListener("click",function(){
-    var done=function(){$("copy").textContent="Copied"};
-    try{navigator.clipboard.writeText(sm).then(done,function(){$("sum").select()})}catch(e){$("sum").select()}
-  });
+  var close=b?" Closest documented record: "+b.l.n+".":"";
+  SiasaShare.bind({
+    text:"My Siasa Compass result"+(tags.length?": "+tags.slice(0,3).join(", "):": centrist on most dimensions")+"."+close+" Where do you land?",
+    summary:"My Siasa Compass result ("+s.name+"): "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+"."+close,
+    top:ranked.slice(0,3),tags:tags});
   $("retake").addEventListener("click",start);
   $("other").addEventListener("click",function(){go(setHash(cur==="all"?"now":"all"))});
   $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){go("#leader-"+encodeURIComponent(x.dataset.open))})});
@@ -239,7 +239,7 @@ function leaderHTML(l){
   var nu=uCount(l);
   var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
-  return '<details class="lead" id="lead-'+esc(l.id)+'"><summary><span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
+  return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+(l.exec?'<b>Held executive power.</b> Placed only on what they did. Promises are shown next to the record, not counted.':'<b>Has not held executive power.</b> Actions come first. Stated positions can count where the record is thin and are tagged S.')+'</p>'+
     '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
@@ -247,7 +247,8 @@ function leaderHTML(l){
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+
     '<div><h5>Contradictions in the record</h5><ul class="rec">'+con+'</ul></div>'+
     '<div><h5>What they appear to have stood for</h5><p>'+esc(l.suggests)+'</p></div>'+
-    '<div><h5>Sources</h5><ul class="src">'+src+'</ul></div></div></details>';
+    '<div><h5>Sources</h5><ul class="src">'+src+'</ul></div>'+
+    (P.get(l.id)?'<p class="pcredit">'+P.credit(l)+'</p>':'')+'</div></details>';
 }
 function renderRecords(){
   document.querySelectorAll("#rtoggle button").forEach(function(b){b.setAttribute("aria-current",b.dataset.r===rset?"true":"false")});
@@ -266,4 +267,11 @@ document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListe
 window.addEventListener("hashchange",route);
 renderHome();
 route();
+// Photos arrive after the first render. Redraw the view on screen so it picks them up, keeping open profiles open.
+P.load().then(function(){
+  if(!$("v-records").hidden){
+    var open=[].map.call(document.querySelectorAll(".lead[open]"),function(d){return d.id});
+    renderRecords(); open.forEach(function(id){$(id).open=true});
+  }else if(!$("v-result").hidden)renderResult();
+});
 })();
