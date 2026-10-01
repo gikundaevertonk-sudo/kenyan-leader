@@ -244,6 +244,18 @@ button.chip{cursor:pointer;min-height:40px}
 .m ul{max-width:66ch;padding-left:20px;display:grid;gap:10px;margin-top:14px}
 .m li::marker{color:var(--ink)}
 
+/* About: static, crawlable summary below every view (plain HTML, not rendered by JS) */
+.about{margin-top:96px;padding-top:0}
+.about>*{max-width:720px}
+.about h2{font-size:clamp(1.6rem,4vw,2.2rem);padding-top:28px;border-top:1px solid var(--line-strong)}
+.about h3{margin-top:32px;font-size:1.15rem}
+.about p{margin-top:12px;max-width:66ch;color:var(--muted)}
+.about p b,.about li b{color:var(--fg)}
+.about ul{max-width:66ch;padding-left:20px;display:grid;gap:10px;margin-top:12px;color:var(--muted)}
+.about li::marker{color:var(--ink)}
+.about+.site-foot{margin-top:56px}
+noscript .notice{margin-top:0;margin-bottom:24px}
+
 /* Footer */
 .site-foot{margin-top:96px;padding-block:0 calc(28px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 40px;align-items:start}
 .site-foot .brand{font-size:1.1rem;cursor:default;min-height:0}
@@ -303,6 +315,8 @@ button.chip{cursor:pointer;min-height:40px}
   .tw{padding-inline:20px}
   .share textarea{font-size:16px}
   .site-foot{grid-template-columns:1fr;margin-top:64px}
+  .about{margin-top:64px}
+  .about+.site-foot{margin-top:40px}
   .copy{grid-column:1}
   .site-share{grid-column:1;padding:18px 16px}
 }

@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dist/
+Disallow: /scripts/
+
+Sitemap: https://siasacompass.co.ke/sitemap.xml
