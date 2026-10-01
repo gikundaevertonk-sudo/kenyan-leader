@@ -12,6 +12,8 @@
 <meta property="og:description" content="Answer 18 short questions and see which leaders' documented records sit closest to your views.">
 <meta property="og:url" content="https://siasacompass.co.ke/">
 <meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%2317132B'/%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%23F5F4FA' stroke-width='2'/%3E%3Cpath d='M16 6v2.5M16 23.5V26M6 16h2.5M23.5 16H26' stroke='%23F5F4FA' stroke-width='1.6' stroke-linecap='round'/%3E%3Cg transform='rotate(35 16 16)'%3E%3Cpath d='M16 7l3.6 9h-7.2z' fill='%23F2B01E'/%3E%3Cpath d='M16 25l3.6-9h-7.2z' fill='%23F5F4FA'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%2317132B'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#17132B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +22,7 @@
 <body>
 <header class="top">
   <div class="nav">
-    <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
+    <button type="button" class="brand" id="home"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</button>
     <nav class="tabs" aria-label="Sections">
       <button type="button" data-tab="all" aria-current="false">Every leader</button>
       <button type="button" data-tab="now" aria-current="false">Current climate</button>
@@ -107,10 +109,13 @@
 
 </main>
 <footer class="wrap site-foot">
-  <span class="brand"><i></i>Siasa Compass</span>
+  <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
+  <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
   <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a> and the profile can be corrected.</p>
-  <p class="copy">&copy; 2026 Siasa Compass. All rights reserved.</p>
+  <p class="copy"><svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flag of Kenya"><rect width="60" height="40" fill="#fff"/><rect width="60" height="12" fill="#000"/><rect y="14" width="60" height="12" fill="#BB0000"/><rect y="28" width="60" height="12" fill="#006600"/><g stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M21 4l18 32M39 4L21 36"/></g><g fill="#fff"><path d="M21 4l-.6 3.2 2-1.1zM39 4l.6 3.2-2-1.1z"/></g><ellipse cx="30" cy="20" rx="6.5" ry="12.5" fill="#000"/><path d="M30 7.5c2.6 3 3.6 7.6 3.6 12.5s-1 9.5-3.6 12.5c-2.6-3-3.6-7.6-3.6-12.5S27.4 10.5 30 7.5z" fill="#BB0000"/><path d="M30 11.5c.9 2.2 1.2 5.2 1.2 8.5s-.3 6.3-1.2 8.5c-.9-2.2-1.2-5.2-1.2-8.5s.3-6.3 1.2-8.5z" fill="#fff"/><ellipse cx="30" cy="20" rx=".7" ry="2.6" fill="#BB0000"/></svg><span>&copy; 2026 Siasa Compass. Made in Kenya. All rights reserved. Visits are counted anonymously, without cookies.</span></p>
 </footer>
+<!-- Visitor counts: GoatCounter (no cookies, no personal data). Views are counted from js/app.js, one per hash route. -->
+<script data-goatcounter="https://siasacompass.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="https://gc.zgo.at/count.js"></script>
 <script src="js/data.js"></script>
 <script src="js/photos.js"></script>
 <script src="js/share.js"></script>

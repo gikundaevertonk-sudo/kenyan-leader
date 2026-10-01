@@ -40,7 +40,7 @@ Each placement is pulled toward the neutral midpoint by its confidence (`H` x1, 
 
 ## Running it
 
-Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz answers are kept in memory only.
+Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz answers are kept in memory only. Visits are counted with [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data) at siasacompass.goatcounter.com: one page view per hash route, plus events for quiz started, quiz finished and top match (`track()` in `js/app.js`). Quiz answers themselves are never sent.
 
 ## Layout
 

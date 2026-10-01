@@ -26,6 +26,16 @@ function go(hash,replace){
   if(replace)location.replace(hash);else location.hash=hash;
 }
 function setHash(k){return ST[k].done?"#result-"+k:"#quiz-"+k}
+// Visitor counts (GoatCounter, loaded async in index.html). Each hash view counts as its own page.
+// Calls made before the script arrives retry for a few seconds; if it never loads (offline, blocked, file://) nothing happens.
+function track(path,title,event){
+  var tries=0;
+  (function send(){
+    var gc=window.goatcounter;
+    if(gc&&gc.count){try{gc.count({path:path,title:title,event:!!event})}catch(e){}return}
+    if(++tries<20)setTimeout(send,500);
+  })();
+}
 var firstRoute=true;
 function focusHeading(v){
   var h=$("v-"+v).querySelector('[tabindex="-1"]');
@@ -50,13 +60,13 @@ function route(){
     if(!l.now)rset="all"; else if(rset!=="all")rset=cur;
     v="records";renderRecords();
     var el=$("lead-"+id); el.open=true;
-    show(v); window.scrollTo(0,0);
+    show(v); window.scrollTo(0,0); track("/leader/"+id,l.n);
     // A leader link puts focus on that leader's summary, which is their name, rather than the page heading.
     el.scrollIntoView({block:"start"}); el.querySelector("summary").focus({preventScroll:true});
     firstRoute=false; return;
   }else if(h==="home"){v="home"}
   else{go("#home",true);return}
-  show(v); window.scrollTo(0,0);
+  show(v); window.scrollTo(0,0); track(h==="home"?"/":"/"+h,document.title);
   if(!firstRoute)focusHeading(v);
   firstRoute=false;
 }
@@ -159,6 +169,8 @@ function renderResult(){
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
   var b=ranked[0], html='';
+  // Count each finished quiz once, with its top match, so the dashboard shows completions and who people land on.
+  if(!st().counted){st().counted=true;track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true)}
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
@@ -268,7 +280,7 @@ function renderRecords(){
     '<p class="grp">In today\'s political climate</p><div>'+now.map(leaderHTML).join('')+'</div><p class="grp">Earlier leaders</p><div>'+past.map(leaderHTML).join('')+'</div>';
 }
 $("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+esc(d.name)+':</b> '+esc(d.lo)+' to '+esc(d.hi)+'</li>'}).join('');
-function start(){ST[cur]={idx:0,answers:[],done:false,started:true};go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
+function start(){ST[cur]={idx:0,answers:[],done:false,started:true};track("quiz-started-"+cur,"Started: "+S().name,true);go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
 $("home").addEventListener("click",function(){go("#home")});
 $("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){

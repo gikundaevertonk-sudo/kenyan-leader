@@ -41,8 +41,9 @@ button{font-family:inherit;font-size:inherit;color:inherit}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
 .nav{max-width:1040px;margin:0 auto;padding:10px max(20px,env(safe-area-inset-right)) 10px max(20px,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;min-height:44px;cursor:pointer}
-.brand i{position:relative;width:26px;height:26px;border-radius:50%;border:2px solid var(--fg);flex:none}
-.brand i::before{content:"";position:absolute;left:50%;top:2px;bottom:2px;width:6px;transform:translateX(-50%) rotate(35deg);background:linear-gradient(var(--sun) 50%,var(--fg) 50%);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.brand .compass{width:28px;height:28px;flex:none}
+.brand .compass .n{fill:var(--sun)}
+.brand .compass .hub{fill:var(--bg)}
 .tabs{display:flex;gap:2px;flex-wrap:wrap}
 .tabs button{position:relative;border:0;background:transparent;padding:8px 12px;min-height:44px;border-radius:8px;font-weight:600;font-size:.95rem;cursor:pointer;color:var(--muted)}
 @media (hover:hover){.tabs button:hover{color:var(--fg);background:var(--sunk)}}
@@ -244,10 +245,14 @@ button.chip{cursor:pointer;min-height:40px}
 .m li::marker{color:var(--ink)}
 
 /* Footer */
-.site-foot{margin-top:96px;border-top:1px solid var(--line-strong);padding-block:28px calc(28px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 40px;align-items:start}
+.site-foot{margin-top:96px;padding-block:0 calc(28px + env(safe-area-inset-bottom));display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 40px;align-items:start}
 .site-foot .brand{font-size:1.1rem;cursor:default;min-height:0}
 .foot{color:var(--muted);font-size:.86rem;max-width:70ch}
-.copy{grid-column:2;color:var(--muted);font-size:.8rem}
+/* Kenyan flag stripes: black, red, green with white fimbriation between them */
+.flag-band{grid-column:1/-1;display:grid;grid-template-rows:6px 6px 6px;gap:2px;background:#fff;padding-block:0;margin-bottom:20px;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.flag-band span:nth-child(1){background:#000}.flag-band span:nth-child(2){background:#BB0000}.flag-band span:nth-child(3){background:#006600}
+.copy{grid-column:2;color:var(--muted);font-size:.8rem;display:flex;align-items:center;gap:10px}
+.copy .flag{width:30px;height:20px;flex:none;border-radius:2px;box-shadow:0 0 0 1px var(--line)}
 
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 
