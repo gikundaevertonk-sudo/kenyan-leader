@@ -9,7 +9,7 @@ function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){retur
 // Only http(s) links are allowed in href attributes.
 function safeUrl(u){return /^https?:\/\//i.test(u)?u:"#"}
 var views=["home","intro","quiz","result","records","method"];
-var cur="now", rset="all";
+var cur="now", rset="now";
 // Quiz answers live in memory only, so they survive moving between views but not a page reload.
 var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
 function S(){return SETS[cur]}
