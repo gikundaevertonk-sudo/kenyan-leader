@@ -8,7 +8,7 @@ var $=function(id){return document.getElementById(id)};
 // extra: markup for more buttons in the closing row (already escaped by the caller).
 function section(extra){
   var ic=function(n){return '<span class="sic" aria-hidden="true">'+n+'</span>'};
-  return '<div class="sec share"><h3>Share your result</h3>'+
+  return '<div class="sec share"><h3>Want to share your result?</h3>'+
     '<p class="sub">Post your result with a link to Siasa Compass, or save the image for your Instagram, WhatsApp or Facebook story. It contains only your dimension positions and closest matches.</p>'+
     '<div class="card-prev"><canvas id="card" width="1080" height="1920" role="img" aria-label="Your result card"></canvas></div>'+
     '<div class="sbtns">'+
@@ -23,7 +23,7 @@ function section(extra){
     '</div>'+
     '<p class="tip">Stories cannot carry a clickable link inside the picture. After posting the image, add a link sticker with <b>siasacompass.co.ke</b>.</p>'+
     '<details class="sumbox"><summary>Full text summary</summary><textarea id="sum" readonly></textarea></details>'+
-    '<div class="cta">'+(extra||'')+'</div></div>';
+    (extra?'<div class="cta">'+extra+'</div>':'')+'</div>';
 }
 
 // o: {text: short post text, summary: full text summary, top: up to three ranked rows, tags: the user's lean labels}

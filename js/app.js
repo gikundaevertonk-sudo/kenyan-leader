@@ -181,6 +181,8 @@ function renderResult(){
       Object.keys(b.l.dims).map(function(k){return '<div><span>'+esc(dimOf(k).name)+'</span><span>'+esc(words(k,u[k]))+'</span><span>'+esc(words(k,b.l.dims[k][0]))+'</span></div>'}).join('')+'</div>'+
       '<button type="button" class="btn" data-open="'+esc(b.l.id)+'">Read what they did</button></div>';
   }
+  // Offer sharing straight after the headline result, before the ranked list and the detail below it.
+  html+=SiasaShare.section();
   html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
   html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours, with thinly evidenced placements counting for less. Only dimensions with enough evidence are compared. The bar is the overall overlap: 0% means opposite positions, 100% means the same.</p><div>';
   ranked.forEach(function(r){
@@ -193,7 +195,7 @@ function renderResult(){
     '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">These leaders have too few comparable positions in this draft. For those who held power, words are not allowed to fill the gap. Read what is on record instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
-  html+=SiasaShare.section('<button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button>');
+  html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
   $("v-result").innerHTML=html;
   drawTracks(u,top3);
   var close=b?" Closest documented record: "+b.l.n+".":"";
