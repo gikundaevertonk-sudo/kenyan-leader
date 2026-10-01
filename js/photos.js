@@ -5,10 +5,11 @@ var SiasaPhotos=(function(){
 "use strict";
 var WIKI={ruto:"William Ruto",gachagua:"Rigathi Gachagua",kalonzo:"Kalonzo Musyoka",matiangi:"Fred Matiang'i",
   karua:"Martha Karua",sifuna:"Edwin Sifuna",nyoro:"Ndindi Nyoro",babu:"Babu Owino",salasya:"Peter Salasya",
-  wanga:"Gladys Wanga",millie:"Millie Odhiambo",nyamu:"Karen Nyamu",omanga:"Millicent Omanga",waiguru:"Anne Waiguru"};
+  wanga:"Gladys Wanga",millie:"Millie Odhiambo",nyamu:"Karen Nyamu",omanga:"Millicent Omanga",waiguru:"Anne Waiguru",
+  kindiki:"Kithure Kindiki",maraga:"David Maraga",omtatah:"Okiya Omtatah",bmwangi:"Boniface Mwangi"};
 var PHOTOS={}; // id -> {src, page, file, artist, license, licenseUrl}
 var API="https://en.wikipedia.org/w/api.php?format=json&formatversion=2&origin=*&action=query";
-var KEY="sc-photos-v1", TTL=7*864e5;
+var KEY="sc-photos-v2", TTL=7*864e5;
 
 function stripTags(h){var d=document.createElement("div");d.innerHTML=h||"";return (d.textContent||"").replace(/\s+/g," ").trim()}
 function esc(x){return String(x==null?"":x).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
