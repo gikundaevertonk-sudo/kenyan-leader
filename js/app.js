@@ -137,7 +137,7 @@ function userScores(){
    Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
    reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
    "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
-   "den" (evidence) is the sum of the confidence weights and gates the headline match. */
+   "den" (evidence) is the sum of the confidence weights. */
 var GAP=3;
 function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
@@ -155,12 +155,12 @@ function renderResult(){
   var left=cmp.filter(function(r){return r.n<3});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
-  // The headline match needs solid evidence (roughly three medium-confidence dimensions); thin records still appear in the list.
-  var b=ranked.filter(function(r){return r.den>=2.4})[0]||ranked[0], html='';
+  // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
+  var b=ranked[0], html='';
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
-    html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
+    html+='<div class="best"><span class="k">'+esc(s.name)+' · your closest match</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
       '<p class="role">'+(b.l.exec?'Placed on what they did in power. Their promises are not counted.':'Has not held executive power, so stated positions can count where tagged.')+'</p>'+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+

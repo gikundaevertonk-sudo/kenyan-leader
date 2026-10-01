@@ -399,7 +399,7 @@ button.chip{cursor:pointer;min-height:40px}
     <h3>Matching</h3>
     <p>Your answers give you a position on each dimension, from -2 to +2. A leader is compared with you only on dimensions where the evidence supports a placement, and a leader needs at least three of them to appear in your matches. The others stay in Records.</p>
     <p>Solid evidence counts for more than thin evidence. Before your position is compared with a leader's, the leader's placement is pulled toward the neutral midpoint by its confidence: high confidence keeps it as is, medium keeps 80% of it and low keeps 50%. A leader with thin evidence therefore looks closer to neutral and cannot outrank a well-evidenced one just by sitting on your exact position.</p>
-    <p>For each dimension, the overlap is 100% when you and the leader are at the same point and falls in a straight line to 0% when they are 3 points apart. A leader's overall bar is the average of those overlaps, so opposite positions read near 0% instead of being squeezed into the top half. The main figure beside each bar is how many dimensions you are close on, meaning within 1 point of the leader's placement before any pull toward the midpoint. The headline match also needs enough evidence overall, roughly three medium-confidence dimensions.</p>
+    <p>For each dimension, the overlap is 100% when you and the leader are at the same point and falls in a straight line to 0% when they are 3 points apart. A leader's overall bar is the average of those overlaps, so opposite positions read near 0% instead of being squeezed into the top half. The main figure beside each bar is how many dimensions you are close on, meaning within 1 point of the leader's placement before any pull toward the midpoint. The headline match is always the leader at the top of this ranking.</p>
     <h3>Limits</h3>
     <ul>
       <li>Current profiles reflect reporting up to 30 September 2026. Alliances move fast.</li>
@@ -1267,7 +1267,7 @@ function userScores(){
    Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
    reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
    "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
-   "den" (evidence) is the sum of the confidence weights and gates the headline match. */
+   "den" (evidence) is the sum of the confidence weights. */
 var GAP=3;
 function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
@@ -1285,12 +1285,12 @@ function renderResult(){
   var left=cmp.filter(function(r){return r.n<3});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
-  // The headline match needs solid evidence (roughly three medium-confidence dimensions); thin records still appear in the list.
-  var b=ranked.filter(function(r){return r.den>=2.4})[0]||ranked[0], html='';
+  // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
+  var b=ranked[0], html='';
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
-    html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
+    html+='<div class="best"><span class="k">'+esc(s.name)+' · your closest match</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
       '<p class="role">'+(b.l.exec?'Placed on what they did in power. Their promises are not counted.':'Has not held executive power, so stated positions can count where tagged.')+'</p>'+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+
