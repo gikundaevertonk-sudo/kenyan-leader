@@ -59,14 +59,17 @@ var W={H:1,M:.8,L:.5};
 var CONF={H:"high",M:"medium",L:"low"};
 
 /* Leader fields:
-   now: part of the current political climate. exec: has held executive power.
+   now: part of the current political climate. exec: has held executive power. inPower: holds executive power now.
+   Evidence rule: actions set a placement. Stated positions (basis "S") may fill a dimension where the record is thin,
+   but never for someone in power now, and never where the record contradicts them. A contradicted promise is
+   kept in said[] with a fourth element "X" so the gap stays visible.
    reviewed: date (YYYY-MM-DD) the profile was last checked against sources; "" where unknown.
-   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, only allowed when exec is false.
-   said: [what they said they would do, what they did (or null), tag for the second part].
+   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, not allowed when inPower is set.
+   said: [what they said they would do, what they did (or null), tag for the second part, "X" if contradicted].
    rec: [tag, text] lines, tag one of D A I U S. A U line has not been re-checked. */
 var L=[
 // ---------- Current climate ----------
-{id:"ruto",now:1,exec:1,reviewed:"",n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
+{id:"ruto",now:1,exec:1,inPower:1,reviewed:"",n:"William Ruto",ini:"WR",role:"President since 2022. Deputy President 2013 to 2022. Party: UDA.",cls:"Mixed / contradictory",
  dims:{
   econ:[0,"M","Finance Acts and levies raised the tax take, while the state also funds or runs housing, health cover (SHA) and input subsidies. The record points both ways."],
   redis:[-1,"L","Signed Finance Acts whose levies were criticised as falling on consumers and payrolls. The Hustler Fund and subsidies point the other way. Contested."],
@@ -87,7 +90,7 @@ var L=[
  suggests:"Pragmatic, executive-centred developmentalism with IMF-aligned fiscal consolidation, adjusting to coalition needs. Confidence is high that the record is large, and only medium that any single label fits.",
  src:[["Kenyans.co.ke: Ruto signs 2026 Finance Bill","https://www.kenyans.co.ke/news/124557-ruto-signs-2026-finance-bill-law"],["Nation: ODM, UDA joint talks team","https://nation.africa/kenya/news/politics/odm-uda-to-form-joint-talks-team-as-oburu-signals-start-of-2027-coalition-negotiations-5323202"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
-{id:"kindiki",now:1,exec:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
+{id:"kindiki",now:1,exec:1,inPower:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
  dims:{
   econ:[0,"L","As Deputy President he is a principal of the government whose mixed economic record is set out under William Ruto. No separate economic record of his own was found."],
   style:[-2,"M","A career insider: Senate Majority Leader, Senate Deputy Speaker, Interior CS and now Deputy President, all within the governing camp."],
@@ -107,8 +110,13 @@ var L=[
   econ:[1,"L","As Deputy President he led state-driven coffee-sector reform efforts (verify specific measures)."],
   redis:[-1,"L","As Deputy President in 2023 he campaigned for the Finance Bill, telling MPs who opposed it not to ask for roads, and defended the Housing Levy."],
   inst:[-1,"L","After the High Court struck down the Housing Levy in November 2023 he publicly pleaded with judges not to 'sabotage' it."],
-  style:[1,"M","Former second-in-command now leads an opposition party."]},
- said:[["Now pledges to scrap the Housing Levy.","As Deputy President he championed the Finance Act 2023 that created it and urged the courts not to block it.","D"]],
+  style:[1,"M","Former second-in-command now leads an opposition party."],
+  social:[-2,"M","Called the Supreme Court's February 2023 ruling allowing an LGBTQ rights group to register 'satanic' and 'against our beliefs'. His campaigns lean heavily on church platforms.","S"],
+  liberty:[1,"L","The opposition's 100-day plan he unveiled in September 2026 pledges to prosecute those behind the deaths of 2024 and 2025 protesters. He was Deputy President during the 2024 protests, but the police did not answer to him. His claim that he objected inside government is disputed by Kindiki.","S"]},
+ said:[
+  ["Now pledges to scrap the Housing Levy and cut taxes (September 2026 100-day plan).","As Deputy President he championed the Finance Act 2023 that created the levy, told MPs who opposed it not to ask for roads, and urged the courts not to block it.","D","X"],
+  ["Tax breaks for investors who create jobs, such as a five-year tax waiver for a firm employing 100 Kenyans.","Not tested: he never ran economic policy. Not used for a placement, because his economic record (coffee reforms) points the other way.","I"],
+  ["Prosecute those responsible for protester deaths in 2024 and 2025.",null,"S"]],
  rec:[
   ["D","In July 2022 the Anti-Corruption Court ordered forfeiture of Sh202 million, finding he could not prove how the money was raised."],
   ["D","In January 2023 the forfeiture order was set aside by consent between the parties and the State agreed to pay his costs. That was a settlement, not a ruling on the merits."],
@@ -117,15 +125,19 @@ var L=[
   ["A","Polled 4% in Infotrak's June 2026 survey and 18% in TIFA's mid-2026 survey. The polls differ widely."],
   ["D","One of the United Opposition principals working on a single-candidate coalition formula for 2027."]],
  contra:["Helped form the administration he now campaigns against (interpretation).","The forfeiture finding and its later consent settlement point in different directions and should not be read as a verdict either way."],
- suggests:"A partial placement on what he did as Deputy President, where he championed the government's tax measures. His faith-based and regional messaging is not counted, because he has held executive power. The clearest documented pattern is a shift from government insider to opposition leader.",
- src:[["Standard: court orders Gachagua to surrender Sh202m","https://www.standardmedia.co.ke/national/article/2001451803/corruption-court-orders-rigathi-gachagua-to-surrender-sh202m"],["Standard: Gachagua gets back seized millions","https://www.standardmedia.co.ke/health/politics/article/2001466359/dp-gachagua-gets-back-his-seized-millions"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Standard: Finance Bill will pass with or without you, Gachagua tells opposition","https://www.standardmedia.co.ke/politics/article/2001474378/finance-bill-will-pass-with-or-without-your-support-gachagua-tells-opposition"],["Capital FM: Gachagua pleads with judges over Housing Levy","https://www.capitalfm.co.ke/news/2023/11/dp-gachagua-pleads-with-judges-to-exercise-judicial-discretion-not-to-sabotage-housing-levy/"],["Standard: Gachagua to appeal ruling upholding impeachment","https://www.standardmedia.co.ke/national/article/2001549926/gachagua-to-appeal-high-court-ruling-upholding-impeachment"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["allAfrica: TIFA poll, May 2026","https://allafrica.com/stories/202605140338.html"]]},
+ suggests:"On his record as Deputy President he championed the government's tax measures, so his new tax-cutting promises are not counted. His socially conservative statements are counted as stated positions. His faith-based and regional messaging is not counted, because he has held executive power. The clearest documented pattern is a shift from government insider to opposition leader.",
+ src:[["Standard: court orders Gachagua to surrender Sh202m","https://www.standardmedia.co.ke/national/article/2001451803/corruption-court-orders-rigathi-gachagua-to-surrender-sh202m"],["Standard: Gachagua gets back seized millions","https://www.standardmedia.co.ke/health/politics/article/2001466359/dp-gachagua-gets-back-his-seized-millions"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Standard: Finance Bill will pass with or without you, Gachagua tells opposition","https://www.standardmedia.co.ke/politics/article/2001474378/finance-bill-will-pass-with-or-without-your-support-gachagua-tells-opposition"],["Capital FM: Gachagua pleads with judges over Housing Levy","https://www.capitalfm.co.ke/news/2023/11/dp-gachagua-pleads-with-judges-to-exercise-judicial-discretion-not-to-sabotage-housing-levy/"],["Standard: Gachagua to appeal ruling upholding impeachment","https://www.standardmedia.co.ke/national/article/2001549926/gachagua-to-appeal-high-court-ruling-upholding-impeachment"],["Nation: Gachagua unveils opposition's 100-day plan (Sept 2026)","https://nation.africa/kenya/news/politics/gachagua-unveils-opposition-s-first-100-day-plan--5587156"],["Citizen: Gachagua promises tax incentives to investors who create jobs","https://citizen.digital/article/gachagua-promises-tax-incentives-to-investors-who-create-jobs-n391171"],["Nation: leaders react to Supreme Court LGBTQ ruling (March 2023)","https://nation.africa/kenya/news/ruto-raila-united-in-dismissing-supreme-court-lgbtq-ruling-4143188"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["allAfrica: TIFA poll, May 2026","https://allafrica.com/stories/202605140338.html"]]},
 
 {id:"kalonzo",now:1,exec:1,reviewed:"2026-10-01",n:"Kalonzo Musyoka",ini:"KM",role:"Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.",cls:"Partial record",
  dims:{
-  inst:[0,"L","Opposed the government's draft constitution in the 2005 referendum and was sacked from Cabinet, but in January 2008 accepted the vice presidency while the election result was disputed. The record points both ways."],
+  inst:[1,"L","His actions point both ways: he opposed the government's draft constitution in 2005 and was sacked from Cabinet, but accepted the vice presidency in January 2008 while the election result was disputed. His 2026 pledge to raise the counties' share of revenue from 15% to 35%, which his record does not contradict, tips it towards devolution.","S"],
+  redis:[1,"L","Rallied voters to reject the Finance Bill 2026 and pledges tax reform to ease the cost of living. He never ran economic policy, so no record contradicts this.","S"],
+  social:[-1,"L","Condemned the Supreme Court's 2023 LGBTQ registration ruling, saying it 'mutilated' the Constitution.","S"],
   style:[0,"M","A career insider, in and out of government across administrations."],
   liberty:[1,"L","Called and led the 25 June 2026 march to Parliament commemorating victims of the 2024 protests, held despite police roadblocks."]},
- said:[],
+ said:[
+  ["A 13-point 'Komboa Kenya' agenda (June 2026): restore constitutionalism and rights, recover stolen funds, ease the cost of living through tax reform, professionalise the police.",null,"S"],
+  ["Raise the counties' share of national revenue from 15% to 35%.",null,"S"]],
  rec:[
   ["D","Vice President from 2008 to 2013 under the Grand Coalition. Appointed in January 2008, during the post-election crisis."],
   ["D","Sacked as Environment Minister in November 2005 after campaigning against the government's draft constitution."],
@@ -134,40 +146,45 @@ var L=[
   ["D","Among the United Opposition principals working toward a single 2027 candidate."],
   ["U","Held several ministries under Moi and Kibaki. Dates and decisions need compiling."]],
  contra:["No contradictions assessed. His ministerial record has not been compiled in this pass."],
- suggests:"A long-serving establishment figure now leading street-level opposition. His words on the 2026 Finance Bill are not counted, because he has held executive power. His ministerial decisions are the next thing to compile.",
- src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: Kalonzo's rise to VP","https://nation.africa/kenya/news/politics/kalonzo-musyoka-how-rise-to-vp-earned-him-watermelon-moniker--4792974"],["Star: Nairobi lockdown a symbol of resistance, say Kalonzo, Karua (June 2026)","https://www.the-star.co.ke/news/2026-06-25-nairobi-lockdown-a-symbol-of-resistance-say-kalonzo-karua"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ suggests:"A long-serving establishment figure now leading street-level opposition, with a pro-devolution, cost-of-living platform. Most of his placements rest on stated positions, which weigh less than actions. His ministerial decisions are the next thing to compile.",
+ src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: Kalonzo's rise to VP","https://nation.africa/kenya/news/politics/kalonzo-musyoka-how-rise-to-vp-earned-him-watermelon-moniker--4792974"],["Capital FM: Kalonzo's 13-point agenda (June 2026)","https://capitalfm.africa/kalonzo-unveils-presidential-campaign-platform-pegged-on-economic-recovery-and-governance-reforms/"],["Star: Kalonzo's 13-point plan","https://www.the-star.co.ke/news/2026-06-07-kalonzos-13-point-campaign-plan-to-transform-kenya"],["People Daily: Kalonzo urges rejection of Finance Bill 2026","https://peopledaily.digital/inside-politics/kalonzo-pushes-for-rejection-of-finance-bill-2026"],["People Daily: Kalonzo's devolution agenda","https://peopledaily.digital/inside-politics/wavinya-ndeti-outlines-kalonzo-musyokas-agenda-on-devolution-equal-resource-distribution"],["Nation: leaders react to Supreme Court LGBTQ ruling (March 2023)","https://nation.africa/kenya/news/ruto-raila-united-in-dismissing-supreme-court-lgbtq-ruling-4143188"],["Star: Nairobi lockdown a symbol of resistance, say Kalonzo, Karua (June 2026)","https://www.the-star.co.ke/news/2026-06-25-nairobi-lockdown-a-symbol-of-resistance-say-kalonzo-karua"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"matiangi",now:1,exec:1,reviewed:"",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","Led state-driven delivery programmes such as the exam overhaul and school-transition policy (interpretation; verify)."],
   inst:[-1,"L","A 2018 dispute over compliance with court orders happened under his Interior docket. Outcome not verified here."],
   style:[-1,"M","Senior member of the Jubilee cabinet across two terms, now presenting as an opposition candidate."],
-  liberty:[-1,"L","Oversaw police and security agencies from 2018 to 2022. Specific findings not compiled in this pass."]},
- said:[],
+  liberty:[-1,"L","Oversaw police and security agencies from 2018 to 2022. Specific findings not compiled in this pass. His 2026 promise of a 'ruthless' crackdown on political violence points the same way."]},
+ said:[
+  ["'There will be no goon nonsense in this country': a tough crackdown on violence and political thuggery if elected (April 2026).","Consistent with his record as Interior CS. Action already sets this placement.","I"],
+  ["'A government of efficiency, integrity and service.'",null,"S"]],
  rec:[
   ["D","Held two of the most senior cabinet posts in the Kenyatta government."],
   ["D","Now Jubilee party leader and among the United Opposition principals."],
   ["A","Polled 12% in Infotrak's June 2026 survey and 7.7% in Mizani Africa's September 2026 poll. TIFA reported his support falling from 32% in August 2025 to 14% in June 2026."],
   ["U","The Huduma Namba national ID registration drive he led was challenged in court in 2019 to 2020."]],
  contra:["Senior insider in the previous government now positioned as its alternative (interpretation)."],
- suggests:"A technocratic, state-delivery style of governing. Most placements here are low confidence.",
- src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ suggests:"A technocratic, state-delivery style of governing with an order-first approach to security, which his campaign promises repeat. Most placements here are low confidence.",
+ src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["People Daily: 'No goon nonsense' if I'm elected","https://peopledaily.digital/inside-politics/matiangi-there-will-be-no-goon-nonsense-in-kenya-if-im-elected-president"],["People Daily: how Matiang'i would run government","https://peopledaily.digital/news/matiangi-explains-how-he-will-run-govt-if-elected-president"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"karua",now:1,exec:1,reviewed:"",n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
  dims:{
   inst:[1,"M","Resigned as Justice Minister in April 2009, citing judicial appointments made without her. During the 2007 to 2008 crisis she was a leading defender of the disputed PNU result (attributed). Mixed, but leans towards checks."],
   liberty:[1,"M","Has acted as defence lawyer for opposition figures in the region, including Kizza Besigye in Uganda. Tanzania deported her in May 2025 when she arrived to represent Tundu Lissu."],
-  style:[1,"L","Left government and now leads a small opposition party."]},
+  style:[1,"L","Left government and now leads a small opposition party."],
+  redis:[1,"M","Her June 2026 PLP alternative budget rejects taxes on mobile money, internet services and digital platforms and would cap Social Health Authority contributions at Sh500 per family. She never ran economic policy, so no record contradicts it.","S"],
+  econ:[0,"L","The same plan pairs a spending freeze and 60% cuts to discretionary spending with Sh285 billion for fertiliser subsidies, irrigation and grain reserves. It points both ways.","S"],
+  social:[0,"L","A long-standing advocate for women in leadership and Kenya's first woman major-party running mate (2022). In 2023 she joined Azimio leaders who condemned the Supreme Court's LGBTQ registration ruling; no direct quote from her was found. Mixed.","S"]},
  said:[
-  ["Rejects Finance Bill 2026 levies and has published a PLP alternative budget.","Not counted. She has held executive power, but never over the economy, so there is no economic record to set against it.","I"],
+  ["PLP alternative budget (June 2026): no taxes on mobile money, internet or digital platforms; cut discretionary spending by over 60%; SHA contributions of Sh500 per family; more for schools and farming.",null,"S"],
   ["Long public advocacy for judicial independence.","Resigned her ministry in 2009 over judicial appointments, which is an action consistent with it.","D"]],
  rec:[
   ["D","Resigned as Minister for Justice in April 2009."],
   ["D","Rejected key Finance Bill 2026 proposals and unveiled the PLP alternative budget plan."],
   ["D","Deported from Tanzania in May 2025 while travelling to represent opposition leader Tundu Lissu."]],
  contra:["Served in a government whose record includes the Anglo Leasing scandals. Her own role was not examined in this pass.","Champions limits on the executive from outside government. Her record inside it deserves the same scrutiny."],
- suggests:"On what she did in and after office: a constitutionalist with a rights-first bent. Her economic positions are words only and are not counted.",
- src:[["Standard: Karua's alternative budget","https://www.standardmedia.co.ke/national/article/2001549877/karua-rejects-key-finance-bill-proposals-unveils-plps-alternative-budget-plan"],["Kenyans.co.ke: Finance Bill 2026 claim","https://www.kenyans.co.ke/news/123960-karua-accuses-govt-reintroducing-2024-finance-bill-through-finance-bill-2026"],["France 24: Karua deported from Tanzania","https://www.france24.com/en/live-news/20250518-kenyan-politician-lawyer-for-tanzania"],["Wikipedia: Martha Karua (overview)","https://en.wikipedia.org/wiki/Martha_Karua"]]},
+ suggests:"On what she did in and after office: a constitutionalist with a rights-first bent. Her economic positions come from her 2026 alternative budget, which counts as a stated position and weighs less than her record.",
+ src:[["Standard: Karua's alternative budget","https://www.standardmedia.co.ke/national/article/2001549877/karua-rejects-key-finance-bill-proposals-unveils-plps-alternative-budget-plan"],["Kenyans.co.ke: Finance Bill 2026 claim","https://www.kenyans.co.ke/news/123960-karua-accuses-govt-reintroducing-2024-finance-bill-through-finance-bill-2026"],["France 24: Karua deported from Tanzania","https://www.france24.com/en/live-news/20250518-kenyan-politician-lawyer-for-tanzania"],["Nation: leaders react to Supreme Court LGBTQ ruling (March 2023)","https://nation.africa/kenya/news/ruto-raila-united-in-dismissing-supreme-court-lgbtq-ruling-4143188"],["Wikipedia: Martha Karua (overview)","https://en.wikipedia.org/wiki/Martha_Karua"]]},
 
 {id:"maraga",now:1,exec:0,reviewed:"2026-10-01",n:"David Maraga",ini:"DMa",role:"Chief Justice 2016 to 2021. United Green Movement (UGM) presidential candidate for 2027.",cls:"Clearly identifiable (institutions, rights)",
  dims:{
@@ -230,8 +247,11 @@ var L=[
  dims:{
   inst:[1,"L","Has used the Senate seat and party platform to challenge party and government positions (interpretation)."],
   style:[2,"M","Removed from ODM's secretary-general post twice, upheld by the Political Parties Disputes Tribunal, and now heads a rival movement."],
-  liberty:[1,"L","Publicly sided with protesters on rights issues.","S"]},
- said:[["Sided with protesters and against the ODM–UDA arrangement.",null,"S"]],
+  liberty:[1,"M","Says restoring democratic space comes first: 'You cannot have someone tweeting and getting killed' (July 2026). Publicly sided with protesters.","S"],
+  redis:[1,"M","Pledges to cut the tax burden on ordinary Kenyans within 100 days, through a supplementary budget, and to cut State House spending. Linda Mwananchi backs a national minimum wage.","S"]},
+ said:[
+  ["Cut public spending and waste, including the State House budget, and reduce taxes on ordinary Kenyans within 100 days (Citizen TV, July 2026).",null,"S"],
+  ["Restore democratic space so citizens can criticise leaders online without fear.",null,"S"]],
  rec:[
   ["D","ODM's National Executive Committee removed him as Secretary-General a second time, and the Registrar ratified it."],
   ["D","The Political Parties Disputes Tribunal upheld the removal in September 2026, dismissing his third challenge."],
@@ -239,15 +259,18 @@ var L=[
   ["A","A TIFA survey reported him as the most preferred ODM flag bearer among respondents."],
   ["A","Polled 12% in Infotrak's June 2026 survey and 13.2% in Mizani Africa's September 2026 poll. TIFA called him the fastest riser among opposition figures."]],
  contra:["Rose through ODM's own structures as Senator and Secretary-General before turning against its leadership (interpretation)."],
- suggests:"The documented pattern is a clear anti-establishment turn within party politics. Policy placements are thin.",
- src:[["Nation: Linda Mwananchi on Sifuna's second expulsion","https://nation.africa/kenya/news/politics/linda-mwananchi-to-fight-odm-over-sifuna-s-second-expulsion--5505924"],["The Online Kenyan: tribunal upholds removal","https://www.theonlinekenyan.com/daily/2026-09-10/tribunal-upholds-sifuna-s-removal-as-odm-secretary-general"],["The Online Kenyan: nomination","https://www.theonlinekenyan.com/daily/2026-09-28/sifuna-secures-linda-mwananchi-presidential-nomination"],["Kenyans.co.ke: TIFA survey","https://www.kenyans.co.ke/news/125558-tifa-survey-ranks-sifuna-most-preferred-odm-flag-bearer-ahead-2027-polls"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ suggests:"A clear anti-establishment turn within party politics, now with a tax-relief and civil-liberties platform. His policy placements rest on stated positions.",
+ src:[["Nation: Linda Mwananchi on Sifuna's second expulsion","https://nation.africa/kenya/news/politics/linda-mwananchi-to-fight-odm-over-sifuna-s-second-expulsion--5505924"],["The Online Kenyan: tribunal upholds removal","https://www.theonlinekenyan.com/daily/2026-09-10/tribunal-upholds-sifuna-s-removal-as-odm-secretary-general"],["The Online Kenyan: nomination","https://www.theonlinekenyan.com/daily/2026-09-28/sifuna-secures-linda-mwananchi-presidential-nomination"],["Kenyans.co.ke: Sifuna's 100-day pledges","https://www.kenyans.co.ke/news/125673-edwin-sifuna-pledges-slash-govt-expenditure-within-100-days-under-linda-mwananchi"],["People Daily: Sifuna vows to cut State House budget","https://peopledaily.digital/inside-politics/sifuna-vows-to-cut-state-house-budget-if-opposition-wins-power-in-2027"],["Kenyans.co.ke: TIFA survey","https://www.kenyans.co.ke/news/125558-tifa-survey-ranks-sifuna-most-preferred-odm-flag-bearer-ahead-2027-polls"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"nyoro",now:1,exec:0,reviewed:"2026-10-01",n:"Ndindi Nyoro",ini:"NN",role:"Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.",cls:"Partial record",
  dims:{
-  econ:[-1,"L","Fiscal-discipline messaging: warns against off-book borrowing and securitising the fuel levy.","S"],
+  econ:[0,"L","Warns against off-book borrowing and debt, but his People's Party also promises free basic education with school meals from January 2028, paid for by redirecting CDF and bursary money. Points both ways.","S"],
   redis:[-1,"M","Voted yes on the Finance Bill 2024 at second reading while chairing the Budget Committee. Missed the June 2026 Finance Bill vote and apologised for it."],
   style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."]},
- said:[["Fiscal discipline and scrutiny of public debt.",null,"S"]],
+ said:[
+  ["Fiscal discipline and scrutiny of public debt.",null,"S"],
+  ["Free basic education with school meals for every learner from January 2028, without new taxes (People's Party, September 2026).",null,"S"],
+  ["Lower taxes on household essentials.","Voted yes on the Finance Bill 2024 at second reading while chairing the Budget Committee.","D","X"]],
  rec:[
   ["D","Announced his exit from UDA on 17 August 2026 and took over the People's Party."],
   ["D","On 22 September unveiled the first party officials, including a 24-year-old secretary general."],
@@ -256,14 +279,16 @@ var L=[
   ["D","Touring counties with Matiang'i and Siaya Governor James Orengo ahead of 2027."]],
  contra:["Long a Ruto ally and UDA insider, now campaigning against the president (interpretation)."],
  suggests:"A partial placement: he voted for the 2024 tax measures inside government and now campaigns on fiscal discipline from the opposition.",
- src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
+ src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Eastleigh Voice: People's Party agenda","https://eastleighvoice.co.ke/politics/397744/ndindi-nyoro-outlines-peoples-party-agenda-and-calls-for-opposition-unity"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
 
 {id:"babu",now:1,exec:0,reviewed:"",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
  dims:{
   redis:[1,"M","Voted no on the Finance Bill 2024 at second reading in June 2024."],
   style:[1,"M","Left ODM to run for Nairobi governor under The Mwananchi Party within the Linda Mwananchi formation."],
   liberty:[1,"L","Youth-facing, rights-forward public messaging.","S"]},
- said:[["Wants to be Nairobi governor in 2027 and president in 2032, running on his MP record.",null,"S"]],
+ said:[
+  ["Wants to be Nairobi governor in 2027 and president in 2032, running on his MP record.",null,"S"],
+  ["Free school meals for Nairobi public primary pupils, with food bought from parents' businesses (September 2026).",null,"S"]],
  rec:[
   ["D","Announced a 2027 Nairobi governorship bid and said he would seek the presidency in 2032."],
   ["D","Voted no on the Finance Bill 2024 at second reading."],
@@ -272,7 +297,7 @@ var L=[
   ["A","A High Court ruling nullifying an Embakasi East win has been reported. Appeal status and date not verified in this pass."]],
  contra:["Campaigns on his MP record while moving between political vehicles (interpretation)."],
  suggests:"Insufficient evidence for a policy placement. Documented pattern is youth-focused, anti-establishment positioning.",
- src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
+ src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Capital FM: Babu pledges free school meals","https://capitalfm.africa/babu-pledges-free-school-meals-under-nairobi-governor-bid/"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
 
 {id:"salasya",now:1,exec:0,reviewed:"",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
  dims:{
@@ -289,7 +314,7 @@ var L=[
  suggests:"Insufficient evidence. Highly visible, but this pass found little legislative or policy record.",
  src:[["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"]]},
 
-{id:"wanga",now:1,exec:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
+{id:"wanga",now:1,exec:1,inPower:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
  dims:{
   social:[1,"L","Organises with the G7 women governors to get more women into elective office. This is campaigning, not a governing record."],
   style:[-1,"M","Aligned with ODM's leadership and its cooperation with the government."]},
@@ -340,7 +365,7 @@ var L=[
  suggests:"Insufficient evidence. The documented pattern is a defection from government to opposition.",
  src:[["Standard: Omanga ditches UDA for DCP","https://www.standardmedia.co.ke/politics/article/2001543418/millicent-omanga-ditches-uda-for-gachaguas-dcp"],["Nation: why I ditched Ruto","https://nation.africa/kenya/news/politics/millicent-omanga-why-i-ditched-ruto-for-gachagua-s-camp-5407226"]]},
 
-{id:"waiguru",now:1,exec:1,reviewed:"",n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
+{id:"waiguru",now:1,exec:1,inPower:1,reviewed:"",n:"Anne Waiguru",ini:"AW",role:"Kirinyaga Governor since 2017. Former Devolution CS.",cls:"Insufficient evidence",
  dims:{},
  said:[],
  rec:[
@@ -585,18 +610,18 @@ var L=[
  src:[["Wikipedia: Wangari Maathai (overview)","https://en.wikipedia.org/wiki/Wangari_Maathai"],["Wikipedia: Green Belt Movement","https://en.wikipedia.org/wiki/Green_Belt_Movement"]]}
 ];
 
-// Enforce the core rule: no words-based placement for anyone who has held executive power.
+// Enforce the core rule: no words-based placement for anyone in power now.
 L.forEach(function(l){Object.keys(l.dims).forEach(function(k){
-  if(l.exec&&l.dims[k][3]==="S"){console.warn("Dropped stated placement for executive-power holder",l.id,k);delete l.dims[k]}
+  if(l.inPower&&l.dims[k][3]==="S"){console.warn("Dropped stated placement for a leader in power",l.id,k);delete l.dims[k]}
 })});
 
 var SETS={
  all:{key:"all",name:"Every leader",q:QA,pool:function(){return L},
   h1:'Whose <span class="mark">record</span> is closest to yours?',
-  lede:"Everyone in one pool: the independence generation, the one-party years, the reform era and the people in politics today. Leaders who held power are placed only on what they did with it."},
+  lede:"Everyone in one pool: the independence generation, the one-party years, the reform era and the people in politics today. What leaders did counts most. What they said counts less, and not at all where their record contradicts it."},
  now:{key:"now",name:"Current climate",q:QN,pool:function(){return L.filter(function(l){return l.now})},
   h1:'Match your views to today\'s <span class="mark">contenders</span>.',
-  lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Those who have governed are placed on their record in office. The rest are placed on their record and, where that is thin, what they say they would do."}
+  lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Actions count most. Documented promises count less, never for those in power now, and never where the record contradicts them."}
 };
 
 // Number of lines still tagged U (not yet re-checked): record lines plus the "what they did" side of said/did pairs.

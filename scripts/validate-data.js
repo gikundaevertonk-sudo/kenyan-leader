@@ -45,7 +45,7 @@ data.L.forEach(function (l, i) {
     if (CONFS.indexOf(d[1]) < 0) err(at + "confidence must be H, M or L, got " + JSON.stringify(d[1]) + ".");
     if (!nonEmpty(d[2])) err(at + "missing note.");
     if (d[3] != null && d[3] !== "S") err(at + "basis must be omitted or 'S', got " + JSON.stringify(d[3]) + ".");
-    if (d[3] === "S" && l.exec) err(at + "stated-position (S) placement on a leader who held executive power; the app would drop it.");
+    if (d[3] === "S" && l.inPower) err(at + "stated-position (S) placement on a leader currently in power; the app would drop it.");
   });
 
   (l.rec || []).forEach(function (r, j) {
@@ -58,7 +58,10 @@ data.L.forEach(function (l, i) {
     if (!nonEmpty(p[0])) err(at + "missing 'said' text.");
     if (p[1] != null && !nonEmpty(p[1])) err(at + "'did' text is empty (use null if there is none).");
     if (TAGS.indexOf(p[2]) < 0) err(at + "tag must be one of D, A, I, U, S, got " + JSON.stringify(p[2]) + ".");
+    if (p[3] != null && p[3] !== "X") err(at + "fourth element must be omitted or 'X' (contradicted by the record), got " + JSON.stringify(p[3]) + ".");
+    if (p[3] === "X" && !p[1]) err(at + "marked 'X' (contradicted) but has no 'did' text showing the contradiction.");
   });
+  if (l.inPower && !l.exec) err(who + ": inPower is set but exec is not.");
   if (!Array.isArray(l.contra) || !l.contra.length) err(who + ": 'contra' needs at least one line (use \"Not assessed.\").");
   if (!Array.isArray(l.src) || !l.src.length) err(who + ": needs at least one source.");
   (l.src || []).forEach(function (s, j) {

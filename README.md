@@ -15,8 +15,10 @@ There are two quizzes: **Every leader** (independence generation to today) and *
 
 ## Evidence rules
 
-- **Power is judged by action.** Anyone who has held executive power (`exec: 1`) is placed only on what they did: laws signed, decisions, spending, appointments. Promises are shown beside the record but never move a placement. The app drops any stated-position (`S`) placement for these leaders.
-- **No power yet? Words can count.** Leaders who have never held executive power (`exec: 0`) are placed on actions first. Where those are thin, stated positions and manifestos may be used and are tagged `S`.
+- **Actions come first.** Where there is action evidence on a dimension (laws signed, votes, decisions, spending, appointments, court cases), it sets the placement.
+- **Words can count, with less weight.** Where the record is thin, documented statements (manifestos, rally speeches, interviews reported by the press) may place a leader, tagged `S`. In the overall match an `S` dimension counts 60% as much as an action-based one (`BASIS` in `js/app.js`).
+- **Contradicted words are thrown out.** If the record contradicts a promise, it gets no `S` placement. Show it in `said` with a fourth element `"X"` so the gap is visible.
+- **In power now? Only actions.** Leaders currently holding executive power (`inPower: 1`: the President, Deputy President, sitting governors) never get `S` placements. The app drops them.
 - **Labels are not evidence.** Self-descriptions and party labels never count.
 - **Gaps are shown.** A leader needs placements on at least three dimensions to appear in matches. Others stay in Records.
 
@@ -28,7 +30,7 @@ There are two quizzes: **Every leader** (independence generation to today) and *
 | `A` | Attributed: a claim by a named source (journalist, group, rival). Not established fact. |
 | `I` | Interpretation: our reading of several actions together. Open to challenge. |
 | `U` | Not re-checked: written from general knowledge, needs verification before anyone relies on it. |
-| `S` | Stated position: what someone who has not held executive power says they would do. |
+| `S` | Stated position: what a leader not currently in power says they would do. Not used where the record contradicts it. |
 
 Each placement also has a confidence: `H` (high), `M` (medium) or `L` (low).
 
@@ -60,7 +62,7 @@ Leaders are objects in the `L` array in `js/data.js`:
  role:"Office held and dates. Party.",cls:"Clearly identifiable",
  dims:{
   econ:[1,"M","What they did that supports this placement."],
-  redis:[1.5,"L","Stated position.","S"]          // "S" only when exec is 0
+  redis:[1.5,"L","Stated position.","S"]          // "S" never when inPower is 1
  },
  said:[["What they said they would do.","What they did, or null.","D"]],
  rec:[["D","A documented fact."],["A","A claim attributed to a named source."]],
@@ -70,7 +72,7 @@ Leaders are objects in the `L` array in `js/data.js`:
 ```
 
 - `id`: unique, lowercase letters, digits and hyphens. It is used in `#leader-<id>` links.
-- `now: 1` puts the leader in the Current climate quiz and Records group. `exec: 1` means they have held executive power.
+- `now: 1` puts the leader in the Current climate quiz and Records group. `exec: 1` means they have held executive power. `inPower: 1` means they hold it now (words never count for them).
 - `dims`: `[value from -2 to 2, confidence H/M/L, note, "S" (optional)]`. Low values are the "low" pole in the table above. Only include dimensions the evidence supports.
 - `reviewed`: `YYYY-MM-DD` of the last check against sources, or `""` if unknown. Shown on the profile as "Last reviewed".
 - `rec` and `said` lines use the tags above. Every `U` line is counted on the profile as a claim not yet re-checked.
@@ -88,7 +90,7 @@ Both need Node.js and have no dependencies.
 node scripts/validate-data.js
 ```
 
-Fails (exit code 1) with clear messages on: missing or duplicate ids, dimension values outside -2..2, confidence not H/M/L, record tags not D/A/I/U/S, sources without a title or an http(s) URL, questions with an unknown dimension or a direction other than 1 or -1, a malformed `reviewed` date, `S` placements on executive-power holders, and dimensions with fewer than two questions or only one direction in a quiz. It also prints the number of `U`-tagged lines per leader.
+Fails (exit code 1) with clear messages on: missing or duplicate ids, dimension values outside -2..2, confidence not H/M/L, record tags not D/A/I/U/S, sources without a title or an http(s) URL, questions with an unknown dimension or a direction other than 1 or -1, a malformed `reviewed` date, `S` placements on leaders currently in power, said/did lines marked `"X"` without a "did" side, and dimensions with fewer than two questions or only one direction in a quiz. It also prints the number of `U`-tagged lines per leader.
 
 ```
 node scripts/build-single.js

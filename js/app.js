@@ -66,8 +66,8 @@ function matchable(l){return Object.keys(l.dims).length>=3}
 
 function renderHome(){
   $("paths").innerHTML=["all","now"].map(function(k){var s=SETS[k],p=s.pool();
-    var exec=p.filter(function(l){return l.exec}).length;
-    return '<div class="path"><span class="k">'+p.length+' leaders · '+exec+' judged on actions in power</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
+    var held=p.filter(function(l){return l.exec}).length;
+    return '<div class="path"><span class="k">'+p.length+' leaders · '+held+' with a record in power</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
       '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
   }).join('');
   bindGo($("paths"));
@@ -137,15 +137,17 @@ function userScores(){
    Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
    reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
    "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
-   "den" (evidence) is the sum of the confidence weights. */
-var GAP=3;
+   "den" (evidence) is the sum of the confidence weights.
+   Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
+   action-based one, so the mean is weighted by evidence type. */
+var GAP=3, BASIS={A:1,S:0.6};
 function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
   return S().pool().map(function(l){
-    var keys=Object.keys(l.dims), sum=0, ev=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k];
-      sum+=similarity(u[k],d[0],d[1]); ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
-    return {l:l,n:keys.length,close:close,den:ev,score:keys.length?sum/keys.length:0};
+    var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
+    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]==="S"?"S":"A"];
+      sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
+    return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
   });
 }
 
@@ -162,7 +164,7 @@ function renderResult(){
   if(b){
     html+='<div class="best"><span class="k">'+esc(s.name)+' · your closest match</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
-      '<p class="role">'+(b.l.exec?'Placed on what they did in power. Their promises are not counted.':'Has not held executive power, so stated positions can count where tagged.')+'</p>'+
+      '<p class="role">'+basisLine(b.l)+'</p>'+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+
       Object.keys(b.l.dims).map(function(k){return '<div><span>'+esc(dimOf(k).name)+'</span><span>'+esc(words(k,u[k]))+'</span><span>'+esc(words(k,b.l.dims[k][0]))+'</span></div>'}).join('')+'</div>'+
       '<button type="button" class="btn" data-open="'+esc(b.l.id)+'">Read what they did</button></div>';
@@ -229,21 +231,30 @@ function drawTracks(u,top3){
   });
 }
 
+// How a leader's words are treated: in power, words never count; otherwise they count (tagged S, weighted below
+// actions) unless the record contradicts them.
+function basisLine(l){
+  if(l.inPower)return 'In power now. Placed only on what they do, and their promises are not counted.';
+  if(l.exec)return 'Held executive power before. Actions come first, and stated positions count only where the record does not contradict them.';
+  return 'Has not held executive power. Actions come first, and stated positions count where tagged.';
+}
 function leaderHTML(l){
   var tend=Object.keys(l.dims).map(function(k){var d=l.dims[k];
     return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
   var rec=l.rec.map(function(r){return '<li><span class="tg '+esc(r[0])+'">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></li>'}).join('');
   var said=(l.said||[]).map(function(p){
-    return '<li><div class="said"><span class="lbl">'+(l.exec?'Said they would':'Says they would')+'</span>'+esc(p[0])+'</div>'+
-      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>Has not held executive power, so there is no delivery record yet. This stated position can count.</span>')+'</div></div></li>'}).join('');
+    var note=p[3]==="X"?'<p class="xnote">Their record contradicts this, so the words are not counted.</p>':
+      (l.inPower?'<p class="xnote">Promises made while in power are not counted.</p>':'');
+    return '<li><div class="said"><span class="lbl">Said they would</span>'+esc(p[0])+'</div>'+
+      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office to test this against, so it counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
   var nu=uCount(l);
   var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
-    '<p class="basis">'+(l.exec?'<b>Held executive power.</b> Placed only on what they did. Promises are shown next to the record, not counted.':'<b>Has not held executive power.</b> Actions come first. Stated positions can count where the record is thin and are tagged S.')+'</p>'+
+    '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
     '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
-    (said?'<div><h5>'+(l.exec?'What they said they would do, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
+    (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+
     '<div><h5>Contradictions in the record</h5><ul class="rec">'+con+'</ul></div>'+
     '<div><h5>What they appear to have stood for</h5><p>'+esc(l.suggests)+'</p></div>'+
