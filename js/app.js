@@ -78,7 +78,7 @@ function bindGo(root){
 }
 function renderIntro(){
   var s=S(),p=s.pool();
-  $("v-intro").innerHTML='<h1 tabindex="-1">'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
+  $("v-intro").innerHTML='<p class="kicker">'+esc(s.name)+' quiz</p><h1 tabindex="-1">'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
     '<div class="cta"><button type="button" class="btn" data-go="'+esc(s.key)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(s.key)+'">Read the records first</button></div>'+
     '<div class="facts"><span><b>'+s.q.length+'</b> questions</span><span><b>'+DIMS.length+'</b> dimensions</span><span><b>'+p.length+'</b> leaders</span><span><b>'+p.filter(matchable).length+'</b> with enough evidence to match</span><span>About 4 minutes</span></div>';
   bindGo($("v-intro"));
@@ -160,7 +160,7 @@ function renderResult(){
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
-    html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p>'+
+    html+='<div class="best"><span class="k">'+esc(s.name)+' · closest well-evidenced record</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
       '<p class="role">'+(b.l.exec?'Placed on what they did in power. Their promises are not counted.':'Has not held executive power, so stated positions can count where tagged.')+'</p>'+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+

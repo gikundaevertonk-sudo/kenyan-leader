@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Siasa Compass</title>
 <meta name="description" content="Answer 18 short questions and see which Kenyan leaders' documented records sit closest to your views.">
 <link rel="canonical" href="https://siasacompass.co.ke/">
@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<div class="wrap">
+<header class="top">
   <div class="nav">
     <button type="button" class="brand" id="home"><i></i>Siasa Compass</button>
     <nav class="tabs" aria-label="Sections">
@@ -28,8 +28,11 @@
       <button type="button" data-tab="method" aria-current="false">Method</button>
     </nav>
   </div>
+</header>
+<main class="wrap">
 
   <section id="v-home" class="hero">
+    <p class="kicker">Research draft · records up to 30 September 2026</p>
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two quizzes, one rule. If a leader has held power, we judge them only by what they did with it. Promises, slogans and party labels do not count. If they have never held power, their stated positions and manifestos are all there is to go on, so we use them and label them.</p>
     <div class="paths" id="paths"></div>
@@ -44,40 +47,43 @@
 
   <section id="v-quiz" hidden>
     <h1 class="sr" id="quiz-h" tabindex="-1"></h1>
+    <div class="q-card">
     <div class="q-meta"><span id="q-count"></span><span id="q-topic" class="topic" style="margin:0"></span></div>
     <div class="bar"><span id="q-bar" style="width:0"></span></div>
     <p class="q-text" id="q-text" aria-live="polite"></p>
     <div class="opts" id="q-opts"></div>
-    <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span>Tip: press 1 to 5 on a keyboard</span></div>
+    <div class="q-scale" aria-hidden="true"><span>Disagree</span><span>Agree</span></div>
+    </div>
+    <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span class="hint">Press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>&larr;</kbd> to go back</span></div>
   </section>
 
   <section id="v-result" class="res" hidden></section>
 
   <section id="v-records" hidden>
-    <div class="rhead">
-      <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">The record, leader by leader</h2>
-      <div class="tabs" id="rtoggle" role="group" aria-label="Which leaders">
+    <div class="rhead pagehead">
+      <h2 tabindex="-1">The record, leader by leader</h2>
+      <div class="seg" id="rtoggle" role="group" aria-label="Which leaders">
         <button type="button" data-r="all" aria-current="true">Every leader</button>
         <button type="button" data-r="now" aria-current="false">Current climate</button>
       </div>
     </div>
-    <p class="notice" style="margin-bottom:10px">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see what they said they would do next to what they did.</p>
+    <p class="notice">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see what they said they would do next to what they did.</p>
     <div id="leader-list"></div>
   </section>
 
   <section id="v-method" class="m" hidden>
-    <h2 tabindex="-1" style="font-size:clamp(2rem,6vw,3rem)">How this works</h2>
+    <h2 tabindex="-1">How this works</h2>
     <p>There are two quizzes. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to people in office today. <b>Current climate</b> compares you only with the people shaping politics now and in the race for 2027. Both use the same six dimensions, so a result in one can be read next to the other.</p>
-    <h3 style="margin-top:32px;font-size:1.4rem">The core rule: power is judged by action</h3>
+    <h3>The core rule: power is judged by action</h3>
     <p>Every leader is sorted into one of two groups.</p>
     <ul>
       <li><b>Has held executive power</b> (President, Vice or Deputy President, Prime Minister, Cabinet Minister or Cabinet Secretary, Governor). Placements come only from what they did: laws signed or blocked, decisions, spending, appointments, and how they treated courts, media and opponents. Their promises appear in a "said / did" list so you can see the gap, but promises never move their placement. The code drops any words-based placement for this group.</li>
       <li><b>Has not held executive power</b> (MPs, senators, assistant ministers, activists, aspirants). Their votes, bills and actions come first. Where those are thin, their stated positions and manifestos can be used, tagged <span class="tg S">S</span> and drawn as dotted circles.</li>
     </ul>
     <p>Self-descriptions and party labels are never evidence. Kenya's 1965 blueprint was called "African Socialism" while it protected private property and courted foreign investors. Here, the policy counts and the label does not.</p>
-    <h3 style="margin-top:32px;font-size:1.4rem">The six dimensions</h3>
+    <h3>The six dimensions</h3>
     <ul id="m-dims"></ul>
-    <h3 style="margin-top:32px;font-size:1.4rem">Reading the tags</h3>
+    <h3>Reading the tags</h3>
     <ul>
       <li><span class="tg D">D</span> Documented: directly supported by a reliable report, a court record or a public record.</li>
       <li><span class="tg A">A</span> Attributed: a claim made by a named source such as a journalist, group or rival. Not established fact.</li>
@@ -85,11 +91,11 @@
       <li><span class="tg U">U</span> Not re-checked in this pass: written from general knowledge and needs verification before you rely on it.</li>
       <li><span class="tg S">S</span> Stated position: what someone who has not held executive power says they would do. Used only for that group.</li>
     </ul>
-    <h3 style="margin-top:32px;font-size:1.4rem">Matching</h3>
+    <h3>Matching</h3>
     <p>Your answers give you a position on each dimension, from -2 to +2. A leader is compared with you only on dimensions where the evidence supports a placement, and a leader needs at least three of them to appear in your matches. The others stay in Records.</p>
     <p>Solid evidence counts for more than thin evidence. Before your position is compared with a leader's, the leader's placement is pulled toward the neutral midpoint by its confidence: high confidence keeps it as is, medium keeps 80% of it and low keeps 50%. A leader with thin evidence therefore looks closer to neutral and cannot outrank a well-evidenced one just by sitting on your exact position.</p>
     <p>For each dimension, the overlap is 100% when you and the leader are at the same point and falls in a straight line to 0% when they are 3 points apart. A leader's overall bar is the average of those overlaps, so opposite positions read near 0% instead of being squeezed into the top half. The main figure beside each bar is how many dimensions you are close on, meaning within 1 point of the leader's placement before any pull toward the midpoint. The headline match also needs enough evidence overall, roughly three medium-confidence dimensions.</p>
-    <h3 style="margin-top:32px;font-size:1.4rem">Limits</h3>
+    <h3>Limits</h3>
     <ul>
       <li>Current profiles reflect reporting up to 30 September 2026. Alliances move fast.</li>
       <li>Historical profiles were drafted from the established historical record, with reference overviews linked as starting points. A few details are tagged U and still need checking against primary sources.</li>
@@ -98,9 +104,12 @@
     </ul>
   </section>
 
+</main>
+<footer class="wrap site-foot">
+  <span class="brand"><i></i>Siasa Compass</span>
   <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a> and the profile can be corrected.</p>
   <p class="copy">&copy; 2026 Siasa Compass. All rights reserved.</p>
-</div>
+</footer>
 <script src="js/data.js"></script>
 <script src="js/photos.js"></script>
 <script src="js/share.js"></script>
