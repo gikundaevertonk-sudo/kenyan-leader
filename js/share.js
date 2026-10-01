@@ -8,8 +8,8 @@ var $=function(id){return document.getElementById(id)};
 // extra: markup for more buttons in the closing row (already escaped by the caller).
 function section(extra){
   var ic=function(n){return '<span class="sic" aria-hidden="true">'+n+'</span>'};
-  return '<div class="sec share"><h3>Want to share your result?</h3>'+
-    '<p class="sub">Post your result with a link to Siasa Compass, or save the image for your Instagram, WhatsApp or Facebook story. It contains only your dimension positions and closest matches.</p>'+
+  return '<div class="sec share"><h3>Share your result</h3>'+
+    '<p class="sub">Post it, or save the image for your story.</p>'+
     '<div class="card-prev"><canvas id="card" width="1080" height="1920" role="img" aria-label="Your result card"></canvas></div>'+
     '<div class="sbtns">'+
       '<button type="button" class="btn" id="sh-native" hidden>Share…</button>'+
@@ -21,7 +21,7 @@ function section(extra){
       '<a class="sbtn" id="sh-li" target="_blank" rel="noopener noreferrer">'+ic("in")+'LinkedIn</a>'+
       '<button type="button" class="sbtn" id="sh-copy">'+ic("⧉")+'<span>Copy link</span></button>'+
     '</div>'+
-    '<p class="tip">Stories cannot carry a clickable link inside the picture. After posting the image, add a link sticker with <b>siasacompass.co.ke</b>.</p>'+
+    '<p class="tip">On stories, add a link sticker: <b>siasacompass.co.ke</b></p>'+
     '<details class="sumbox"><summary>Full text summary</summary><textarea id="sum" readonly></textarea></details>'+
     (extra?'<div class="cta">'+extra+'</div>':'')+'</div>';
 }

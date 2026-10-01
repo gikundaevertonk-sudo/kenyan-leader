@@ -57,8 +57,8 @@
 <meta name="theme-color" content="#17132B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=4">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=5">
 </head>
 <body>
 <header class="top">
@@ -78,12 +78,12 @@
   <section id="v-home" class="hero">
     <p class="kicker">Research draft · records up to 30 September 2026</p>
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
-    <p class="lede">Two quizzes, one rule: what leaders did counts most. What they say, in manifestos, rallies and interviews reported by the press, counts too, but less, and never when their own record contradicts it or when they are in power now and can act instead of promise.</p>
+    <p class="lede">Two short quizzes. What leaders did counts most. What they said counts less.</p>
     <div class="paths" id="paths"></div>
     <div class="rules">
-      <div><h3>Actions count most</h3><p>Laws signed, votes cast, decisions made and how the state was used come first. Where a leader said one thing and did the opposite, the words are thrown out. Those in power now are judged only on what they do.</p></div>
-      <div><h3>Words count, with less weight</h3><p>Documented promises from leaders out of power, including those who governed before, can place them where the record does not contradict them. Those placements are tagged <span class="tg S">S</span> and weigh less than actions.</p></div>
-      <div><h3>Gaps are shown</h3><p>Where the record is thin, the leader is left out of your matches instead of being guessed at. Nothing here tells you who to vote for.</p></div>
+      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those in power are judged on actions only.</p></div>
+      <div><h3>Words count less</h3><p>Promises count only if the record doesn't contradict them. Tagged <span class="tg S">S</span>.</p></div>
+      <div><h3>No guessing</h3><p>Thin records are left out. This is not voting advice.</p></div>
     </div>
   </section>
 
@@ -111,41 +111,41 @@
         <button type="button" data-r="all" aria-current="false">Every leader</button>
       </div>
     </div>
-    <p class="notice">Research draft built from public reporting up to 30 September 2026. Each line is tagged so you can tell facts from claims from interpretation. Open a leader to see what they said they would do next to what they did.</p>
+    <p class="notice">Public reporting up to 30 Sep 2026. Open a leader to compare what they said with what they did.</p>
     <div id="leader-list"></div>
   </section>
 
   <section id="v-method" class="m" hidden>
     <h2 tabindex="-1">How this works</h2>
-    <p>There are two quizzes. <b>Current climate</b> compares you only with the people shaping politics now and in the race for 2027. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to people in office today. Both use the same six dimensions, so a result in one can be read next to the other.</p>
-    <h3>The core rule: actions first, then words that survive the record</h3>
+    <p><b>Current climate</b> compares you with today's contenders. <b>Every leader</b> adds everyone since independence. Both use the same six dimensions.</p>
+    <h3>The core rule</h3>
     <ul>
-      <li><b>Actions come first.</b> Laws signed or blocked, votes, decisions, spending, appointments, court cases, and how a leader treated courts, media and opponents. Where there is action evidence on a dimension, it sets the placement.</li>
-      <li><b>Words can count, with less weight.</b> Where the record on a dimension is thin, documented statements can place a leader: party manifestos, campaign platforms, rally speeches and interviews reported by newspapers and broadcasters. These placements are tagged <span class="tg S">S</span>, drawn as dotted circles, and count 60% as much as an action-based dimension in your overall match.</li>
-      <li><b>Said one thing, did the opposite? The words are thrown out.</b> If a leader's record contradicts a promise, the promise does not count. It stays visible in the "said / did" list, marked as contradicted, so you can see the gap.</li>
-      <li><b>In power now? Only actions count.</b> The President, the Deputy President and sitting governors can act on their promises today, so their promises never move their placement. The code drops any words-based placement for them.</li>
+      <li><b>Actions come first.</b> Laws, votes, spending, appointments, court cases, and how leaders treated courts, media and opponents.</li>
+      <li><b>Words count less.</b> Where actions are thin, reported manifestos, speeches and interviews can place a leader. Tagged <span class="tg S">S</span>, drawn dotted, weighted at 60%.</li>
+      <li><b>Contradicted words are dropped.</b> They stay visible in "said / did", marked as contradicted.</li>
+      <li><b>In power now? Only actions count.</b> The President, Deputy President and sitting governors can act, so their promises never count.</li>
     </ul>
-    <p>Self-descriptions and party labels are never evidence. Kenya's 1965 blueprint was called "African Socialism" while it protected private property and courted foreign investors. Here, the policy counts and the label does not.</p>
+    <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
     <ul id="m-dims"></ul>
     <h3>Reading the tags</h3>
     <ul>
-      <li><span class="tg D">D</span> Documented: directly supported by a reliable report, a court record or a public record.</li>
-      <li><span class="tg A">A</span> Attributed: a claim made by a named source such as a journalist, group or rival. Not established fact.</li>
-      <li><span class="tg I">I</span> Interpretation: our reading of several actions together. Open to challenge.</li>
-      <li><span class="tg U">U</span> Not re-checked in this pass: written from general knowledge and needs verification before you rely on it.</li>
-      <li><span class="tg S">S</span> Stated position: what a leader who is not in power now says they would do, from a manifesto, rally or interview. Used only where their record does not contradict it, and weighted below actions.</li>
+      <li><span class="tg D">D</span> Documented: backed by a reliable report or public record.</li>
+      <li><span class="tg A">A</span> Attributed: a named source's claim, not established fact.</li>
+      <li><span class="tg I">I</span> Interpretation: our reading. Open to challenge.</li>
+      <li><span class="tg U">U</span> Unchecked: needs verification.</li>
+      <li><span class="tg S">S</span> Stated position: a promise from someone not in power, weighted below actions.</li>
     </ul>
     <h3>Matching</h3>
-    <p>Your answers give you a position on each dimension, from -2 to +2. A leader is compared with you only on dimensions where the evidence supports a placement, and a leader needs at least three of them to appear in your matches. The others stay in Records.</p>
-    <p>Solid evidence counts for more than thin evidence. Before your position is compared with a leader's, the leader's placement is pulled toward the neutral midpoint by its confidence: high confidence keeps it as is, medium keeps 80% of it and low keeps 50%. A leader with thin evidence therefore looks closer to neutral and cannot outrank a well-evidenced one just by sitting on your exact position.</p>
-    <p>For each dimension, the overlap is 100% when you and the leader are at the same point and falls in a straight line to 0% when they are 3 points apart. A leader's overall bar is the average of those overlaps, with stated-position dimensions counting 60% as much as action-based ones, so opposite positions read near 0% instead of being squeezed into the top half. The main figure beside each bar is how many dimensions you are close on, meaning within 1 point of the leader's placement before any pull toward the midpoint. The headline match is always the leader at the top of this ranking.</p>
+    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least three dimensions to appear in your matches.</p>
+    <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
+    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
     <h3>Limits</h3>
     <ul>
-      <li>Current profiles reflect reporting up to 30 September 2026. Alliances move fast.</li>
-      <li>Historical profiles were drafted from the established historical record, with reference overviews linked as starting points. A few details are tagged U and still need checking against primary sources.</li>
-      <li>Some leaders had long careers across very different roles. A single placement per dimension flattens that, so read the profile.</li>
-      <li>A court allegation is not a finding. Where an outcome was not verified, the profile says so.</li>
+      <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
+      <li>Some historical details are tagged U and still need checking.</li>
+      <li>One placement per dimension flattens long careers. Read the profile.</li>
+      <li>An allegation is not a finding.</li>
     </ul>
   </section>
 
@@ -166,14 +166,14 @@
   <p>No. It is a research draft built from public reporting up to 30 September 2026. It does not rank leaders, predict the 2027 election or endorse any politician or party. A match means your answers overlap with a leader's documented record, not that you should vote for them.</p>
   <h3>Where can I read Kenyan leaders' records?</h3>
   <p>The Records page lists every leader in the draft with what they said they would do next to what they did, the evidence behind each placement, and links to sources. Leaders with too little evidence are left out of matches rather than guessed at.</p>
+  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a></div>
 </section>
 <footer class="wrap site-foot">
   <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
-  <p class="foot">Siasa Compass is a research draft. It documents political behaviour and does not rank leaders, predict elections or endorse any politician or party. Spotted an error or a missing source? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a> and the profile can be corrected.</p>
+  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a>.</p>
   <div class="site-share">
     <h2>Share Siasa Compass</h2>
-    <p>Know someone who should see what leaders did, not just what they said? Send them the site.</p>
     <div class="sbtns">
       <button type="button" class="btn" id="ss-native" hidden>Share…</button>
       <a class="sbtn" id="ss-x" target="_blank" rel="noopener noreferrer"><span class="sic" aria-hidden="true">𝕏</span>X / Twitter</a>
@@ -185,13 +185,13 @@
       <button type="button" class="sbtn" id="ss-copy"><span class="sic" aria-hidden="true">⧉</span><span>Copy link</span></button>
     </div>
   </div>
-  <p class="copy"><svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flag of Kenya"><rect width="60" height="40" fill="#fff"/><rect width="60" height="12" fill="#000"/><rect y="14" width="60" height="12" fill="#BB0000"/><rect y="28" width="60" height="12" fill="#006600"/><g stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M21 4l18 32M39 4L21 36"/></g><g fill="#fff"><path d="M21 4l-.6 3.2 2-1.1zM39 4l.6 3.2-2-1.1z"/></g><ellipse cx="30" cy="20" rx="6.5" ry="12.5" fill="#000"/><path d="M30 7.5c2.6 3 3.6 7.6 3.6 12.5s-1 9.5-3.6 12.5c-2.6-3-3.6-7.6-3.6-12.5S27.4 10.5 30 7.5z" fill="#BB0000"/><path d="M30 11.5c.9 2.2 1.2 5.2 1.2 8.5s-.3 6.3-1.2 8.5c-.9-2.2-1.2-5.2-1.2-8.5s.3-6.3 1.2-8.5z" fill="#fff"/><ellipse cx="30" cy="20" rx=".7" ry="2.6" fill="#BB0000"/></svg><span>&copy; 2026 Siasa Compass. Made in Kenya. All rights reserved. Visits are counted anonymously, without cookies.</span></p>
+  <p class="copy"><svg class="flag" viewBox="0 0 60 40" role="img" aria-label="Flag of Kenya"><rect width="60" height="40" fill="#fff"/><rect width="60" height="12" fill="#000"/><rect y="14" width="60" height="12" fill="#BB0000"/><rect y="28" width="60" height="12" fill="#006600"/><g stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M21 4l18 32M39 4L21 36"/></g><g fill="#fff"><path d="M21 4l-.6 3.2 2-1.1zM39 4l.6 3.2-2-1.1z"/></g><ellipse cx="30" cy="20" rx="6.5" ry="12.5" fill="#000"/><path d="M30 7.5c2.6 3 3.6 7.6 3.6 12.5s-1 9.5-3.6 12.5c-2.6-3-3.6-7.6-3.6-12.5S27.4 10.5 30 7.5z" fill="#BB0000"/><path d="M30 11.5c.9 2.2 1.2 5.2 1.2 8.5s-.3 6.3-1.2 8.5c-.9-2.2-1.2-5.2-1.2-8.5s.3-6.3 1.2-8.5z" fill="#fff"/><ellipse cx="30" cy="20" rx=".7" ry="2.6" fill="#BB0000"/></svg><span>&copy; 2026 Siasa Compass. Made in Kenya. No cookies.</span></p>
 </footer>
 <!-- Visitor counts: GoatCounter (no cookies, no personal data). Views are counted from js/app.js, one per hash route. -->
 <script data-goatcounter="https://siasacompass.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="https://gc.zgo.at/count.js"></script>
-<script src="js/data.js?v=2"></script>
+<script src="js/data.js?v=3"></script>
 <script src="js/photos.js?v=2"></script>
-<script src="js/share.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/share.js?v=4"></script>
+<script src="js/app.js?v=5"></script>
 </body>
 </html>

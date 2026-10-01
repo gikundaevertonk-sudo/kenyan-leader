@@ -618,10 +618,10 @@ L.forEach(function(l){Object.keys(l.dims).forEach(function(k){
 var SETS={
  all:{key:"all",name:"Every leader",q:QA,pool:function(){return L},
   h1:'Whose <span class="mark">record</span> is closest to yours?',
-  lede:"Everyone in one pool: the independence generation, the one-party years, the reform era and the people in politics today. What leaders did counts most. What they said counts less, and not at all where their record contradicts it."},
+  lede:"Every leader from independence to today, in one pool."},
  now:{key:"now",name:"Current climate",q:QN,pool:function(){return L.filter(function(l){return l.now})},
   h1:'Match your views to today\'s <span class="mark">contenders</span>.',
-  lede:"Only the people shaping Kenyan politics now: the government, the opposition and those competing for 2027. Actions count most. Documented promises count less, never for those in power now, and never where the record contradicts them."}
+  lede:"Today's government, opposition and 2027 contenders."}
 };
 
 // Number of lines still tagged U (not yet re-checked): record lines plus the "what they did" side of said/did pairs.

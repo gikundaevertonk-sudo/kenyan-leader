@@ -16,6 +16,7 @@ function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
 function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
+  $("about").hidden=(v!=="home"); // the static About text sits under home only, so quiz views stay focused
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
 }
@@ -76,8 +77,7 @@ function matchable(l){return Object.keys(l.dims).length>=3}
 
 function renderHome(){
   $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
-    var held=p.filter(function(l){return l.exec}).length;
-    return '<div class="path"><span class="k">'+p.length+' leaders · '+held+' with a record in power</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
+    return '<div class="path"><span class="k">'+p.length+' leaders</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
       '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
   }).join('');
   bindGo($("paths"));
@@ -87,10 +87,11 @@ function bindGo(root){
   root.querySelectorAll("[data-rec]").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.rec;go("#records")})});
 }
 function renderIntro(){
-  var s=S(),p=s.pool();
+  var s=S(),p=s.pool(),o=SETS[s.key==="all"?"now":"all"];
   $("v-intro").innerHTML='<p class="kicker">'+esc(s.name)+' quiz</p><h1 tabindex="-1">'+s.h1+'</h1><p class="lede">'+s.lede+'</p>'+
     '<div class="cta"><button type="button" class="btn" data-go="'+esc(s.key)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(s.key)+'">Read the records first</button></div>'+
-    '<div class="facts"><span><b>'+s.q.length+'</b> questions</span><span><b>'+DIMS.length+'</b> dimensions</span><span><b>'+p.length+'</b> leaders</span><span><b>'+p.filter(matchable).length+'</b> with enough evidence to match</span><span>About 4 minutes</span></div>';
+    '<p class="alt">Or take the other quiz: <a class="btn sm ghost" href="'+setHash(o.key)+'">'+esc(o.name)+'</a></p>'+
+    '<div class="facts"><span><b>'+s.q.length+'</b> questions</span><span><b>'+DIMS.length+'</b> dimensions</span><span><b>'+p.length+'</b> leaders</span><span><b>4</b> minutes</span></div>';
   bindGo($("v-intro"));
 }
 function renderQ(){
@@ -183,17 +184,17 @@ function renderResult(){
   }
   // Offer sharing straight after the headline result, before the ranked list and the detail below it.
   html+=SiasaShare.section();
-  html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
-  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours, with thinly evidenced placements counting for less. Only dimensions with enough evidence are compared. The bar is the overall overlap: 0% means opposite positions, 100% means the same.</p><div>';
+  html+='<p class="notice">Overlaps with records, not a recommendation.</p>';
+  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overall overlap, from 0% (opposite) to 100% (same).</p><div>';
   ranked.forEach(function(r){
     html+='<div class="match">'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
   var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
   html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
-  html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle to see the evidence behind that placement.</p>'+
+  html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle for the evidence.</p>'+
     '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
-  if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">These leaders have too few comparable positions in this draft. For those who held power, words are not allowed to fill the gap. Read what is on record instead.</p><div class="chips">'+
+  if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">Too little evidence to compare. Read their records instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
   html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
   $("v-result").innerHTML=html;
@@ -235,7 +236,7 @@ function drawTracks(u,top3){
     }).join('');
     sec.innerHTML='<h4>'+esc(d.name)+'</h4><p class="yours">You: '+esc(words(d.k,u[d.k]).toLowerCase())+'</p>'+
       '<div class="tw"><div class="inner" style="height:'+h+'px"><div class="rail"></div>'+dots+'</div></div>'+
-      '<div class="poles"><span>'+esc(d.lo)+'</span><span>'+esc(d.hi)+'</span></div><p class="dnote" aria-live="polite">Select a circle for the evidence.</p>';
+      '<div class="poles"><span>'+esc(d.lo)+'</span><span>'+esc(d.hi)+'</span></div><p class="dnote" aria-live="polite">Tap a circle for the evidence.</p>';
     out.appendChild(sec);
     sec.querySelectorAll(".dot").forEach(function(b){b.addEventListener("click",function(){
       var it=items[+b.dataset.i];
@@ -248,19 +249,19 @@ function drawTracks(u,top3){
 // How a leader's words are treated: in power, words never count; otherwise they count (tagged S, weighted below
 // actions) unless the record contradicts them.
 function basisLine(l){
-  if(l.inPower)return 'In power now. Placed only on what they do, and their promises are not counted.';
-  if(l.exec)return 'Held executive power before. Actions come first, and stated positions count only where the record does not contradict them.';
-  return 'Has not held executive power. Actions come first, and stated positions count where tagged.';
+  if(l.inPower)return 'In power now. Judged on actions only.';
+  if(l.exec)return 'Held power before. Actions first; uncontradicted words count less.';
+  return 'Never held executive power. Actions first; stated positions count less.';
 }
 function leaderHTML(l){
   var tend=Object.keys(l.dims).map(function(k){var d=l.dims[k];
     return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
   var rec=l.rec.map(function(r){return '<li><span class="tg '+esc(r[0])+'">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></li>'}).join('');
   var said=(l.said||[]).map(function(p){
-    var note=p[3]==="X"?'<p class="xnote">Their record contradicts this, so the words are not counted.</p>':
-      (l.inPower?'<p class="xnote">Promises made while in power are not counted.</p>':'');
+    var note=p[3]==="X"?'<p class="xnote">Contradicted by the record. Not counted.</p>':
+      (l.inPower?'<p class="xnote">Made in power, so not counted.</p>':'');
     return '<li><div class="said"><span class="lbl">Said they would</span>'+esc(p[0])+'</div>'+
-      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office to test this against, so it counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
+      '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office yet. Counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
   var nu=uCount(l);
   var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
