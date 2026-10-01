@@ -51,6 +51,10 @@ function compare(u){
 
 var SEL={};
 function finish(){
+  // Give photos a moment to arrive, but never hold the result back for long.
+  Promise.race([photosReady,new Promise(function(r){setTimeout(r,2500)})]).then(renderResult);
+}
+function renderResult(){
   var u=userScores(), cmp=compare(u);
   var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score});
   var left=cmp.filter(function(r){return r.n<3});
@@ -62,24 +66,20 @@ function finish(){
   html+='<p class="notice">These are overlaps with documented records, not a recommendation. A close match on some dimensions can sit beside a big gap on others. Check each track below.</p>';
   html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Ranked by how near each leader\'s evidenced positions are to yours. Only dimensions with enough evidence are compared.</p><div>';
   ranked.forEach(function(r){
-    html+='<div class="match"><div class="nm">'+r.l.n+'</div><div class="cl">close on '+r.close+' of '+r.n+' dimensions</div>'+
+    html+='<div class="match">'+avatar(r.l)+'<div class="nm">'+r.l.n+'</div><div class="cl">close on '+r.close+' of '+r.n+' dimensions</div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
-  html+='</div></div>';
+  var credits=ranked.map(function(r){return creditLine(r.l)}).filter(Boolean);
+  html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
   html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle to see the evidence behind that placement.</p>'+
     '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low-confidence placement</span></div><div id="tracks"></div></div>';
   html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">These leaders have too few documented, comparable positions in this draft. Read what is on record instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+r.l.id+'">'+r.l.n+'</button>'}).join('')+'</div></div>';
-  html+='<div class="sec share"><h3>Share your result</h3><p class="sub">Copy this summary. It contains only your dimension positions.</p><textarea id="sum" readonly></textarea><div class="cta"><button type="button" class="btn" id="copy">Copy summary</button><button type="button" class="btn ghost" id="retake">Retake the quiz</button></div></div>';
+  html+=shareSection();
   $("v-result").innerHTML=html;
   show("result");
   drawTracks(u,top3);
-  var sm="My Siasa Compass result: "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+".";
-  $("sum").value=sm;
-  $("copy").addEventListener("click",function(){
-    var done=function(){$("copy").textContent="Copied"};
-    try{navigator.clipboard.writeText(sm).then(done,function(){$("sum").select()})}catch(e){$("sum").select()}
-  });
+  bindShare(u,ranked,tags);
   $("retake").addEventListener("click",start);
   document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){openLeader(b.dataset.open)})});
 }
@@ -127,12 +127,13 @@ function renderLeaders(){
     var rec=l.rec.map(function(r){return '<li><span class="tg '+r[0]+'">'+r[0]+'</span><span>'+r[1]+'</span></li>'}).join('');
     var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+c+'</span></li>'}).join('');
     var src=l.src.map(function(s){return '<li><a href="'+s[1]+'" target="_blank" rel="noopener noreferrer">'+s[0]+'</a></li>'}).join('');
-    return '<details class="lead" id="lead-'+l.id+'"><summary><span class="who">'+l.n+'</span><span class="cls">'+l.cls+'</span><span class="role">'+l.role+'</span></summary><div class="body">'+
+    return '<details class="lead" id="lead-'+l.id+'"><summary>'+avatar(l)+'<span class="who">'+l.n+'</span><span class="cls">'+l.cls+'</span><span class="role">'+l.role+'</span></summary><div class="body">'+
       '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
       '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+
       '<div><h5>Contradictions in the record</h5><ul class="rec">'+con+'</ul></div>'+
       '<div><h5>What they appear to have stood for</h5><p>'+l.suggests+'</p></div>'+
-      '<div><h5>Sources</h5><ul class="src">'+src+'</ul></div></div></details>';
+      '<div><h5>Sources</h5><ul class="src">'+src+'</ul></div>'+
+      (PHOTOS[l.id]?'<p class="pcredit">'+creditLine(l)+'</p>':'')+'</div></details>';
   }).join('');
 }
 function openLeader(id){show("leaders");var el=$("lead-"+id);if(el){el.open=true;setTimeout(function(){el.scrollIntoView({block:"start"})},30)}}
@@ -146,3 +147,7 @@ document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener
   var t=b.dataset.tab; if(t==="quiz"){ if(!$("v-result").innerHTML||answers.length<Q.length){show(answers.length&&answers.length<Q.length?"quiz":"intro")}else{show("result")} } else show(t);
 })});
 renderLeaders();
+var photosReady=loadPhotos().then(function(){
+  var open=[].map.call(document.querySelectorAll(".lead[open]"),function(d){return d.id});
+  renderLeaders(); open.forEach(function(id){$(id).open=true});
+});
