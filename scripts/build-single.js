@@ -15,6 +15,11 @@ var html = read("index.html")
   .replace(/<script src="([^"?]+)(?:\?[^"]*)?"><\/script>/g, function (m, src) {
     // Guard against a literal "</script>" inside the code closing the tag early.
     return "<script>\n" + read(src).trim().replace(/<\/script/gi, "<\/script") + "\n</script>";
+  })
+  // Site-root icon links do not resolve in a standalone file, so swap them for the SVG icon inlined as a data URI.
+  .replace(/(?:<link rel="(?:icon|apple-touch-icon|manifest)"[^>]*>\n)+/, function () {
+    var svg = read("favicon.svg").trim();
+    return '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + encodeURIComponent(svg) + '">\n';
   });
 
 if (/<link rel="stylesheet" href="(?!https?:)/.test(html) || /<script src="(?!https?:)/.test(html)) {
