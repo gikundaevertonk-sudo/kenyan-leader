@@ -364,3 +364,8 @@ noscript .notice{margin-top:0;margin-bottom:24px}
 .faq details{border-top:1px solid var(--line-strong);padding:14px 0}
 .faq summary{cursor:pointer;font-weight:600}
 .faq p{margin-top:8px;color:var(--muted);max-width:62ch}
+.iss-note{color:var(--muted);font-size:.88rem;margin:10px 0 0}
+.m table{width:100%;border-collapse:collapse;font-size:.93rem;margin:8px 0 16px}
+.m th,.m td{text-align:left;padding:8px 10px 8px 0;border-top:1px solid var(--line);vertical-align:top}
+.m th{font-weight:600;color:var(--muted)}
+.m td.n{white-space:nowrap;font-variant-numeric:tabular-nums}

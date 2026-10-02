@@ -14,7 +14,7 @@ var SIASA = require(path.join(root, "js", "data.js"));
 var DIMS = SIASA.DIMS, CONF = SIASA.CONF, L = SIASA.L;
 var SITE = "https://siasacompass.co.ke";
 var TODAY = new Date().toISOString().slice(0, 10);
-var V = { css: "10" }; // keep in step with the ?v= on css/styles.css in index.html
+var V = { css: "11" }; // keep in step with the ?v= on css/styles.css in index.html
 
 // Wikipedia page and Wikidata ID for each leader, so search engines can tie the page to the right person.
 // Omtatah and Salasya have no English Wikipedia page yet, so they have no entry.
@@ -136,6 +136,8 @@ function personNode(l, url) {
   return p;
 }
 
+function issueIdx(k) { return SIASA.ISSUES.map(function (x) { return x.k; }).indexOf(k); }
+
 function leaderPage(l) {
   var nu = SIASA.uCount(l);
   var dimKeys = Object.keys(l.dims);
@@ -182,6 +184,11 @@ function leaderPage(l) {
       "</div>" + note + "</div></li>";
   }).join("");
 
+  // Where they stand on the issues voters rank highest, in poll order (ISSUES in js/data.js). Not used in matching.
+  var iss = (l.iss || []).slice().sort(function (a, b) { return issueIdx(a[0]) - issueIdx(b[0]); }).map(function (x) {
+    return '<li><span class="tg ' + esc(x[1]) + '">' + esc(x[1]) + "</span><span><b>" + esc(SIASA.ISSUES[issueIdx(x[0])].name) + ":</b> " + esc(x[2]) + "</span></li>";
+  }).join("");
+
   var contra = (l.contra || []).map(function (c) {
     return '<li><span class="tg I">I</span><span>' + esc(c) + "</span></li>";
   }).join("");
@@ -203,6 +210,7 @@ function leaderPage(l) {
     '<p class="meta">' + meta + "</p>\n" +
     '<div class="cta"><a class="btn" href="/#quiz-' + (l.now ? "now" : "all") + '">See how your views compare</a><a class="btn ghost" href="/#leader-' + esc(encodeURIComponent(l.id)) + '">Open in the compass</a></div>\n' +
     '<section><h2>What the record shows</h2><ul class="rec">' + rec + "</ul></section>\n" +
+    (iss ? '<section><h2>On the issues voters rank highest</h2><ul class="rec">' + iss + '</ul><p class="iss-note">In the order voters ranked them in Infotrak&#39;s December 2025 poll. Shown for reference; not used in matching.</p></section>\n' : "") +
     (said ? "<section><h2>" + (l.exec ? "What they said, and what they did" : "What they say they would do") + '</h2><ul class="pd">' + said + "</ul></section>\n" : "") +
     "<section><h2>Where the evidence points, by dimension</h2><div class=\"tend\">" + tend + "</div></section>\n" +
     "<section><h2>Contradictions in the record</h2><ul class=\"rec\">" + contra + "</ul></section>\n" +

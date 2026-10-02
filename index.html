@@ -71,7 +71,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=10">
+<link rel="stylesheet" href="css/styles.css?v=11">
 </head>
 <body>
 <header class="top">
@@ -120,6 +120,7 @@
     <div class="q-scale" aria-hidden="true"><span>Disagree</span><span>Agree</span></div>
     </div>
     <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span class="hint">Press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>&larr;</kbd> to go back</span></div>
+    <p class="alt"><label><input type="checkbox" id="q-tally" checked> Add my answers to the anonymous tally of how visitors answer. No name, no location, nothing that identifies you.</label></p>
   </section>
 
   <section id="v-result" class="res" hidden></section>
@@ -151,6 +152,30 @@
     <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
     <ul id="m-dims"></ul>
+    <h3>What Kenyans say decides their vote</h3>
+    <p>Asked what will most influence their 2027 vote, Kenyans named these issues (<a href="https://peopledaily.digital/news/cost-of-living-top-driver-of-voter-choice-ahead-of-2027-general-election-infotrak" target="_blank" rel="noopener noreferrer">Infotrak</a>, 19 to 20 December 2025, 1,000 adults by phone across all 47 counties, margin of error ±3.1%). The Current climate questions are written around them, and each profile shows where a leader stands on them.</p>
+    <table>
+      <thead><tr><th scope="col">Issue</th><th scope="col">Named by</th><th scope="col">Where it shows up</th></tr></thead>
+      <tbody>
+        <tr><td>Cost of living</td><td class="n">46%</td><td>Who should carry the tax burden; VAT on fuel and payslip levies</td></tr>
+        <tr><td>Corruption</td><td class="n">27%</td><td>Barring candidates facing corruption charges</td></tr>
+        <tr><td>Healthcare</td><td class="n">27%</td><td>Who should run health insurance</td></tr>
+        <tr><td>Education</td><td class="n">26%</td><td>Free education up to university</td></tr>
+        <tr><td>Youth jobs</td><td class="n">25%</td><td>Private business or government programmes</td></tr>
+        <tr><td>Leadership integrity</td><td class="n">23%</td><td>Profiles: what leaders said next to what they did</td></tr>
+        <tr><td>Economic management and debt</td><td class="n">21%</td><td>Paying down debt before new programmes</td></tr>
+        <tr><td>Security</td><td class="n">16%</td><td>Police powers, protests and surveillance</td></tr>
+        <tr><td>Devolution</td><td class="n">11%</td><td>The counties' share of revenue</td></tr>
+        <tr><td>Affordable housing</td><td class="n">3%</td><td>Who should build homes</td></tr>
+      </tbody>
+    </table>
+    <h3>What else sways votes</h3>
+    <p>Other things still decide many votes. This quiz matches you on views about how Kenya should be run, so it treats them differently:</p>
+    <ul>
+      <li><b>Tribe and regional kingpins.</b> Ethnic voting is still strong, but only 4 in 10 Kenyans say their community has a recognised political leader (<a href="https://k24.digital/4-in-10-kenyans-acknowledge-existence-of-ethnic-leader-tifa/amp" target="_blank" rel="noopener noreferrer">TIFA</a>, September 2025). The quiz never asks your ethnicity or matches on it. It does ask whether a community should vote as a bloc, and whether being close to the government of the day brings development: the "our turn to eat" idea.</li>
+      <li><b>Money and handouts.</b> In a July 2026 <a href="https://www.the-star.co.ke/counties/eastern/2026-07-24-money-now-key-to-winning-polls-shows-ncck-report" target="_blank" rel="noopener noreferrer">NCCK study</a>, 91% said candidates cannot win without giving cash or gifts, and 94% said money strongly sways results. Handouts are not a policy, so they are not matched on, but documented harambees, donations and appeals to ethnic loyalty appear in profiles under "Handouts and ethnic appeals".</li>
+      <li><b>Party waves, coalitions, charisma, fame, fear and rumours.</b> None of these is a view about how the country should be run, so none is matched on. Alliances and defections are in each leader's record.</li>
+    </ul>
     <h3>Reading the tags</h3>
     <ul>
       <li><span class="tg D">D</span> Documented: backed by a reliable report or public record.</li>
@@ -164,6 +189,8 @@
     <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
     <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
     <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
+    <h3>Your answers</h3>
+    <p>When you finish a quiz, your answers, where they place you and your top three matches are added to an anonymous tally, so we can see how visitors answer each question. Nothing that identifies you is stored: no name, no location, no IP address, only the date. Untick the box under the questions to leave yours out.</p>
     <h3>Limits</h3>
     <ul>
       <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
@@ -213,9 +240,9 @@
 </footer>
 <!-- Visitor counts: GoatCounter (no cookies, no personal data). Views are counted from js/app.js, one per hash route. -->
 <script data-goatcounter="https://siasacompass.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="https://gc.zgo.at/count.js"></script>
-<script src="js/data.js?v=6"></script>
+<script src="js/data.js?v=7"></script>
 <script src="js/photos.js?v=3"></script>
 <script src="js/share.js?v=6"></script>
-<script src="js/app.js?v=10"></script>
+<script src="js/app.js?v=12"></script>
 </body>
 </html>

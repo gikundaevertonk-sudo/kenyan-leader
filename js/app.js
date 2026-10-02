@@ -1,7 +1,7 @@
 /* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
 (function(){
 "use strict";
-var P=SiasaPhotos,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
+var P=SiasaPhotos,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ISSUES=SIASA.ISSUES,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
 // Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
 // The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
@@ -11,10 +11,12 @@ function safeUrl(u){return /^https?:\/\//i.test(u)?u:"#"}
 var views=["home","intro","quiz","result","records","method"];
 var cur="now", rset="now";
 // Quiz answers live in memory only, so they survive moving between views but not a page reload.
+// A finished quiz is also sent, anonymously, to the answer tally (a Google Sheet; see sendTally) unless the visitor opts out.
 var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
+function issueOf(k){return ISSUES.filter(function(x){return x.k===k})[0]}
 function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
   document.querySelector(".site-share").hidden=(v==="result"); // the result page has its own share section
   $("about").hidden=(v!=="home"); // the static About text sits under home only, so quiz views stay focused
@@ -37,6 +39,18 @@ function track(path,title,event){
     if(gc&&gc.count){try{gc.count({path:path,title:title,event:!!event})}catch(e){}return}
     if(++tries<20)setTimeout(send,500);
   })();
+}
+// Anonymous answer tally: the Google Apps Script web app URL from scripts/tally.gs (README, "Answer tally").
+// Left empty, nothing is sent. Only the answers, the resulting scores and the top three matches go; no name, no id.
+var TALLY="https://script.google.com/macros/s/AKfycbzIpWTzaYLU31JLY2pUDvoCyq1G6GPr4WhCigcpov17U1ur_8RVEFFmRywNn4Ni0rXj1g/exec";
+var finished={all:0,now:0};
+function sendTally(u,ranked){
+  if(!TALLY||!$("q-tally").checked)return;
+  var s=S(), a=st().answers;
+  var body={quiz:s.key,name:s.name,q:s.q.map(function(x){return x[2]}),t:s.q.map(function(x){return TOPIC[x[0]]}),
+    a:s.q.map(function(x,i){return a[i]}),you:u,top:ranked.slice(0,3).map(function(r){return r.l.n}),retake:finished[cur]++?1:0};
+  // text/plain and no-cors keep this a "simple" request, which Apps Script accepts without a CORS preflight.
+  try{fetch(TALLY,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)}).catch(function(){})}catch(e){}
 }
 var firstRoute=true;
 function focusHeading(v){
@@ -101,7 +115,7 @@ function renderQ(){
   var s=S(),t=st(),q=s.q[t.idx];
   $("quiz-h").textContent=s.name+" quiz";
   $("q-count").textContent="Question "+(t.idx+1)+" of "+s.q.length;
-  $("q-topic").textContent=TOPIC[q[0]];
+  $("q-topic").textContent=TOPIC[q[0]]+(q[3]?" · "+issueOf(q[3]).name:"");
   $("q-bar").style.width=(t.idx/s.q.length*100)+"%";
   $("q-text").textContent=q[2];
   var box=$("q-opts"); box.innerHTML="";
@@ -174,7 +188,7 @@ function renderResult(){
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
   var b=ranked[0], html='';
   // Count each finished quiz once, with its top match, so the dashboard shows completions and who people land on.
-  if(!st().counted){st().counted=true;track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true)}
+  if(!st().counted){st().counted=true;track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true);sendTally(u,ranked)}
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
@@ -272,12 +286,16 @@ function leaderHTML(l){
     return '<li><div class="said"><span class="lbl">Said they would</span>'+esc(p[0])+'</div>'+
       '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office yet. Counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
   var nu=uCount(l);
+  // Where they stand on the issues voters rank highest, in poll order. Research material only; not used in matching.
+  var iss=(l.iss||[]).slice().sort(function(a,b){return ISSUES.indexOf(issueOf(a[0]))-ISSUES.indexOf(issueOf(b[0]))}).map(function(x){
+    return '<li><span class="tg '+esc(x[1])+'">'+esc(x[1])+'</span><span><b>'+esc(issueOf(x[0]).name)+':</b> '+esc(x[2])+'</span></li>'}).join('');
   var con=l.contra.map(function(c){return '<li><span class="tg I">I</span><span>'+esc(c)+'</span></li>'}).join('');
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
     '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a> · <a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
+    (iss?'<div><h5>On the issues voters rank highest</h5><ul class="rec">'+iss+'</ul><p class="iss-note">Issues in the order voters ranked them (Infotrak, December 2025). Shown for reference; not used in matching. <a href="#method">Why</a></p></div>':'')+
     (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+
     '<div><h5>Contradictions in the record</h5><ul class="rec">'+con+'</ul></div>'+

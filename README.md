@@ -42,7 +42,23 @@ Each placement is pulled toward the neutral midpoint by its confidence (`H` x1, 
 
 ## Running it
 
-Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz answers are kept in memory only. Visits are counted with [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data) at siasacompass.goatcounter.com: one page view per hash route, plus events for quiz started, quiz finished and top match (`track()` in `js/app.js`). Quiz answers themselves are never sent.
+Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz answers are kept in memory only. Visits are counted with [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data) at siasacompass.goatcounter.com: one page view per hash route, plus events for quiz started, quiz finished and top match (`track()` in `js/app.js`). Finished quizzes also go to the anonymous answer tally (below) unless the visitor unticks the box under the questions.
+
+## Answer tally
+
+Each finished quiz is sent to a Google Sheet as one anonymous row: the date (no time), whether it was a retake in the same visit, the answer to every question (1 = strongly disagree to 5 = strongly agree), the visitor's score per dimension, and their top three matches. No name, IP address or identifier is sent or stored. The sender is `sendTally()` in `js/app.js`; the receiver is `scripts/tally.gs`.
+
+The sheet gets two tabs per quiz. **"<quiz> answers"** has the raw rows (filter it to see, for example, how people whose top match was a given leader answered). **"<quiz> summary"** updates itself: for every question, how many picked each option and the % who agree, neutral and disagree; the average position per dimension; and how often each leader comes out first. If the questions change, new answers go to a fresh pair of tabs so old and new columns never mix.
+
+Setup (once):
+
+1. Go to [sheets.new](https://sheets.new) (signed in to Google) and name the sheet, for example "Siasa Compass tally".
+2. **Extensions > Apps Script.** Delete what is in the editor, paste all of `scripts/tally.gs`, and save.
+3. **Deploy > New deployment.** Click the gear, choose **Web app**. Set *Execute as*: **Me**, and *Who has access*: **Anyone**. Click **Deploy**, then **Authorize access** and allow it (on the "Google hasn't verified this app" screen, choose *Advanced > Go to … (unsafe)*: it is your own script).
+4. Copy the **Web app URL** (ends in `/exec`) and paste it into `var TALLY=""` in `js/app.js`. Bump the `?v=` on `js/app.js` in `index.html`, rebuild `dist` and publish.
+5. Take a quiz on the live site. The answers and summary tabs appear after the first finished quiz.
+
+If you edit `tally.gs` later, use **Deploy > Manage deployments > Edit > Version: New version** so the URL stays the same. The URL is public by nature; the script rejects anything that is not a well-formed quiz result, but someone could still post fake results, so treat the numbers as a self-selected sample of visitors, not a poll.
 
 ## Layout
 
@@ -82,7 +98,13 @@ Leaders are objects in the `L` array in `js/data.js`:
 - `rec` and `said` lines use the tags above. Every `U` line is counted on the profile as a claim not yet re-checked.
 - Do not guess. If a fact is not sourced, tag it `U` or leave it out.
 
-To add quiz questions, edit `QA` (Every leader) or `QN` (Current climate): `[dimension key, direction, text]`, where direction `1` means agreeing pushes toward the high end and `-1` toward the low end. Keep at least two questions per dimension, worded in both directions.
+To add quiz questions, edit `QA` (Every leader) or `QN` (Current climate): `[dimension key, direction, text, issue key (optional)]`, where direction `1` means agreeing pushes toward the high end and `-1` toward the low end. Keep at least two questions per dimension, worded in both directions. The optional issue key (from `ISSUES`) is shown next to the topic during the quiz and does not affect scoring. Changing question text starts a fresh pair of tabs in the answer tally.
+
+### Voter issues
+
+`ISSUES` in `js/data.js` lists what Kenyans say decides their vote, in the order and with the shares from Infotrak's December 2025 poll (cost of living 46%, corruption 27%, healthcare 27%, education 26%, youth jobs 25%, leadership integrity 23%, economic management 21%, security 16%, devolution 11%, affordable housing 3%), plus `patronage` (handouts and ethnic appeals; not polled). The Current climate questions are written around these, and the Method page explains how identity and money factors are treated: never matched on, but documented conduct shows in profiles.
+
+A leader's `iss` field records where they stand on those issues: `[issue key, tag, text]`, using the same tags and the same rule (no `S` or `H` for someone in power now). It is research material shown on profiles and leader pages, never used in matching. Add the sources for each line to `src`.
 
 Then run the validator.
 

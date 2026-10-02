@@ -11,6 +11,7 @@ var err = function (msg) { errors.push(msg); };
 var CONFS = ["H", "M", "L"];
 var TAGS = ["D", "A", "I", "U", "S"];
 var dimKeys = data.DIMS.map(function (d) { return d.k; });
+var issueKeys = (data.ISSUES || []).map(function (x) { return x.k; });
 
 function isNum(x) { return typeof x === "number" && isFinite(x); }
 function isHttp(u) { return typeof u === "string" && /^https?:\/\/\S+$/i.test(u); }
@@ -61,6 +62,13 @@ data.L.forEach(function (l, i) {
     if (p[3] != null && p[3] !== "X") err(at + "fourth element must be omitted or 'X' (contradicted by the record), got " + JSON.stringify(p[3]) + ".");
     if (p[3] === "X" && !p[1]) err(at + "marked 'X' (contradicted) but has no 'did' text showing the contradiction.");
   });
+  (l.iss || []).forEach(function (x, j) {
+    var at = who + ", issue line " + (j + 1) + ": ";
+    if (issueKeys.indexOf(x[0]) < 0) err(at + "unknown issue " + JSON.stringify(x[0]) + " (see ISSUES).");
+    if (TAGS.concat("H").indexOf(x[1]) < 0) err(at + "tag must be one of D, A, I, U, S, H, got " + JSON.stringify(x[1]) + ".");
+    if ((x[1] === "S" || x[1] === "H") && l.inPower && !l.limitedPower) err(at + "stated position or hearsay on a leader currently in power.");
+    if (!nonEmpty(x[2])) err(at + "missing text.");
+  });
   if (l.inPower && !l.exec) err(who + ": inPower is set but exec is not.");
   if (l.limitedPower && !l.inPower) err(who + ": limitedPower is set but inPower is not.");
   if (!Array.isArray(l.contra) || !l.contra.length) err(who + ": 'contra' needs at least one line (use \"Not assessed.\").");
@@ -81,6 +89,8 @@ data.L.forEach(function (l, i) {
     if (dimKeys.indexOf(q[0]) < 0) { err(at + "unknown dimension " + JSON.stringify(q[0]) + "."); return; }
     if (q[1] !== 1 && q[1] !== -1) err(at + "direction must be 1 or -1, got " + JSON.stringify(q[1]) + ".");
     if (!nonEmpty(q[2])) err(at + "missing text.");
+    if (q[3] != null && issueKeys.indexOf(q[3]) < 0) err(at + "unknown issue " + JSON.stringify(q[3]) + " (see ISSUES).");
+    if (q[2] && q[2].length > 300) err(at + "longer than 300 characters (the answer tally rejects it).");
     var p = per[q[0]] = per[q[0]] || { "1": 0, "-1": 0 };
     if (q[1] === 1 || q[1] === -1) p[q[1]]++;
   });
