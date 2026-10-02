@@ -14,7 +14,42 @@ var SIASA = require(path.join(root, "js", "data.js"));
 var DIMS = SIASA.DIMS, CONF = SIASA.CONF, L = SIASA.L;
 var SITE = "https://siasacompass.co.ke";
 var TODAY = new Date().toISOString().slice(0, 10);
-var V = { css: "9" }; // keep in step with the ?v= on css/styles.css in index.html
+var V = { css: "10" }; // keep in step with the ?v= on css/styles.css in index.html
+
+// Wikipedia page and Wikidata ID for each leader, so search engines can tie the page to the right person.
+// Omtatah and Salasya have no English Wikipedia page yet, so they have no entry.
+var IDENT = {
+  "ruto":["William_Ruto","Q195725"],
+  "kindiki":["Kithure_Kindiki","Q47514805"],
+  "gachagua":["Rigathi_Gachagua","Q47494765"],
+  "kalonzo":["Kalonzo_Musyoka","Q1395018"],
+  "matiangi":["Fred_Matiang%27i","Q16866738"],
+  "karua":["Martha_Karua","Q3295164"],
+  "maraga":["David_Maraga","Q27825245"],
+  "bmwangi":["Boniface_Mwangi","Q2411298"],
+  "sifuna":["Edwin_Sifuna","Q114753735"],
+  "nyoro":["Ndindi_Nyoro","Q47494428"],
+  "babu":["Babu_Owino","Q47494255"],
+  "wanga":["Gladys_Wanga","Q47489052"],
+  "millie":["Millie_Odhiambo","Q47495077"],
+  "nyamu":["Karen_Nyamu","Q123670350"],
+  "omanga":["Millicent_Omanga","Q47516275"],
+  "waiguru":["Anne_Waiguru","Q16886393"],
+  "jomo":["Jomo_Kenyatta","Q173563"],
+  "moi":["Daniel_arap_Moi","Q193492"],
+  "kibaki":["Mwai_Kibaki","Q57291"],
+  "uhuru":["Uhuru_Kenyatta","Q196070"],
+  "raila":["Raila_Odinga","Q57657"],
+  "jaramogi":["Jaramogi_Oginga_Odinga","Q645228"],
+  "mboya":["Tom_Mboya","Q733180"],
+  "saitoti":["George_Saitoti","Q733817"],
+  "ngala":["Ronald_Ngala","Q7365142"],
+  "matiba":["Kenneth_Matiba","Q6390454"],
+  "kaggia":["Bildad_Kaggia","Q860562"],
+  "jmk":["Josiah_Mwangi_Kariuki","Q1708650"],
+  "pinto":["Pio_Gama_Pinto","Q3388887"],
+  "maathai":["Wangar%C4%A9_Maathai","Q46795"]
+};
 
 function esc(x) {
   return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) {
@@ -94,11 +129,18 @@ function foot() {
     '<script data-goatcounter="https://siasacompass.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>\n</body>\n</html>\n';
 }
 
+function personNode(l, url) {
+  var p = { "@type": "Person", "@id": SITE + url + "#person", name: l.n, description: l.role, nationality: { "@type": "Country", name: "Kenya" } };
+  var w = IDENT[l.id];
+  if (w) p.sameAs = ["https://en.wikipedia.org/wiki/" + w[0], "https://www.wikidata.org/wiki/" + w[1]];
+  return p;
+}
+
 function leaderPage(l) {
   var nu = SIASA.uCount(l);
   var dimKeys = Object.keys(l.dims);
   var url = "/leaders/" + l.id + "/";
-  var desc = trim(l.n + ": " + l.role + " Their record and positions, what they said and what they did, with sources. Siasa Compass, Kenya 2027.", 158);
+  var desc = trim(l.n + "'s record and positions: what they said, what they did, with sources. " + l.role, 158);
   var modified = l.reviewed || TODAY;
   var ld = {
     "@context": "https://schema.org",
@@ -108,7 +150,7 @@ function leaderPage(l) {
         inLanguage: "en-KE", dateModified: modified, isPartOf: { "@id": SITE + "/#website" },
         mainEntity: { "@id": SITE + url + "#person" }
       },
-      { "@type": "Person", "@id": SITE + url + "#person", name: l.n, description: l.role },
+      personNode(l, url),
       {
         "@type": "BreadcrumbList", itemListElement: [
           { "@type": "ListItem", position: 1, name: "Siasa Compass", item: SITE + "/" },

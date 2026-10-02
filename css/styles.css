@@ -358,3 +358,9 @@ noscript .notice{margin-top:0;margin-bottom:24px}
 }
 .xnote{margin:.35rem 0 0;font-size:.85em;font-style:italic;opacity:.8}
 .notice.from{margin:0 0 22px;color:var(--ink)}
+
+.faq{margin-top:64px}
+.faq h2{font-size:1.3rem;margin-bottom:16px}
+.faq details{border-top:1px solid var(--line-strong);padding:14px 0}
+.faq summary{cursor:pointer;font-weight:600}
+.faq p{margin-top:8px;color:var(--muted);max-width:62ch}
