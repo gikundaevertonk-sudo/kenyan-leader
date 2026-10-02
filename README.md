@@ -16,12 +16,12 @@ There are two quizzes: **Every leader** (independence generation to today) and *
 ## Evidence rules
 
 - **Actions come first.** Where there is action evidence on a dimension (laws signed, votes, decisions, spending, appointments, court cases), it sets the placement.
-- **Words can count, with less weight.** Where the record is thin, documented statements (manifestos, rally speeches, interviews reported by the press) may place a leader, tagged `S`. In the overall match an `S` dimension counts 60% as much as an action-based one (`BASIS` in `js/app.js`).
+- **Words can count, with less weight.** Where the record is thin, documented statements (manifestos, rally speeches, interviews reported by the press) may place a leader, tagged `S`. In the overall match an `S` dimension counts 60% as much as an action-based one (`BASIS` in `js/score.js`).
 - **Contradicted words are thrown out.** If the record contradicts a promise, it gets no `S` placement. Show it in `said` with a fourth element `"X"` so the gap is visible.
 - **Little power of their own? Some grace.** If a leader holds office but with little independent power (the Deputy President), set `limitedPower: 1` next to `inPower: 1`. Their words can then place them, at the usual lower weight.
 - **Real power now? Only actions.** Leaders currently holding executive power (`inPower: 1` without `limitedPower`: the President, sitting governors) never get `S` placements. The app drops them.
 - **Labels are not evidence.** Self-descriptions and party labels never count.
-- **Gaps are shown.** A leader needs placements on at least four dimensions (`MIN_DIMS` in `js/app.js`) to appear in matches. Others stay in Records.
+- **Gaps are shown.** A leader needs placements on at least four dimensions (`MIN_DIMS` in `js/score.js`) to appear in matches. Others stay in Records.
 
 ### Tags
 
@@ -38,11 +38,11 @@ Each placement also has a confidence: `H` (high), `M` (medium) or `L` (low).
 
 ### How matching works
 
-Each placement is pulled toward the neutral midpoint by its confidence (`H` x1, `M` x0.8, `L` x0.5), so thin evidence counts for less across leaders. Per dimension, overlap is 100% at the same point and falls linearly to 0% at a gap of 3 points. The overall bar is the average overlap, and the main figure shown is how many dimensions the user is within 1 point on. The code is in `js/app.js` (`compare`) and the plain-language version is on the Method page in `index.html`. Keep the two in step.
+Each placement is pulled toward the neutral midpoint by its confidence (`H` x1, `M` x0.8, `L` x0.5), so thin evidence counts for less across leaders. Per dimension, overlap is 100% at the same point and falls linearly to 0% at a gap of 3 points. The overall bar is the average overlap, and the main figure shown is how many dimensions the user is within 1 point on. The code is in `js/score.js` (`compare`) and the plain-language version is on the Method page in `index.html`. Keep the two in step.
 
 ## Running it
 
-Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz answers are kept in memory only. Visits are counted with [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data) at siasacompass.goatcounter.com: one page view per hash route, plus events for quiz started, quiz finished and top match (`track()` in `js/app.js`). Finished quizzes also go to the anonymous answer tally (below) unless the visitor unticks the box under the questions.
+Open `index.html` in a browser. No server or install needed. Views use hash routes (`#home`, `#quiz-all`, `#quiz-now`, `#result-all`, `#result-now`, `#records`, `#method`, `#leader-<id>`), so each leader has a shareable link such as `index.html#leader-ruto`. Quiz progress is kept in `sessionStorage` for the open tab, so a reload does not lose a half-finished quiz; nothing is kept after the tab closes. Visits are counted with [GoatCounter](https://www.goatcounter.com/) (no cookies, no personal data) at siasacompass.goatcounter.com: one page view per hash route, plus events for quiz started, quiz finished and top match (`track()` in `js/app.js`). Finished quizzes also go to the anonymous answer tally (below) unless the visitor unticks the box under the questions.
 
 ## Answer tally
 
@@ -66,10 +66,14 @@ If you edit `tally.gs` later, use **Deploy > Manage deployments > Edit > Version
 index.html              page markup and the Method text
 css/styles.css          styles
 js/data.js              dimensions, questions, quiz sets and leaders (global SIASA)
-js/app.js               app logic (routing, quiz, scoring, rendering)
+js/score.js             scoring (global SiasaScore; also loads in Node for the tests)
+js/app.js               app logic (routing, quiz, rendering)
+scripts/build-all.js      runs the checks and every build below except share images
 scripts/validate-data.js  checks js/data.js
+scripts/test-scoring.js   checks js/score.js and snapshots the top matches for fixed answer sets
 scripts/build-single.js   builds dist/siasa-compass.html (one shareable file)
-scripts/build-leaders.js  builds leaders/ (one crawlable page per leader) and sitemap.xml
+scripts/build-leaders.js  builds leaders/, compare/ (side-by-side pages), sitemap.xml and llms.txt
+scripts/indexnow.js       tells Bing and other IndexNow engines the pages changed (run after publishing)
 scripts/build-share.js    builds r/<id>/ share pages and img/share/<id>.jpg link previews (needs Chrome or Edge, and network)
 ```
 
@@ -110,13 +114,25 @@ Then run the validator.
 
 ## Scripts
 
-Both need Node.js and have no dependencies.
+All need Node.js and have no dependencies. After any edit, run everything at once:
+
+```
+node scripts/build-all.js
+```
+
+It stops at the first failure. The pieces:
 
 ```
 node scripts/validate-data.js
 ```
 
-Fails (exit code 1) with clear messages on: missing or duplicate ids, dimension values outside -2..2, confidence not H/M/L, record tags not D/A/I/U/S, sources without a title or an http(s) URL, questions with an unknown dimension or a direction other than 1 or -1, a malformed `reviewed` date, `S` placements on leaders currently in power, said/did lines marked `"X"` without a "did" side, and dimensions with fewer than two questions or only one direction in a quiz. It also prints the number of `U`-tagged lines per leader.
+Fails (exit code 1) with clear messages on: missing or duplicate ids, dimension values outside -2..2, confidence not H/M/L, record tags not D/A/I/U/S, sources without a title or an http(s) URL, questions with an unknown dimension or a direction other than 1 or -1, a malformed `reviewed` date, `S` placements on leaders currently in power, said/did lines marked `"X"` without a "did" side, and dimensions with fewer than two questions or only one direction in a quiz. It also prints the number of `U`-tagged lines per leader, and warnings (not failures) for current leaders without a `reviewed` date, leaders with fewer than two sources, and current leaders left out of matches.
+
+```
+node scripts/test-scoring.js
+```
+
+Checks the scoring rules (confidence shrinking, the 60% and 40% weights, the four-dimension minimum) and compares the top three matches for a few fixed answer sets with `scripts/scoring-snapshot.json`. If a data edit changes them on purpose, run it with `--update`.
 
 ```
 node scripts/build-single.js
@@ -126,7 +142,9 @@ Inlines the CSS and JavaScript into `dist/siasa-compass.html`, a single file tha
 
 ## Leader pages (search visibility)
 
-The app itself is one page with hash routes, which search engines do not index per leader. `node scripts/build-leaders.js` writes a plain HTML page for every leader (`leaders/<id>/index.html`), a directory (`leaders/index.html`) and `sitemap.xml`, all from `js/data.js`. The pages need no JavaScript and carry their own title, description, canonical link and structured data, so a search for a leader's name can land on them. The generated files are committed, so **rerun the script and commit them whenever `js/data.js` changes**. If you bump the `?v=` on `css/styles.css` in `index.html`, bump `V.css` in the script too. After publishing, submit `https://siasacompass.co.ke/sitemap.xml` in Google Search Console.
+The app itself is one page with hash routes, which search engines do not index per leader. `node scripts/build-leaders.js` writes a plain HTML page for every leader (`leaders/<id>/index.html`), a directory (`leaders/index.html`) and `sitemap.xml`, all from `js/data.js`. The pages need no JavaScript and carry their own title, description, canonical link and structured data, so a search for a leader's name can land on them. The generated files are committed, so **rerun the script and commit them whenever `js/data.js` changes**. If you bump the `?v=` on `css/styles.css` in `index.html`, bump `V.css` in the script too. After publishing, submit `https://siasacompass.co.ke/sitemap.xml` in Google Search Console and Bing Webmaster Tools, and run `node scripts/indexnow.js` (the key file `cef6021f15ec780e59844a617a87a392.txt` at the root must stay published).
+
+`compare/<a>-vs-<b>/` pages answer searches such as "Ruto vs Gachagua": every pair of current leaders with enough evidence to be matched, plus the pairs in `HISTORIC` in the script. Each shows both placements dimension by dimension, with the evidence one tap away. `llms.txt` is a plain summary for AI assistants.
 
 ## Corrections
 

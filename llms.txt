@@ -1,0 +1,44 @@
+# Siasa Compass
+
+> A free Kenya politics quiz (siasacompass.co.ke). It compares a visitor's answers on six policy dimensions with the documented records of 32 Kenyan leaders, from independence to the 2027 election race. Actions (laws, votes, decisions, court cases) count most; stated positions count less; every claim is tagged by evidence and linked to sources. It does not rank, predict or endorse anyone.
+
+## Main pages
+
+- [Quiz](https://siasacompass.co.ke/): Current climate and Every leader quizzes
+- [Leader profiles](https://siasacompass.co.ke/leaders/): what each leader said and did, with sources
+- [Compare leaders](https://siasacompass.co.ke/compare/): two records side by side
+
+## Leaders
+
+- [William Ruto](https://siasacompass.co.ke/leaders/ruto/): President since 2022. Deputy President 2013 to 2022. Party: UDA.
+- [Kithure Kindiki](https://siasacompass.co.ke/leaders/kindiki/): Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.
+- [Rigathi Gachagua](https://siasacompass.co.ke/leaders/gachagua/): Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.
+- [Kalonzo Musyoka](https://siasacompass.co.ke/leaders/kalonzo/): Vice President 2008 to 2013. Former minister. Wiper leader. United Opposition principal.
+- [Fred Matiang'i](https://siasacompass.co.ke/leaders/matiangi/): Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.
+- [Martha Karua](https://siasacompass.co.ke/leaders/karua/): Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.
+- [David Maraga](https://siasacompass.co.ke/leaders/maraga/): Chief Justice 2016 to 2021. United Green Movement (UGM) presidential candidate for 2027.
+- [Okiya Omtatah](https://siasacompass.co.ke/leaders/omtatah/): Busia Senator since 2022. Public-interest litigant. Leader of the National Reconstruction Alliance. Weighing a 2027 presidential run.
+- [Boniface Mwangi](https://siasacompass.co.ke/leaders/bmwangi/): Photojournalist and human rights activist. 2027 presidential aspirant.
+- [Edwin Sifuna](https://siasacompass.co.ke/leaders/sifuna/): Nairobi Senator since 2017. Removed as ODM Secretary-General. Linda Mwananchi presidential candidate.
+- [Ndindi Nyoro](https://siasacompass.co.ke/leaders/nyoro/): Kiharu MP. Former Budget Committee chair. Leader of the People's Party since Aug 2026.
+- [Babu Owino](https://siasacompass.co.ke/leaders/babu/): Embakasi East MP since 2017. Nairobi governor aspirant.
+- [Peter Salasya](https://siasacompass.co.ke/leaders/salasya/): Mumias East MP since 2022. 2027 presidential aspirant.
+- [Gladys Wanga](https://siasacompass.co.ke/leaders/wanga/): Homa Bay Governor since 2022. Part of the ratified ODM leadership team.
+- [Millie Odhiambo](https://siasacompass.co.ke/leaders/millie/): Suba North MP. National Assembly Minority Chief Whip. ODM.
+- [Karen Nyamu](https://siasacompass.co.ke/leaders/nyamu/): Nominated Senator (UDA) since 2022.
+- [Millicent Omanga](https://siasacompass.co.ke/leaders/omanga/): Former nominated senator. Joined DCP in March 2026. Nairobi Woman Rep aspirant.
+- [Anne Waiguru](https://siasacompass.co.ke/leaders/waiguru/): Kirinyaga Governor since 2017. Former Devolution CS.
+- [Jomo Kenyatta](https://siasacompass.co.ke/leaders/jomo/): Prime Minister 1963. President 1964 to 1978. KANU. Died 1978.
+- [Daniel arap Moi](https://siasacompass.co.ke/leaders/moi/): Vice President 1967 to 1978. President 1978 to 2002. KANU. Died 2020.
+- [Mwai Kibaki](https://siasacompass.co.ke/leaders/kibaki/): Finance Minister 1969 to 1982. Vice President 1978 to 1988. President 2002 to 2013. Died 2022.
+- [Uhuru Kenyatta](https://siasacompass.co.ke/leaders/uhuru/): Deputy Prime Minister 2008 to 2013. President 2013 to 2022. Jubilee. Retired; his record in office is complete.
+- [Raila Odinga](https://siasacompass.co.ke/leaders/raila/): Energy Minister 2001 to 2002. Roads Minister 2003 to 2005. Prime Minister 2008 to 2013. ODM. Died October 2025.
+- [Jaramogi Oginga Odinga](https://siasacompass.co.ke/leaders/jaramogi/): Vice President 1964 to 1966. Founded KPU and later co-founded FORD. Died 1994.
+- [Tom Mboya](https://siasacompass.co.ke/leaders/mboya/): Trade unionist. Justice Minister 1963 to 1964. Economic Planning Minister 1964 to 1969. KANU Secretary-General. Assassinated 1969.
+- [George Saitoti](https://siasacompass.co.ke/leaders/saitoti/): Finance Minister 1983 to 1993. Vice President 1989 to 1997 and 1999 to 2002. Internal Security Minister 2008 to 2012. Died 2012.
+- [Ronald Ngala](https://siasacompass.co.ke/leaders/ngala/): KADU leader 1960 to 1964. Leader of Government Business before independence. Later KANU minister. Died 1972.
+- [Kenneth Matiba](https://siasacompass.co.ke/leaders/matiba/): Minister under Moi until 1988. FORD-Asili leader. 1992 presidential runner-up. Died 2018.
+- [Bildad Kaggia](https://siasacompass.co.ke/leaders/kaggia/): One of the Kapenguria Six. MP and Assistant Minister 1963 to 1964. KPU Vice-President. Died 2005.
+- [J.M. Kariuki](https://siasacompass.co.ke/leaders/jmk/): Nyandarua North MP and Assistant Minister. Former Mau Mau detainee. Murdered 1975.
+- [Pio Gama Pinto](https://siasacompass.co.ke/leaders/pinto/): Journalist and KANU MP. Assassinated 1965.
+- [Wangari Maathai](https://siasacompass.co.ke/leaders/maathai/): Founder of the Green Belt Movement. Tetu MP and Assistant Environment Minister 2003 to 2005. Nobel Peace laureate. Died 2011.

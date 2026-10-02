@@ -2,7 +2,9 @@
 // Builds a plain, crawlable page for every leader in js/data.js, so a search for a name can land on the site.
 //   leaders/index.html          directory of all leaders
 //   leaders/<id>/index.html     one page per leader (record, said/did, sources)
-//   sitemap.xml                 lists the home page, the directory and every leader page
+//   compare/index.html          directory of side-by-side comparisons
+//   compare/<a>-vs-<b>/         one page per pair (PAIRS below): both records, dimension by dimension
+//   sitemap.xml                 lists the home page, the directories, every leader page and every comparison
 // The pages need no JavaScript. Run it after editing js/data.js, then commit the generated files:
 //   node scripts/build-leaders.js
 // No dependencies.
@@ -14,7 +16,7 @@ var SIASA = require(path.join(root, "js", "data.js"));
 var DIMS = SIASA.DIMS, CONF = SIASA.CONF, L = SIASA.L;
 var SITE = "https://siasacompass.co.ke";
 var TODAY = new Date().toISOString().slice(0, 10);
-var V = { css: "11" }; // keep in step with the ?v= on css/styles.css in index.html
+var V = { css: "12" }; // keep in step with the ?v= on css/styles.css in index.html
 
 // Wikipedia page and Wikidata ID for each leader, so search engines can tie the page to the right person.
 // Omtatah and Salasya have no English Wikipedia page yet, so they have no entry.
@@ -138,11 +140,101 @@ function personNode(l, url) {
 
 function issueIdx(k) { return SIASA.ISSUES.map(function (x) { return x.k; }).indexOf(k); }
 
+// Side-by-side pages answer searches such as "Ruto vs Gachagua". Every pair of current leaders with enough evidence
+// to be matched (four or more dimensions, as MIN_DIMS in js/app.js), plus a few much-searched pairs from the past.
+var byId = {};
+L.forEach(function (l) { byId[l.id] = l; });
+var MIN_DIMS = 4;
+var HISTORIC = [["ruto", "raila"], ["ruto", "uhuru"], ["uhuru", "raila"], ["kibaki", "raila"], ["kibaki", "moi"], ["jomo", "moi"], ["jomo", "jaramogi"], ["uhuru", "kibaki"]];
+var PAIRS = (function () {
+  var cur = L.filter(function (l) { return l.now && Object.keys(l.dims).length >= MIN_DIMS; }), out = [];
+  cur.forEach(function (a, i) { cur.slice(i + 1).forEach(function (b) { out.push([a.id, b.id]); }); });
+  return out.concat(HISTORIC.filter(function (p) { return byId[p[0]] && byId[p[1]]; }));
+})();
+function pairPath(p) { return "/compare/" + p[0] + "-vs-" + p[1] + "/"; }
+function pairsOf(id) { return PAIRS.filter(function (p) { return p[0] === id || p[1] === id; }); }
+function shortName(l) { return l.n.split(" ").slice(-1)[0]; }
+
+function comparePage(p) {
+  var a = byId[p[0]], b = byId[p[1]], url = pairPath(p);
+  var keys = DIMS.map(function (d) { return d.k; }).filter(function (k) { return a.dims[k] || b.dims[k]; });
+  var cell = function (l, k) {
+    var d = l.dims[k];
+    if (!d) return '<td class="none">No record</td>';
+    return "<td><b>" + esc(words(k, d[0])) + "</b>" + (d[3] === "S" || d[3] === "H" ? ' <span class="tg ' + d[3] + '">' + d[3] + "</span>" : "") +
+      '<details><summary>Why</summary><p>' + esc(d[2]) + " <i>(" + esc(CONF[d[1]]).toLowerCase() + " confidence)</i></p></details></td>";
+  };
+  var rows = keys.map(function (k) {
+    return '<tr><th scope="row">' + esc(dimOf(k).name) + "</th>" + cell(a, k) + cell(b, k) + "</tr>";
+  }).join("");
+  // Plain-language summary: where both are placed, which dimensions are a point or more apart.
+  var both = keys.filter(function (k) { return a.dims[k] && b.dims[k]; });
+  var apart = both.filter(function (k) { return Math.abs(a.dims[k][0] - b.dims[k][0]) >= 1; });
+  var close = both.filter(function (k) { return Math.abs(a.dims[k][0] - b.dims[k][0]) < 1; });
+  var list = function (ks) { return ks.map(function (k) { return dimOf(k).name.toLowerCase(); }).join(", "); };
+  var sum = !both.length ? "Their records do not overlap on any dimension yet." :
+    (apart.length ? "They differ most on " + list(apart) + "." : "Their records point the same way on every dimension both are placed on.") +
+    (close.length && apart.length ? " They sit close on " + list(close) + "." : "");
+  var iss = SIASA.ISSUES.filter(function (x) {
+    return (a.iss || []).some(function (y) { return y[0] === x.k; }) && (b.iss || []).some(function (y) { return y[0] === x.k; });
+  }).map(function (x) {
+    var line = function (l) { var y = l.iss.filter(function (z) { return z[0] === x.k; })[0]; return '<p><b>' + esc(shortName(l)) + ':</b> <span class="tg ' + esc(y[1]) + '">' + esc(y[1]) + "</span> " + esc(y[2]) + "</p>"; };
+    return "<li><h3>" + esc(x.name) + "</h3>" + line(a) + line(b) + "</li>";
+  }).join("");
+  var title = a.n + " vs " + b.n + ": Records Compared";
+  var desc = trim(a.n + " vs " + b.n + ": where their records agree and differ on the economy, land, social values, institutions, style and civil liberties. " + sum, 158);
+  var ld = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "WebPage", "@id": SITE + url, url: SITE + url, name: title, description: desc, inLanguage: "en-KE",
+        dateModified: [a.reviewed, b.reviewed].filter(Boolean).sort().pop() || TODAY, isPartOf: { "@id": SITE + "/#website" },
+        about: [{ "@id": SITE + "/leaders/" + a.id + "/#person" }, { "@id": SITE + "/leaders/" + b.id + "/#person" }] },
+      personNode(a, "/leaders/" + a.id + "/"), personNode(b, "/leaders/" + b.id + "/"),
+      { "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Siasa Compass", item: SITE + "/" },
+        { "@type": "ListItem", position: 2, name: "Compare", item: SITE + "/compare/" },
+        { "@type": "ListItem", position: 3, name: a.n + " vs " + b.n, item: SITE + url }
+      ] }
+    ]
+  };
+  var more = pairsOf(a.id).concat(pairsOf(b.id)).filter(function (q) { return q !== p; }).slice(0, 8).map(function (q) {
+    return '<li><a href="' + pairPath(q) + '">' + esc(byId[q[0]].n) + " vs " + esc(byId[q[1]].n) + "</a></li>";
+  }).join("");
+  return head({ title: trim(title + " | Siasa Compass", 70), desc: desc, path: url, ld: ld }) +
+    '<main class="wrap lp">\n' +
+    '<nav class="crumbs" aria-label="Breadcrumb"><a href="/compare/">Compare</a> / <span>' + esc(shortName(a)) + " vs " + esc(shortName(b)) + "</span></nav>\n" +
+    "<h1>" + esc(a.n) + " vs " + esc(b.n) + "</h1>\n" +
+    '<p class="lede">' + esc(sum) + "</p>\n" +
+    '<div class="cta"><a class="btn" href="/#quiz-' + (a.now && b.now ? "now" : "all") + '">Where do you land?</a></div>\n' +
+    '<section><h2>Dimension by dimension</h2><div class="tw2"><table class="cmpt"><thead><tr><th></th><th scope="col"><a href="/leaders/' + esc(a.id) + '/">' + esc(shortName(a)) + '</a></th><th scope="col"><a href="/leaders/' + esc(b.id) + '/">' + esc(shortName(b)) + "</a></th></tr></thead><tbody>" + rows + "</tbody></table></div>" +
+    '<p class="iss-note">Placed mainly from what each did; <span class="tg S">S</span> marks stated positions and <span class="tg H">H</span> hearsay, which count less. <a href="/#method">Method</a>.</p></section>\n' +
+    (iss ? '<details class="lfold"><summary>On the issues voters rank highest</summary><ul class="vsi">' + iss + "</ul></details>\n" : "") +
+    '<details class="lfold"><summary>Who they are</summary><p><b>' + esc(a.n) + ":</b> " + esc(a.role) + " " + esc(a.suggests) + "</p><p><b>" + esc(b.n) + ":</b> " + esc(b.role) + " " + esc(b.suggests) + "</p></details>\n" +
+    '<section><h2>Full records</h2><ul class="olist"><li><a href="/leaders/' + esc(a.id) + '/">' + esc(a.n) + '</a></li><li><a href="/leaders/' + esc(b.id) + '/">' + esc(b.n) + "</a></li></ul></section>\n" +
+    (more ? '<details class="lfold"><summary>More comparisons</summary><ul class="olist">' + more + '</ul><p><a href="/compare/">All comparisons</a></p></details>\n' : "") +
+    "</main>\n" + foot();
+}
+
+function compareIndex() {
+  var ld = { "@context": "https://schema.org", "@graph": [
+    { "@type": "CollectionPage", "@id": SITE + "/compare/", url: SITE + "/compare/", name: "Compare Kenyan leaders side by side", inLanguage: "en-KE", isPartOf: { "@id": SITE + "/#website" } },
+    { "@type": "ItemList", itemListElement: PAIRS.map(function (p, i) { return { "@type": "ListItem", position: i + 1, name: byId[p[0]].n + " vs " + byId[p[1]].n, url: SITE + pairPath(p) }; }) }
+  ] };
+  var groups = L.filter(function (l) { return PAIRS.some(function (p) { return p[0] === l.id; }); }).map(function (l) {
+    var ps = PAIRS.filter(function (p) { return p[0] === l.id; });
+    return "<details class=\"lfold\"><summary>" + esc(l.n) + " vs …</summary><ul class=\"olist\">" + ps.map(function (p) {
+      return '<li><a href="' + pairPath(p) + '">' + esc(byId[p[1]].n) + "</a></li>";
+    }).join("") + "</ul></details>";
+  }).join("\n");
+  return head({ title: "Compare Kenyan Leaders Side by Side | Siasa Compass", desc: "Ruto vs Gachagua, Kalonzo vs Matiang'i, Ruto vs Raila and more: Kenyan leaders' records compared side by side, with sources.", path: "/compare/", ld: ld }) +
+    '<main class="wrap lp">\n<h1>Compare leaders</h1>\n<p class="lede">Two records, side by side. Pick a leader.</p>\n' + groups + "\n</main>\n" + foot();
+}
+
 function leaderPage(l) {
   var nu = SIASA.uCount(l);
   var dimKeys = Object.keys(l.dims);
   var url = "/leaders/" + l.id + "/";
-  var desc = trim(l.n + "'s record and positions: what they said, what they did, with sources. " + l.role, 158);
+  var desc = trim(l.n + ": promises next to the record, tagged by evidence, with sources. " + l.role, 158);
   var modified = l.reviewed || TODAY;
   var ld = {
     "@context": "https://schema.org",
@@ -199,28 +291,34 @@ function leaderPage(l) {
   var group = L.filter(function (x) { return x.id !== l.id && !!x.now === !!l.now; });
   var others = group.map(function (x) { return '<li><a href="/leaders/' + esc(x.id) + '/">' + esc(x.n) + "</a></li>"; }).join("");
 
-  var meta = "Last reviewed: " + (l.reviewed ? esc(l.reviewed) : "not yet recorded") + " · " + nu + " claim" + (nu === 1 ? "" : "s") + " not yet re-checked";
+  // Only what the reader needs: when it was last checked, and any claims still unchecked.
+  var meta = [l.reviewed ? "Reviewed " + esc(l.reviewed) : "", nu ? nu + " claim" + (nu === 1 ? "" : "s") + " not yet re-checked" : ""].filter(Boolean).join(" · ");
 
-  return head({ title: trim(l.n + ": Record, Positions and Sources | Siasa Compass", 70), desc: desc, path: url, ld: ld }) +
+  var vs = pairsOf(l.id).map(function (p) {
+    var o = p[0] === l.id ? p[1] : p[0];
+    return '<li><a href="' + pairPath(p) + '">vs ' + esc(byId[o].n) + "</a></li>";
+  }).join("");
+  return head({ title: trim(l.n + ": Promises vs Record | Siasa Compass", 70), desc: desc, path: url, ld: ld }) +
     '<main class="wrap lp">\n' +
     '<nav class="crumbs" aria-label="Breadcrumb"><a href="/leaders/">Leaders</a> / <span>' + esc(l.n) + "</span></nav>\n" +
     '<p class="kicker">' + esc(l.cls) + "</p>\n<h1>" + esc(l.n) + "</h1>\n" +
     '<p class="lede">' + esc(l.role) + "</p>\n" +
     '<p class="basis">' + basisLine(l).replace(/^([^.]*\.)/, "<b>$1</b>") + "</p>\n" +
-    '<p class="meta">' + meta + "</p>\n" +
+    (meta ? '<p class="meta">' + meta + "</p>\n" : "") +
     '<div class="cta"><a class="btn" href="/#quiz-' + (l.now ? "now" : "all") + '">See how your views compare</a><a class="btn ghost" href="/#leader-' + esc(encodeURIComponent(l.id)) + '">Open in the compass</a></div>\n' +
     '<section><h2>What the record shows</h2><ul class="rec">' + rec + "</ul></section>\n" +
     (iss ? '<section><h2>On the issues voters rank highest</h2><ul class="rec">' + iss + '</ul><p class="iss-note">In the order voters ranked them in Infotrak&#39;s December 2025 poll. Shown for reference; not used in matching.</p></section>\n' : "") +
     (said ? "<section><h2>" + (l.exec ? "What they said, and what they did" : "What they say they would do") + '</h2><ul class="pd">' + said + "</ul></section>\n" : "") +
     "<section><h2>Where the evidence points, by dimension</h2><div class=\"tend\">" + tend + "</div></section>\n" +
-    "<section><h2>Contradictions in the record</h2><ul class=\"rec\">" + contra + "</ul></section>\n" +
     "<section><h2>What they appear to have stood for</h2><p>" + esc(l.suggests) + "</p></section>\n" +
-    "<section><h2>Sources</h2><ul class=\"src\">" + src + "</ul></section>\n" +
-    '<section class="how"><h2>How to read this page</h2>' +
+    (vs ? '<section><h2>Compare side by side</h2><ul class="olist">' + vs + "</ul></section>\n" : "") +
+    '<details class="lfold"><summary>Contradictions in the record</summary><ul class="rec">' + contra + "</ul></details>\n" +
+    '<details class="lfold"><summary>Sources (' + (l.src || []).length + ')</summary><ul class="src">' + src + "</ul></details>\n" +
+    '<details class="lfold how"><summary>How to read this page</summary>' +
     "<p>Actions come first: laws, votes, decisions, court cases. Words count less, and only where the record is thin and not contradicted. A leader with real power now is judged on actions only. " +
     'Tags: <span class="tg D">D</span> documented, <span class="tg A">A</span> attributed to a named source, <span class="tg I">I</span> our interpretation, <span class="tg U">U</span> not yet re-checked, <span class="tg S">S</span> stated position, <span class="tg H">H</span> hearsay. ' +
-    'An allegation is not a finding. This is a research draft, not voting advice. <a href="/#method">Read the full method</a>.</p></section>\n' +
-    '<section><h2>Other leaders</h2><ul class="olist">' + others + '</ul><p><a href="/leaders/">All leaders</a></p></section>\n' +
+    'An allegation is not a finding. This is a research draft, not voting advice. <a href="/#method">Read the full method</a>.</p></details>\n' +
+    '<details class="lfold"><summary>Other leaders</summary><ul class="olist">' + others + '</ul><p><a href="/leaders/">All leaders</a></p></details>\n' +
     "</main>\n" + foot();
 }
 
@@ -250,7 +348,7 @@ function indexPage() {
   }) +
     '<main class="wrap lp">\n<p class="kicker">Research draft · records up to 30 September 2026</p>\n<h1>Kenyan leaders and 2027 contenders</h1>\n' +
     '<p class="lede">What each leader said and what they did, with sources. Actions count most. This is not voting advice.</p>\n' +
-    '<div class="cta"><a class="btn" href="/#quiz-now">Take the Current climate quiz</a><a class="btn ghost" href="/#quiz-all">Every leader quiz</a></div>\n' +
+    '<div class="cta"><a class="btn" href="/#quiz-now">Take the Current climate quiz</a><a class="btn ghost" href="/compare/">Compare two leaders</a></div>\n' +
     "<section><h2>Government, opposition and the 2027 race</h2><ul class=\"dir\">" + now.map(item).join("") + "</ul></section>\n" +
     "<section><h2>Earlier leaders</h2><ul class=\"dir\">" + past.map(item).join("") + "</ul></section>\n" +
     "</main>\n" + foot();
@@ -258,9 +356,25 @@ function indexPage() {
 
 write("leaders/index.html", indexPage());
 L.forEach(function (l) { write("leaders/" + l.id + "/index.html", leaderPage(l)); });
+// Clear old comparison pages first, so a pair that drops out of PAIRS does not linger.
+fs.rmSync(path.join(root, "compare"), { recursive: true, force: true });
+write("compare/index.html", compareIndex());
+PAIRS.forEach(function (p) { write(pairPath(p).slice(1) + "index.html", comparePage(p)); });
 
-var urls = [["/", TODAY], ["/leaders/", TODAY]].concat(L.map(function (l) { return ["/leaders/" + l.id + "/", l.reviewed || TODAY]; }));
+var urls = [["/", TODAY], ["/leaders/", TODAY], ["/compare/", TODAY]]
+  .concat(L.map(function (l) { return ["/leaders/" + l.id + "/", l.reviewed || TODAY]; }))
+  .concat(PAIRS.map(function (p) { return [pairPath(p), [byId[p[0]].reviewed, byId[p[1]].reviewed].filter(Boolean).sort().pop() || TODAY]; }));
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
   urls.map(function (u) { return "  <url>\n    <loc>" + SITE + u[0] + "</loc>\n    <lastmod>" + u[1] + "</lastmod>\n  </url>\n"; }).join("") + "</urlset>\n");
 
-console.log("Wrote leaders/index.html, " + L.length + " leader pages and sitemap.xml");
+
+
+// llms.txt: a plain summary with links, read by AI assistants and AI search tools (llmstxt.org).
+write("llms.txt", "# Siasa Compass\n\n" +
+  "> A free Kenya politics quiz (siasacompass.co.ke). It compares a visitor's answers on six policy dimensions with the documented records of " +
+  L.length + " Kenyan leaders, from independence to the 2027 election race. Actions (laws, votes, decisions, court cases) count most; " +
+  "stated positions count less; every claim is tagged by evidence and linked to sources. It does not rank, predict or endorse anyone.\n\n" +
+  "## Main pages\n\n- [Quiz](" + SITE + "/): Current climate and Every leader quizzes\n- [Leader profiles](" + SITE + "/leaders/): what each leader said and did, with sources\n" +
+  "- [Compare leaders](" + SITE + "/compare/): two records side by side\n\n" +
+  "## Leaders\n\n" + L.map(function (l) { return "- [" + l.n + "](" + SITE + "/leaders/" + l.id + "/): " + l.role; }).join("\n") + "\n");
+console.log("Wrote leaders/index.html, " + L.length + " leader pages, " + PAIRS.length + " comparisons, sitemap.xml and llms.txt");

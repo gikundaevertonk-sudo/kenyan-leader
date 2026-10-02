@@ -56,6 +56,60 @@
       "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KES"},
       "image": "https://siasacompass.co.ke/img/og-image.png",
       "isPartOf": {"@id": "https://siasacompass.co.ke/#website"}
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://siasacompass.co.ke/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Siasa Compass?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A free Kenya politics quiz. You answer 18 short statements, and it shows which Kenyan leaders' documented records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between the two quizzes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current climate compares you with the people shaping Kenyan politics now: the government, the opposition and the 2027 race. Every leader adds everyone since independence."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does it score leaders?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with real power now are judged on actions only, and leaders with too little evidence stay out of your matches. Full method."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it biased, or voting advice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft built from public reporting up to 30 September 2026, so check the sources and decide for yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which leaders are covered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current figures in government, opposition and the 2027 race, such as William Ruto, Rigathi Gachagua, Kalonzo Musyoka, Fred Matiang'i, Martha Karua and David Maraga, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. Browse all leader profiles or compare two leaders."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my answers stored?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only anonymously: your answers, where they place you and your top three matches go to a tally, with the date and nothing that identifies you. Untick the box under the questions to leave yours out."
+          }
+        }
+      ]
     }
   ]
 }
@@ -71,7 +125,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=11">
+<link rel="stylesheet" href="css/styles.css?v=12">
 </head>
 <body>
 <header class="top">
@@ -93,19 +147,7 @@
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two short quizzes. What leaders did counts most. What they said counts less.</p>
     <div class="paths" id="paths"></div>
-    <p class="seek">Looking for one leader? <a href="/leaders/">Browse the leader profiles</a>: what each said and did, with sources.</p>
-    <div class="rules">
-      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those with real power are judged on actions only.</p></div>
-      <div><h3>Words count less</h3><p>Promises count only if the record doesn't contradict them. Tagged <span class="tg S">S</span>.</p></div>
-      <div><h3>No guessing</h3><p>Thin records are left out. This is not voting advice.</p></div>
-    </div>
-    <section class="faq" aria-labelledby="faq-h">
-      <h2 id="faq-h">Questions about the Kenya 2027 election quiz</h2>
-      <details><summary>What is Siasa Compass?</summary><p>A free Kenya politics quiz. You answer 18 questions, and it shows which Kenyan leaders' documented records sit closest to your views on six policy dimensions, from independence to the 2027 race.</p></details>
-      <details><summary>How does it score leaders?</summary><p>Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with too little evidence stay out of your matches. See the Method tab for the full rules.</p></details>
-      <details><summary>Is it biased, or voting advice?</summary><p>No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft, so check the sources and decide for yourself.</p></details>
-      <details><summary>Which leaders are covered?</summary><p>Current figures in government, opposition and the 2027 race, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. <a href="/leaders/">Browse all leader profiles</a>.</p></details>
-    </section>
+    <p class="seek">Looking for one leader? <a href="/leaders/">Browse profiles</a> or <a href="/compare/">compare two</a>.</p>
   </section>
 
   <section id="v-intro" class="hero" hidden></section>
@@ -120,7 +162,7 @@
     <div class="q-scale" aria-hidden="true"><span>Disagree</span><span>Agree</span></div>
     </div>
     <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span class="hint">Press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>&larr;</kbd> to go back</span></div>
-    <p class="alt"><label><input type="checkbox" id="q-tally" checked> Add my answers to the anonymous tally of how visitors answer. No name, no location, nothing that identifies you.</label></p>
+    <p class="alt"><label><input type="checkbox" id="q-tally" checked> Add my answers to the anonymous tally</label></p>
   </section>
 
   <section id="v-result" class="res" hidden></section>
@@ -152,7 +194,12 @@
     <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
     <ul id="m-dims"></ul>
-    <h3>What Kenyans say decides their vote</h3>
+    <h3>Matching</h3>
+    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
+    <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
+    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
+    <h3>More detail</h3>
+    <details class="mfold"><summary>What Kenyans say decides their vote</summary>
     <p>Asked what will most influence their 2027 vote, Kenyans named these issues (<a href="https://peopledaily.digital/news/cost-of-living-top-driver-of-voter-choice-ahead-of-2027-general-election-infotrak" target="_blank" rel="noopener noreferrer">Infotrak</a>, 19 to 20 December 2025, 1,000 adults by phone across all 47 counties, margin of error ±3.1%). The Current climate questions are written around them, and each profile shows where a leader stands on them.</p>
     <table>
       <thead><tr><th scope="col">Issue</th><th scope="col">Named by</th><th scope="col">Where it shows up</th></tr></thead>
@@ -169,14 +216,16 @@
         <tr><td>Affordable housing</td><td class="n">3%</td><td>Who should build homes</td></tr>
       </tbody>
     </table>
-    <h3>What else sways votes</h3>
+    </details>
+    <details class="mfold"><summary>What else sways votes</summary>
     <p>Other things still decide many votes. This quiz matches you on views about how Kenya should be run, so it treats them differently:</p>
     <ul>
       <li><b>Tribe and regional kingpins.</b> Ethnic voting is still strong, but only 4 in 10 Kenyans say their community has a recognised political leader (<a href="https://k24.digital/4-in-10-kenyans-acknowledge-existence-of-ethnic-leader-tifa/amp" target="_blank" rel="noopener noreferrer">TIFA</a>, September 2025). The quiz never asks your ethnicity or matches on it. It does ask whether a community should vote as a bloc, and whether being close to the government of the day brings development: the "our turn to eat" idea.</li>
       <li><b>Money and handouts.</b> In a July 2026 <a href="https://www.the-star.co.ke/counties/eastern/2026-07-24-money-now-key-to-winning-polls-shows-ncck-report" target="_blank" rel="noopener noreferrer">NCCK study</a>, 91% said candidates cannot win without giving cash or gifts, and 94% said money strongly sways results. Handouts are not a policy, so they are not matched on, but documented harambees, donations and appeals to ethnic loyalty appear in profiles under "Handouts and ethnic appeals".</li>
       <li><b>Party waves, coalitions, charisma, fame, fear and rumours.</b> None of these is a view about how the country should be run, so none is matched on. Alliances and defections are in each leader's record.</li>
     </ul>
-    <h3>Reading the tags</h3>
+    </details>
+    <details class="mfold"><summary>Reading the tags</summary>
     <ul>
       <li><span class="tg D">D</span> Documented: backed by a reliable report or public record.</li>
       <li><span class="tg A">A</span> Attributed: a named source's claim, not established fact.</li>
@@ -185,44 +234,35 @@
       <li><span class="tg S">S</span> Stated position: a promise from someone not in power, weighted below actions.</li>
       <li><span class="tg H">H</span> Hearsay: a report or claim about what someone did or said, not verified. Lightest weight.</li>
     </ul>
-    <h3>Matching</h3>
-    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
-    <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
-    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
-    <h3>Your answers</h3>
+    </details>
+    <details class="mfold"><summary>Your answers</summary>
     <p>When you finish a quiz, your answers, where they place you and your top three matches are added to an anonymous tally, so we can see how visitors answer each question. Nothing that identifies you is stored: no name, no location, no IP address, only the date. Untick the box under the questions to leave yours out.</p>
-    <h3>Limits</h3>
+    </details>
+    <details class="mfold"><summary>Limits</summary>
     <ul>
       <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
       <li>Some historical details are tagged U and still need checking.</li>
       <li>One placement per dimension flattens long careers. Read the profile.</li>
       <li>An allegation is not a finding.</li>
     </ul>
+    </details>
   </section>
 
 </main>
 
-<section class="wrap about" id="about" aria-labelledby="about-h">
-  <h2 id="about-h">About this Kenya politics quiz</h2>
-  <p>Siasa Compass is a free quiz about Kenyan politics. You answer 18 short statements, agreeing or disagreeing with each, and the quiz shows which Kenyan leaders' records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties.</p>
-  <h3>Two quiz modes: Current climate and Every leader</h3>
-  <p><b>Current climate</b> compares you with the people shaping Kenyan politics now: the government, the opposition and those in the race for the 2027 election. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to leaders in office today.</p>
-  <h3>How are leaders placed?</h3>
-  <ul>
-    <li><b>Actions come first.</b> Laws signed, votes, spending, appointments and court cases set a leader's placement wherever that evidence exists.</li>
-    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders with real power now are judged on actions only.</li>
-    <li><b>Sources are tagged.</b> Each line in a leader's record is marked as documented, attributed to a named source, our interpretation, a stated position, or not yet re-checked, so you can tell facts from claims.</li>
-  </ul>
-  <h3>Does Siasa Compass rank or endorse anyone?</h3>
-  <p>No. It is a research draft built from public reporting up to 30 September 2026. It does not rank leaders, predict the 2027 election or endorse any politician or party. A match means your answers overlap with a leader's documented record, not that you should vote for them.</p>
-  <h3>Where can I read Kenyan leaders' records?</h3>
-  <p>The Records page lists every leader in the draft with what they said they would do next to what they did, the evidence behind each placement, and links to sources. Leaders with too little evidence are left out of matches rather than guessed at.</p>
-  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a><a class="btn sm ghost" href="/leaders/">Leader profiles</a></div>
+<section class="wrap about faq" id="about" aria-labelledby="faq-h">
+  <h2 id="faq-h">Questions about the Kenya 2027 election quiz</h2>
+  <details><summary>What is Siasa Compass?</summary><p>A free Kenya politics quiz. You answer 18 short statements, and it shows which Kenyan leaders' documented records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties.</p></details>
+  <details><summary>What is the difference between the two quizzes?</summary><p><b>Current climate</b> compares you with the people shaping Kenyan politics now: the government, the opposition and the 2027 race. <b>Every leader</b> adds everyone since independence.</p></details>
+  <details><summary>How does it score leaders?</summary><p>Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with real power now are judged on actions only, and leaders with too little evidence stay out of your matches. <a href="#method">Full method</a>.</p></details>
+  <details><summary>Is it biased, or voting advice?</summary><p>No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft built from public reporting up to 30 September 2026, so check the sources and decide for yourself.</p></details>
+  <details><summary>Which leaders are covered?</summary><p>Current figures in government, opposition and the 2027 race, such as William Ruto, Rigathi Gachagua, Kalonzo Musyoka, Fred Matiang'i, Martha Karua and David Maraga, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. <a href="/leaders/">Browse all leader profiles</a> or <a href="/compare/">compare two leaders</a>.</p></details>
+  <details><summary>Are my answers stored?</summary><p>Only anonymously: your answers, where they place you and your top three matches go to a tally, with the date and nothing that identifies you. Untick the box under the questions to leave yours out.</p></details>
 </section>
 <footer class="wrap site-foot">
   <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
-  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a>.</p>
+  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a> · <a href="/compare/">Compare leaders</a>.</p>
   <div class="site-share">
     <h2>Share Siasa Compass</h2>
     <div class="sbtns">
@@ -241,8 +281,9 @@
 <!-- Visitor counts: GoatCounter (no cookies, no personal data). Views are counted from js/app.js, one per hash route. -->
 <script data-goatcounter="https://siasacompass.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="https://gc.zgo.at/count.js"></script>
 <script src="js/data.js?v=7"></script>
+<script src="js/score.js?v=1"></script>
 <script src="js/photos.js?v=3"></script>
 <script src="js/share.js?v=6"></script>
-<script src="js/app.js?v=12"></script>
+<script src="js/app.js?v=13"></script>
 </body>
 </html>

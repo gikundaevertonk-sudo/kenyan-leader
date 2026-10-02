@@ -56,6 +56,60 @@
       "offers": {"@type": "Offer", "price": "0", "priceCurrency": "KES"},
       "image": "https://siasacompass.co.ke/img/og-image.png",
       "isPartOf": {"@id": "https://siasacompass.co.ke/#website"}
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://siasacompass.co.ke/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Siasa Compass?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A free Kenya politics quiz. You answer 18 short statements, and it shows which Kenyan leaders' documented records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between the two quizzes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current climate compares you with the people shaping Kenyan politics now: the government, the opposition and the 2027 race. Every leader adds everyone since independence."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does it score leaders?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with real power now are judged on actions only, and leaders with too little evidence stay out of your matches. Full method."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it biased, or voting advice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft built from public reporting up to 30 September 2026, so check the sources and decide for yourself."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which leaders are covered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current figures in government, opposition and the 2027 race, such as William Ruto, Rigathi Gachagua, Kalonzo Musyoka, Fred Matiang'i, Martha Karua and David Maraga, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. Browse all leader profiles or compare two leaders."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my answers stored?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only anonymously: your answers, where they place you and your top three matches go to a tally, with the date and nothing that identifies you. Untick the box under the questions to leave yours out."
+          }
+        }
+      ]
     }
   ]
 }
@@ -154,11 +208,6 @@ a.btn{text-decoration:none}
 .path h2{font-size:1.8rem}
 .path p{color:var(--muted)}
 .path .cta{margin-top:auto;padding-top:12px}
-.rules{margin-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 32px;counter-reset:rule}
-.rules>div{counter-increment:rule;border-top:1px solid var(--line-strong);padding-top:16px}
-.rules h3{font-size:1.15rem;margin-bottom:8px;display:flex;gap:10px;align-items:baseline}
-.rules h3::before{content:counter(rule);font-family:var(--body);font-size:.75rem;font-weight:700;color:var(--sun)}
-.rules p{color:var(--muted);font-size:.95rem}
 
 /* Quiz */
 #v-quiz{max-width:760px;margin:0 auto}
@@ -350,7 +399,6 @@ button.chip{cursor:pointer;min-height:40px}
 .about li::marker{color:var(--ink)}
 .about+.site-foot{margin-top:56px}
 .about[hidden]+.site-foot{margin-top:96px}
-.about-cta{margin-top:24px}
 noscript .notice{margin-top:0;margin-bottom:24px}
 
 /* Footer */
@@ -382,8 +430,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   .tabs button[aria-current="true"]::after,.tabs a[aria-current="true"]::after{left:8px;right:8px}
   .cta .btn{flex:1 1 100%}
   .hero .lede{font-size:1.06rem}
-  .rules{margin-top:44px;gap:24px}
-  .path{padding:22px}
+    .path{padding:22px}
   .path h2{font-size:1.55rem}
   .q-card{border-radius:16px}
   .opts{grid-template-columns:1fr;gap:6px}
@@ -437,6 +484,36 @@ noscript .notice{margin-top:0;margin-bottom:24px}
 .m th,.m td{text-align:left;padding:8px 10px 8px 0;border-top:1px solid var(--line);vertical-align:top}
 .m th{font-weight:600;color:var(--muted)}
 .m td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+/* Method: secondary sections stay folded until opened. */
+.m .mfold{border-top:1px solid var(--line);padding:14px 0}
+.m h3+.mfold{border-top:0}
+.m .mfold>summary{cursor:pointer;font-weight:600}
+.m .mfold[open]>summary{margin-bottom:4px}
+/* Result: the per-dimension chart is folded by default. */
+.sec.fold>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:16px;border-top:1px solid var(--line-strong);margin-bottom:8px}
+.sec.fold>summary::-webkit-details-marker{display:none}
+.sec.fold>summary h3{font-size:clamp(1.45rem,3.5vw,1.8rem)}
+.sec.fold>summary::after{content:"+";font-size:1.5rem;font-weight:600;color:var(--muted)}
+.sec.fold[open]>summary::after{content:"\2212"}
+.sec.fold>.sub{color:var(--muted);max-width:64ch;margin-bottom:24px}
+.match .w{color:var(--muted);font-weight:500}
+/* Leader and comparison pages: secondary sections fold. */
+.lp .lfold{border-top:1px solid var(--line-strong);padding-top:14px}
+.lp .lfold>summary{cursor:pointer;font-family:var(--display);font-weight:var(--hw);font-size:1.15rem}
+.lp .lfold[open]>summary{margin-bottom:14px}
+.lp .lfold>p{max-width:66ch;margin-top:10px}
+.tw2{overflow-x:auto}
+.cmpt{width:100%;border-collapse:collapse;font-size:.93rem;table-layout:fixed}
+.cmpt th,.cmpt td{text-align:left;vertical-align:top;padding:10px 10px 10px 0;border-top:1px solid var(--line)}
+.cmpt thead th{border-top:0;font-size:1rem}
+.cmpt tbody th{font-weight:600;color:var(--muted);width:34%}
+.cmpt td.none{color:var(--muted)}
+.cmpt details{margin-top:4px}
+.cmpt summary{cursor:pointer;font-size:.82rem;color:var(--muted)}
+.cmpt details p{font-size:.85rem;color:var(--muted);margin-top:4px}
+.vsi{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.vsi h3{font-size:1rem}
+.vsi p{font-size:.92rem;margin-top:4px}
 </style>
 </head>
 <body>
@@ -459,19 +536,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two short quizzes. What leaders did counts most. What they said counts less.</p>
     <div class="paths" id="paths"></div>
-    <p class="seek">Looking for one leader? <a href="/leaders/">Browse the leader profiles</a>: what each said and did, with sources.</p>
-    <div class="rules">
-      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those with real power are judged on actions only.</p></div>
-      <div><h3>Words count less</h3><p>Promises count only if the record doesn't contradict them. Tagged <span class="tg S">S</span>.</p></div>
-      <div><h3>No guessing</h3><p>Thin records are left out. This is not voting advice.</p></div>
-    </div>
-    <section class="faq" aria-labelledby="faq-h">
-      <h2 id="faq-h">Questions about the Kenya 2027 election quiz</h2>
-      <details><summary>What is Siasa Compass?</summary><p>A free Kenya politics quiz. You answer 18 questions, and it shows which Kenyan leaders' documented records sit closest to your views on six policy dimensions, from independence to the 2027 race.</p></details>
-      <details><summary>How does it score leaders?</summary><p>Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with too little evidence stay out of your matches. See the Method tab for the full rules.</p></details>
-      <details><summary>Is it biased, or voting advice?</summary><p>No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft, so check the sources and decide for yourself.</p></details>
-      <details><summary>Which leaders are covered?</summary><p>Current figures in government, opposition and the 2027 race, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. <a href="/leaders/">Browse all leader profiles</a>.</p></details>
-    </section>
+    <p class="seek">Looking for one leader? <a href="/leaders/">Browse profiles</a> or <a href="/compare/">compare two</a>.</p>
   </section>
 
   <section id="v-intro" class="hero" hidden></section>
@@ -486,7 +551,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
     <div class="q-scale" aria-hidden="true"><span>Disagree</span><span>Agree</span></div>
     </div>
     <div class="q-foot"><button type="button" class="linkbtn" id="q-back">Back</button><span class="hint">Press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>&larr;</kbd> to go back</span></div>
-    <p class="alt"><label><input type="checkbox" id="q-tally" checked> Add my answers to the anonymous tally of how visitors answer. No name, no location, nothing that identifies you.</label></p>
+    <p class="alt"><label><input type="checkbox" id="q-tally" checked> Add my answers to the anonymous tally</label></p>
   </section>
 
   <section id="v-result" class="res" hidden></section>
@@ -518,7 +583,12 @@ noscript .notice{margin-top:0;margin-bottom:24px}
     <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
     <ul id="m-dims"></ul>
-    <h3>What Kenyans say decides their vote</h3>
+    <h3>Matching</h3>
+    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
+    <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
+    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
+    <h3>More detail</h3>
+    <details class="mfold"><summary>What Kenyans say decides their vote</summary>
     <p>Asked what will most influence their 2027 vote, Kenyans named these issues (<a href="https://peopledaily.digital/news/cost-of-living-top-driver-of-voter-choice-ahead-of-2027-general-election-infotrak" target="_blank" rel="noopener noreferrer">Infotrak</a>, 19 to 20 December 2025, 1,000 adults by phone across all 47 counties, margin of error ±3.1%). The Current climate questions are written around them, and each profile shows where a leader stands on them.</p>
     <table>
       <thead><tr><th scope="col">Issue</th><th scope="col">Named by</th><th scope="col">Where it shows up</th></tr></thead>
@@ -535,14 +605,16 @@ noscript .notice{margin-top:0;margin-bottom:24px}
         <tr><td>Affordable housing</td><td class="n">3%</td><td>Who should build homes</td></tr>
       </tbody>
     </table>
-    <h3>What else sways votes</h3>
+    </details>
+    <details class="mfold"><summary>What else sways votes</summary>
     <p>Other things still decide many votes. This quiz matches you on views about how Kenya should be run, so it treats them differently:</p>
     <ul>
       <li><b>Tribe and regional kingpins.</b> Ethnic voting is still strong, but only 4 in 10 Kenyans say their community has a recognised political leader (<a href="https://k24.digital/4-in-10-kenyans-acknowledge-existence-of-ethnic-leader-tifa/amp" target="_blank" rel="noopener noreferrer">TIFA</a>, September 2025). The quiz never asks your ethnicity or matches on it. It does ask whether a community should vote as a bloc, and whether being close to the government of the day brings development: the "our turn to eat" idea.</li>
       <li><b>Money and handouts.</b> In a July 2026 <a href="https://www.the-star.co.ke/counties/eastern/2026-07-24-money-now-key-to-winning-polls-shows-ncck-report" target="_blank" rel="noopener noreferrer">NCCK study</a>, 91% said candidates cannot win without giving cash or gifts, and 94% said money strongly sways results. Handouts are not a policy, so they are not matched on, but documented harambees, donations and appeals to ethnic loyalty appear in profiles under "Handouts and ethnic appeals".</li>
       <li><b>Party waves, coalitions, charisma, fame, fear and rumours.</b> None of these is a view about how the country should be run, so none is matched on. Alliances and defections are in each leader's record.</li>
     </ul>
-    <h3>Reading the tags</h3>
+    </details>
+    <details class="mfold"><summary>Reading the tags</summary>
     <ul>
       <li><span class="tg D">D</span> Documented: backed by a reliable report or public record.</li>
       <li><span class="tg A">A</span> Attributed: a named source's claim, not established fact.</li>
@@ -551,44 +623,35 @@ noscript .notice{margin-top:0;margin-bottom:24px}
       <li><span class="tg S">S</span> Stated position: a promise from someone not in power, weighted below actions.</li>
       <li><span class="tg H">H</span> Hearsay: a report or claim about what someone did or said, not verified. Lightest weight.</li>
     </ul>
-    <h3>Matching</h3>
-    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
-    <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
-    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
-    <h3>Your answers</h3>
+    </details>
+    <details class="mfold"><summary>Your answers</summary>
     <p>When you finish a quiz, your answers, where they place you and your top three matches are added to an anonymous tally, so we can see how visitors answer each question. Nothing that identifies you is stored: no name, no location, no IP address, only the date. Untick the box under the questions to leave yours out.</p>
-    <h3>Limits</h3>
+    </details>
+    <details class="mfold"><summary>Limits</summary>
     <ul>
       <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
       <li>Some historical details are tagged U and still need checking.</li>
       <li>One placement per dimension flattens long careers. Read the profile.</li>
       <li>An allegation is not a finding.</li>
     </ul>
+    </details>
   </section>
 
 </main>
 
-<section class="wrap about" id="about" aria-labelledby="about-h">
-  <h2 id="about-h">About this Kenya politics quiz</h2>
-  <p>Siasa Compass is a free quiz about Kenyan politics. You answer 18 short statements, agreeing or disagreeing with each, and the quiz shows which Kenyan leaders' records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties.</p>
-  <h3>Two quiz modes: Current climate and Every leader</h3>
-  <p><b>Current climate</b> compares you with the people shaping Kenyan politics now: the government, the opposition and those in the race for the 2027 election. <b>Every leader</b> compares you with everyone in this draft, from the independence generation to leaders in office today.</p>
-  <h3>How are leaders placed?</h3>
-  <ul>
-    <li><b>Actions come first.</b> Laws signed, votes, spending, appointments and court cases set a leader's placement wherever that evidence exists.</li>
-    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders with real power now are judged on actions only.</li>
-    <li><b>Sources are tagged.</b> Each line in a leader's record is marked as documented, attributed to a named source, our interpretation, a stated position, or not yet re-checked, so you can tell facts from claims.</li>
-  </ul>
-  <h3>Does Siasa Compass rank or endorse anyone?</h3>
-  <p>No. It is a research draft built from public reporting up to 30 September 2026. It does not rank leaders, predict the 2027 election or endorse any politician or party. A match means your answers overlap with a leader's documented record, not that you should vote for them.</p>
-  <h3>Where can I read Kenyan leaders' records?</h3>
-  <p>The Records page lists every leader in the draft with what they said they would do next to what they did, the evidence behind each placement, and links to sources. Leaders with too little evidence are left out of matches rather than guessed at.</p>
-  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a><a class="btn sm ghost" href="/leaders/">Leader profiles</a></div>
+<section class="wrap about faq" id="about" aria-labelledby="faq-h">
+  <h2 id="faq-h">Questions about the Kenya 2027 election quiz</h2>
+  <details><summary>What is Siasa Compass?</summary><p>A free Kenya politics quiz. You answer 18 short statements, and it shows which Kenyan leaders' documented records sit closest to your views on six dimensions: the economy, land and wealth, social values, institutions and devolution, political style, and civil liberties.</p></details>
+  <details><summary>What is the difference between the two quizzes?</summary><p><b>Current climate</b> compares you with the people shaping Kenyan politics now: the government, the opposition and the 2027 race. <b>Every leader</b> adds everyone since independence.</p></details>
+  <details><summary>How does it score leaders?</summary><p>Actions count most: laws, votes, court cases and decisions. Words count less, and only where the record is thin and not contradicted. Leaders with real power now are judged on actions only, and leaders with too little evidence stay out of your matches. <a href="#method">Full method</a>.</p></details>
+  <details><summary>Is it biased, or voting advice?</summary><p>No. It does not rank, predict or endorse anyone. Every claim is tagged by how well it is evidenced and linked to sources. It is a research draft built from public reporting up to 30 September 2026, so check the sources and decide for yourself.</p></details>
+  <details><summary>Which leaders are covered?</summary><p>Current figures in government, opposition and the 2027 race, such as William Ruto, Rigathi Gachagua, Kalonzo Musyoka, Fred Matiang'i, Martha Karua and David Maraga, plus earlier leaders such as Jomo Kenyatta, Daniel arap Moi, Mwai Kibaki and Raila Odinga. <a href="/leaders/">Browse all leader profiles</a> or <a href="/compare/">compare two leaders</a>.</p></details>
+  <details><summary>Are my answers stored?</summary><p>Only anonymously: your answers, where they place you and your top three matches go to a tally, with the date and nothing that identifies you. Untick the box under the questions to leave yours out.</p></details>
 </section>
 <footer class="wrap site-foot">
   <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
-  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a>.</p>
+  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a> · <a href="/compare/">Compare leaders</a>.</p>
   <div class="site-share">
     <h2>Share Siasa Compass</h2>
     <div class="sbtns">
@@ -1333,6 +1396,54 @@ return {uCount:uCount,DIMS:DIMS,TOPIC:TOPIC,ISSUES:ISSUES,QN:QN,QA:QA,ANS:ANS,W:
 if(typeof module!=="undefined"&&module.exports)module.exports=SIASA;
 </script>
 <script>
+/* Siasa Compass scoring, kept apart from the page code so scripts/test-scoring.js can check it in Node.
+   Exposes one global, SiasaScore. Needs SIASA (js/data.js) for the dimensions and confidence weights. */
+var SiasaScore=(function(){
+"use strict";
+var D=typeof SIASA!=="undefined"?SIASA:require("./data.js");
+var DIMS=D.DIMS, W=D.W;
+// Leaders need placements on at least MIN_DIMS dimensions to appear in matches. Fewer is too thin to compare fairly.
+var MIN_DIMS=4;
+function matchable(l){return Object.keys(l.dims).length>=MIN_DIMS}
+// Half or more of a leader's placements rest on words (S) or reports (H), not actions. Flagged in the match list.
+function mostlyWords(l){var k=Object.keys(l.dims);return k.length>0&&k.filter(function(x){return l.dims[x][3]==="S"||l.dims[x][3]==="H"}).length*2>=k.length}
+// q: the quiz's questions [dim, direction, text]; a: answers 1-5 by question index. Returns -2..2 per dimension.
+function userScores(q,a){
+  var s={},c={};
+  DIMS.forEach(function(d){s[d.k]=0;c[d.k]=0});
+  // Skip unanswered questions so a gap can never turn a score into NaN.
+  q.forEach(function(x,i){var v=a[i];if(!(v>=1&&v<=5))return;s[x[0]]+=(v-3)*x[1];c[x[0]]++});
+  DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
+  return s;
+}
+/* Confidence counts across leaders by shrinking each placement toward the neutral midpoint (0):
+   effective = position x W[confidence]  (H 1, M 0.8, L 0.5).
+   A thinly evidenced leader therefore reads as less extreme on a dimension, so it cannot beat a solidly
+   evidenced leader just by sitting on your exact position. (A plain weighted average would not do this: the weights
+   cancel when leaders are compared with each other.)
+   Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
+   reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
+   "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
+   "den" (evidence) is the sum of the confidence weights.
+   Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
+   action-based one, and a hearsay (H, reported or attributed) dimension counts BASIS.H, so the mean is weighted by evidence type. */
+var GAP=3, BASIS={A:1,S:0.6,H:0.4};
+function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
+function compare(pool,u){
+  return pool.map(function(l){
+    var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
+    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]]||BASIS.A;
+      sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
+    return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
+  });
+}
+// Matchable leaders, best first. The headline match is always ranked[0], so it never disagrees with the list.
+function rank(cmp){return cmp.filter(function(r){return matchable(r.l)}).sort(function(a,b){return b.score-a.score||b.close-a.close})}
+return {MIN_DIMS:MIN_DIMS,matchable:matchable,mostlyWords:mostlyWords,userScores:userScores,similarity:similarity,compare:compare,rank:rank,GAP:GAP,BASIS:BASIS};
+})();
+if(typeof module!=="undefined"&&module.exports)module.exports=SiasaScore;
+</script>
+<script>
 /* Leader photos: freely licensed lead images from Wikipedia articles, with author and licence credit.
    Fetched in the browser from the Wikipedia API (CORS via origin=*). Leaders without a free image get initials.
    Exposes one global, SiasaPhotos. */
@@ -1571,7 +1682,7 @@ return {section:section,bind:bind};
 /* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
 (function(){
 "use strict";
-var P=SiasaPhotos,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ISSUES=SIASA.ISSUES,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
+var P=SiasaPhotos,SC=SiasaScore,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ISSUES=SIASA.ISSUES,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
 // Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
 // The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
@@ -1583,6 +1694,16 @@ var cur="now", rset="now";
 // Quiz answers live in memory only, so they survive moving between views but not a page reload.
 // A finished quiz is also sent, anonymously, to the answer tally (a Google Sheet; see sendTally) unless the visitor opts out.
 var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
+// Progress is also kept in sessionStorage, so a reload (common on phones) does not lose a half-finished quiz.
+// It lasts for this tab only. Storage can be blocked (private mode, file://), so every access is guarded.
+var SKEY="siasa-quiz-v1";
+function save(){try{sessionStorage.setItem(SKEY,JSON.stringify(ST))}catch(e){}}
+(function(){try{var o=JSON.parse(sessionStorage.getItem(SKEY)||"null");
+  ["all","now"].forEach(function(k){var t=o&&o[k];
+    // Only restore progress that still fits the current question set.
+    if(t&&Array.isArray(t.answers)&&t.answers.length<=SETS[k].q.length&&t.idx>=0&&t.idx<SETS[k].q.length&&(!t.done||t.answers.length===SETS[k].q.length))ST[k]=t;
+  });
+}catch(e){}})();
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
@@ -1658,9 +1779,7 @@ function route(){
 }
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
-// Leaders need placements on at least MIN_DIMS dimensions to appear in matches. Fewer is too thin to compare fairly.
-var MIN_DIMS=4;
-function matchable(l){return Object.keys(l.dims).length>=MIN_DIMS}
+var matchable=SC.matchable, mostlyWords=SC.mostlyWords;
 
 function renderHome(){
   $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
@@ -1708,63 +1827,37 @@ function choose(v){
   renderQ();
   pending=setTimeout(function(){
     pending=null;
-    if(last){if(t.done)return;t.done=true;go("#result-"+cur,true)} // results are built once
-    else{t.idx++;renderQ()}
+    if(last){if(t.done)return;t.done=true;save();go("#result-"+cur,true)} // results are built once
+    else{t.idx++;save();renderQ()}
   },160);
 }
-function back(){if(pending||st().idx<=0)return;st().idx--;renderQ()}
+function back(){if(pending||st().idx<=0)return;st().idx--;save();renderQ()}
 document.addEventListener("keydown",function(e){
   if($("v-quiz").hidden||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;
   if(e.key>="1"&&e.key<="5")choose(parseInt(e.key,10));
   else if(e.key==="ArrowLeft")back();
 });
 
-function userScores(){
-  var s={},c={},q=S().q,a=st().answers;
-  DIMS.forEach(function(d){s[d.k]=0;c[d.k]=0});
-  // Skip unanswered questions so a gap can never turn a score into NaN.
-  q.forEach(function(x,i){var v=a[i];if(!(v>=1&&v<=5))return;s[x[0]]+=(v-3)*x[1];c[x[0]]++});
-  DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
-  return s;
-}
-/* Scoring. Confidence counts across leaders by shrinking each placement toward the neutral midpoint (0):
-   effective = position x W[confidence]  (H 1, M 0.8, L 0.5).
-   A thinly evidenced leader therefore reads as less extreme on a dimension, so it cannot beat a solidly
-   evidenced leader just by sitting on your exact position. (A plain weighted average would not do this: the weights
-   cancel when leaders are compared with each other.)
-   Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
-   reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
-   "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
-   "den" (evidence) is the sum of the confidence weights.
-   Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
-   action-based one, and a hearsay (H, reported or attributed) dimension counts BASIS.H, so the mean is weighted by evidence type. */
-var GAP=3, BASIS={A:1,S:0.6,H:0.4};
-function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
-function compare(u){
-  return S().pool().map(function(l){
-    var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]]||BASIS.A;
-      sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
-    return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
-  });
-}
+// Scoring lives in js/score.js (SiasaScore); these bind it to the quiz on screen.
+function userScores(){return SC.userScores(S().q,st().answers)}
+function compare(u){return SC.compare(S().pool(),u)}
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return matchable(r.l)}).sort(function(a,b){return b.score-a.score||b.close-a.close});
+  var ranked=SC.rank(cmp);
   var left=cmp.filter(function(r){return !matchable(r.l)});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
   var b=ranked[0], html='';
   // Count each finished quiz once, with its top match, so the dashboard shows completions and who people land on.
-  if(!st().counted){st().counted=true;track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true);sendTally(u,ranked)}
+  if(!st().counted){st().counted=true;save();track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true);sendTally(u,ranked)}
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
     html+='<div class="best"><span class="k">'+esc(s.name)+' · your closest match</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
-      '<p class="role">'+basisLine(b.l)+'</p>'+
+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+
       Object.keys(b.l.dims).map(function(k){return '<div><span>'+esc(dimOf(k).name)+'</span><span>'+esc(words(k,u[k]))+'</span><span>'+esc(words(k,b.l.dims[k][0]))+'</span></div>'}).join('')+'</div>'+
       '<button type="button" class="btn" data-open="'+esc(b.l.id)+'">Read what they did</button></div>';
@@ -1772,18 +1865,18 @@ function renderResult(){
   // Offer sharing straight after the headline result, before the ranked list and the detail below it.
   html+=SiasaShare.section();
   html+='<p class="notice">Overlaps with records, not a recommendation.</p>';
-  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overall overlap, from 0% (opposite) to 100% (same).</p><div>';
+  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overlap, from 0% (opposite) to 100% (same).</p><div>';
   var SHOW=5;
   ranked.forEach(function(r,i){
     var miss=DIMS.length-r.n;
-    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+DIMS.length+'</b> dimensions'+(miss?' <small>('+miss+' with no record)</small>':'')+' <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
+    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+'/'+DIMS.length+'</b> · '+Math.round(r.score*100)+'%'+(miss?' <small>· '+miss+' no record</small>':'')+(mostlyWords(r.l)?' <small class="w">· mostly words</small>':'')+'</div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
   if(ranked.length>SHOW)html+='<button type="button" class="btn ghost" id="show-more">Show all '+ranked.length+' leaders</button>';
   var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
   html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
-  html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle for the evidence.</p>'+
-    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></div>';
+  html+='<details class="sec fold"><summary><h3>Dimension by dimension</h3></summary><p class="sub">Tap a circle for the evidence.</p>'+
+    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></details>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">Too little evidence to compare. Read their records instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
   html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
@@ -1863,7 +1956,7 @@ function leaderHTML(l){
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
-    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a> · <a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
+    '<p class="meta">'+(l.reviewed?'Reviewed '+esc(l.reviewed)+' · ':'')+(nu?nu+' claim'+(nu===1?'':'s')+' not yet re-checked · ':'')+'<a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (iss?'<div><h5>On the issues voters rank highest</h5><ul class="rec">'+iss+'</ul><p class="iss-note">Issues in the order voters ranked them (Infotrak, December 2025). Shown for reference; not used in matching. <a href="#method">Why</a></p></div>':'')+
     (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
@@ -1880,7 +1973,7 @@ function renderRecords(){
     '<p class="grp">In today\'s political climate</p><div>'+now.map(leaderHTML).join('')+'</div><p class="grp">Earlier leaders</p><div>'+past.map(leaderHTML).join('')+'</div>';
 }
 $("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+esc(d.name)+':</b> '+esc(d.lo)+' to '+esc(d.hi)+'</li>'}).join('');
-function start(){ST[cur]={idx:0,answers:[],done:false,started:true};track("quiz-started-"+cur,"Started: "+S().name,true);go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
+function start(){ST[cur]={idx:0,answers:[],done:false,started:true};save();track("quiz-started-"+cur,"Started: "+S().name,true);go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
 $("home").addEventListener("click",function(){go("#home")});
 $("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){

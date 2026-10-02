@@ -79,6 +79,11 @@ data.L.forEach(function (l, i) {
     if (!isHttp(s[1])) err(at + "URL must start with http:// or https://, got " + JSON.stringify(s[1]) + ".");
   });
   uCounts.push([l.n || id || "#" + (i + 1), data.uCount(l)]);
+  // Gaps worth fixing, but not errors: they show on the site as missing review dates or thin sourcing.
+  var placed = Object.keys(l.dims || {}).length;
+  if (l.now && placed >= 4 && !nonEmpty(l.reviewed)) warnings.push(who + ": in the Current climate matches but has no 'reviewed' date.");
+  if ((l.src || []).length < 2) warnings.push(who + ": only " + (l.src || []).length + " source(s).");
+  if (l.now && placed < 4) warnings.push(who + ": placed on " + placed + " of " + dimKeys.length + " dimensions, so left out of matches.");
 });
 
 // Questions

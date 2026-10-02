@@ -1,7 +1,7 @@
 /* Siasa Compass app logic. Data lives in js/data.js (global SIASA). Wrapped in an IIFE so nothing leaks into the global scope. */
 (function(){
 "use strict";
-var P=SiasaPhotos,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ISSUES=SIASA.ISSUES,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
+var P=SiasaPhotos,SC=SiasaScore,DIMS=SIASA.DIMS,TOPIC=SIASA.TOPIC,ISSUES=SIASA.ISSUES,ANS=SIASA.ANS,W=SIASA.W,CONF=SIASA.CONF,L=SIASA.L,SETS=SIASA.SETS,uCount=SIASA.uCount;
 var $=function(id){return document.getElementById(id)};
 // Every data string that goes into innerHTML or an attribute passes through esc(). Text set via textContent does not need it.
 // The only unescaped markup is the set headline/lede in data.js, which is authored HTML.
@@ -13,6 +13,16 @@ var cur="now", rset="now";
 // Quiz answers live in memory only, so they survive moving between views but not a page reload.
 // A finished quiz is also sent, anonymously, to the answer tally (a Google Sheet; see sendTally) unless the visitor opts out.
 var ST={all:{idx:0,answers:[],done:false,started:false},now:{idx:0,answers:[],done:false,started:false}};
+// Progress is also kept in sessionStorage, so a reload (common on phones) does not lose a half-finished quiz.
+// It lasts for this tab only. Storage can be blocked (private mode, file://), so every access is guarded.
+var SKEY="siasa-quiz-v1";
+function save(){try{sessionStorage.setItem(SKEY,JSON.stringify(ST))}catch(e){}}
+(function(){try{var o=JSON.parse(sessionStorage.getItem(SKEY)||"null");
+  ["all","now"].forEach(function(k){var t=o&&o[k];
+    // Only restore progress that still fits the current question set.
+    if(t&&Array.isArray(t.answers)&&t.answers.length<=SETS[k].q.length&&t.idx>=0&&t.idx<SETS[k].q.length&&(!t.done||t.answers.length===SETS[k].q.length))ST[k]=t;
+  });
+}catch(e){}})();
 function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
@@ -88,9 +98,7 @@ function route(){
 }
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
-// Leaders need placements on at least MIN_DIMS dimensions to appear in matches. Fewer is too thin to compare fairly.
-var MIN_DIMS=4;
-function matchable(l){return Object.keys(l.dims).length>=MIN_DIMS}
+var matchable=SC.matchable, mostlyWords=SC.mostlyWords;
 
 function renderHome(){
   $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
@@ -138,63 +146,37 @@ function choose(v){
   renderQ();
   pending=setTimeout(function(){
     pending=null;
-    if(last){if(t.done)return;t.done=true;go("#result-"+cur,true)} // results are built once
-    else{t.idx++;renderQ()}
+    if(last){if(t.done)return;t.done=true;save();go("#result-"+cur,true)} // results are built once
+    else{t.idx++;save();renderQ()}
   },160);
 }
-function back(){if(pending||st().idx<=0)return;st().idx--;renderQ()}
+function back(){if(pending||st().idx<=0)return;st().idx--;save();renderQ()}
 document.addEventListener("keydown",function(e){
   if($("v-quiz").hidden||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;
   if(e.key>="1"&&e.key<="5")choose(parseInt(e.key,10));
   else if(e.key==="ArrowLeft")back();
 });
 
-function userScores(){
-  var s={},c={},q=S().q,a=st().answers;
-  DIMS.forEach(function(d){s[d.k]=0;c[d.k]=0});
-  // Skip unanswered questions so a gap can never turn a score into NaN.
-  q.forEach(function(x,i){var v=a[i];if(!(v>=1&&v<=5))return;s[x[0]]+=(v-3)*x[1];c[x[0]]++});
-  DIMS.forEach(function(d){s[d.k]=c[d.k]?s[d.k]/c[d.k]:0});
-  return s;
-}
-/* Scoring. Confidence counts across leaders by shrinking each placement toward the neutral midpoint (0):
-   effective = position x W[confidence]  (H 1, M 0.8, L 0.5).
-   A thinly evidenced leader therefore reads as less extreme on a dimension, so it cannot beat a solidly
-   evidenced leader just by sitting on your exact position. (A plain weighted average would not do this: the weights
-   cancel when leaders are compared with each other.)
-   Per dimension, similarity = max(0, 1 - |you - effective| / 3), so a gap of 3 points (three quarters of the scale)
-   reads as 0% and an exact match as 100%. The overall score is the mean similarity over the leader's dimensions.
-   "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
-   "den" (evidence) is the sum of the confidence weights.
-   Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
-   action-based one, and a hearsay (H, reported or attributed) dimension counts BASIS.H, so the mean is weighted by evidence type. */
-var GAP=3, BASIS={A:1,S:0.6,H:0.4};
-function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
-function compare(u){
-  return S().pool().map(function(l){
-    var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]]||BASIS.A;
-      sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
-    return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
-  });
-}
+// Scoring lives in js/score.js (SiasaScore); these bind it to the quiz on screen.
+function userScores(){return SC.userScores(S().q,st().answers)}
+function compare(u){return SC.compare(S().pool(),u)}
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return matchable(r.l)}).sort(function(a,b){return b.score-a.score||b.close-a.close});
+  var ranked=SC.rank(cmp);
   var left=cmp.filter(function(r){return !matchable(r.l)});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
   var b=ranked[0], html='';
   // Count each finished quiz once, with its top match, so the dashboard shows completions and who people land on.
-  if(!st().counted){st().counted=true;track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true);sendTally(u,ranked)}
+  if(!st().counted){st().counted=true;save();track("quiz-finished-"+cur,"Finished: "+s.name,true);if(b)track("top-match-"+cur+"/"+b.l.id,"Top match ("+s.name+"): "+b.l.n,true);sendTally(u,ranked)}
   html+='<h2 tabindex="-1">Here is where you land</h2>';
   html+='<div class="chips">'+(tags.length?tags.map(function(t){return '<span class="chip sun">'+esc(t)+'</span>'}).join(''):'<span class="chip sun">Centrist on most dimensions</span>')+'</div>';
   if(b){
     html+='<div class="best"><span class="k">'+esc(s.name)+' · your closest match</span><div class="head">'+P.avatar(b.l)+'<div><h3>'+esc(b.l.n)+'</h3><p class="role">'+esc(b.l.role)+'</p></div></div>'+
       '<p class="why">'+esc(b.l.suggests)+'</p>'+
-      '<p class="role">'+basisLine(b.l)+'</p>'+
+
       '<div class="cmp"><div class="h"><span>Dimension</span><span>You</span><span>'+esc(b.l.n.split(" ").slice(-1)[0])+'</span></div>'+
       Object.keys(b.l.dims).map(function(k){return '<div><span>'+esc(dimOf(k).name)+'</span><span>'+esc(words(k,u[k]))+'</span><span>'+esc(words(k,b.l.dims[k][0]))+'</span></div>'}).join('')+'</div>'+
       '<button type="button" class="btn" data-open="'+esc(b.l.id)+'">Read what they did</button></div>';
@@ -202,18 +184,18 @@ function renderResult(){
   // Offer sharing straight after the headline result, before the ranked list and the detail below it.
   html+=SiasaShare.section();
   html+='<p class="notice">Overlaps with records, not a recommendation.</p>';
-  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overall overlap, from 0% (opposite) to 100% (same).</p><div>';
+  html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overlap, from 0% (opposite) to 100% (same).</p><div>';
   var SHOW=5;
   ranked.forEach(function(r,i){
     var miss=DIMS.length-r.n;
-    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+DIMS.length+'</b> dimensions'+(miss?' <small>('+miss+' with no record)</small>':'')+' <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
+    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+'/'+DIMS.length+'</b> · '+Math.round(r.score*100)+'%'+(miss?' <small>· '+miss+' no record</small>':'')+(mostlyWords(r.l)?' <small class="w">· mostly words</small>':'')+'</div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
   if(ranked.length>SHOW)html+='<button type="button" class="btn ghost" id="show-more">Show all '+ranked.length+' leaders</button>';
   var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
   html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
-  html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle for the evidence.</p>'+
-    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></div>';
+  html+='<details class="sec fold"><summary><h3>Dimension by dimension</h3></summary><p class="sub">Tap a circle for the evidence.</p>'+
+    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></details>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">Too little evidence to compare. Read their records instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
   html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
@@ -293,7 +275,7 @@ function leaderHTML(l){
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
-    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a> · <a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
+    '<p class="meta">'+(l.reviewed?'Reviewed '+esc(l.reviewed)+' · ':'')+(nu?nu+' claim'+(nu===1?'':'s')+' not yet re-checked · ':'')+'<a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (iss?'<div><h5>On the issues voters rank highest</h5><ul class="rec">'+iss+'</ul><p class="iss-note">Issues in the order voters ranked them (Infotrak, December 2025). Shown for reference; not used in matching. <a href="#method">Why</a></p></div>':'')+
     (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
@@ -310,7 +292,7 @@ function renderRecords(){
     '<p class="grp">In today\'s political climate</p><div>'+now.map(leaderHTML).join('')+'</div><p class="grp">Earlier leaders</p><div>'+past.map(leaderHTML).join('')+'</div>';
 }
 $("m-dims").innerHTML=DIMS.map(function(d){return '<li><b>'+esc(d.name)+':</b> '+esc(d.lo)+' to '+esc(d.hi)+'</li>'}).join('');
-function start(){ST[cur]={idx:0,answers:[],done:false,started:true};track("quiz-started-"+cur,"Started: "+S().name,true);go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
+function start(){ST[cur]={idx:0,answers:[],done:false,started:true};save();track("quiz-started-"+cur,"Started: "+S().name,true);go("#quiz-"+cur,/^#result/.test(location.hash))} // a retake replaces the result entry so Back does not bounce
 $("home").addEventListener("click",function(){go("#home")});
 $("q-back").addEventListener("click",back);
 document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventListener("click",function(){

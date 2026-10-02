@@ -1,0 +1,52 @@
+{
+ "all/neutral": [
+  "millie",
+  "raila",
+  "kalonzo"
+ ],
+ "all/agree-all": [
+  "matiangi",
+  "mboya",
+  "ruto"
+ ],
+ "all/disagree-all": [
+  "nyoro",
+  "raila",
+  "karua"
+ ],
+ "all/high-all": [
+  "bmwangi",
+  "maathai",
+  "omtatah"
+ ],
+ "all/low-all": [
+  "jomo",
+  "moi",
+  "saitoti"
+ ],
+ "now/neutral": [
+  "millie",
+  "kalonzo",
+  "ruto"
+ ],
+ "now/agree-all": [
+  "millie",
+  "ruto",
+  "matiangi"
+ ],
+ "now/disagree-all": [
+  "gachagua",
+  "nyoro",
+  "babu"
+ ],
+ "now/high-all": [
+  "bmwangi",
+  "omtatah",
+  "maraga"
+ ],
+ "now/low-all": [
+  "kindiki",
+  "ruto",
+  "matiangi"
+ ]
+}

@@ -86,11 +86,6 @@ a.btn{text-decoration:none}
 .path h2{font-size:1.8rem}
 .path p{color:var(--muted)}
 .path .cta{margin-top:auto;padding-top:12px}
-.rules{margin-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 32px;counter-reset:rule}
-.rules>div{counter-increment:rule;border-top:1px solid var(--line-strong);padding-top:16px}
-.rules h3{font-size:1.15rem;margin-bottom:8px;display:flex;gap:10px;align-items:baseline}
-.rules h3::before{content:counter(rule);font-family:var(--body);font-size:.75rem;font-weight:700;color:var(--sun)}
-.rules p{color:var(--muted);font-size:.95rem}
 
 /* Quiz */
 #v-quiz{max-width:760px;margin:0 auto}
@@ -282,7 +277,6 @@ button.chip{cursor:pointer;min-height:40px}
 .about li::marker{color:var(--ink)}
 .about+.site-foot{margin-top:56px}
 .about[hidden]+.site-foot{margin-top:96px}
-.about-cta{margin-top:24px}
 noscript .notice{margin-top:0;margin-bottom:24px}
 
 /* Footer */
@@ -314,8 +308,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   .tabs button[aria-current="true"]::after,.tabs a[aria-current="true"]::after{left:8px;right:8px}
   .cta .btn{flex:1 1 100%}
   .hero .lede{font-size:1.06rem}
-  .rules{margin-top:44px;gap:24px}
-  .path{padding:22px}
+    .path{padding:22px}
   .path h2{font-size:1.55rem}
   .q-card{border-radius:16px}
   .opts{grid-template-columns:1fr;gap:6px}
@@ -369,3 +362,33 @@ noscript .notice{margin-top:0;margin-bottom:24px}
 .m th,.m td{text-align:left;padding:8px 10px 8px 0;border-top:1px solid var(--line);vertical-align:top}
 .m th{font-weight:600;color:var(--muted)}
 .m td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+/* Method: secondary sections stay folded until opened. */
+.m .mfold{border-top:1px solid var(--line);padding:14px 0}
+.m h3+.mfold{border-top:0}
+.m .mfold>summary{cursor:pointer;font-weight:600}
+.m .mfold[open]>summary{margin-bottom:4px}
+/* Result: the per-dimension chart is folded by default. */
+.sec.fold>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-top:16px;border-top:1px solid var(--line-strong);margin-bottom:8px}
+.sec.fold>summary::-webkit-details-marker{display:none}
+.sec.fold>summary h3{font-size:clamp(1.45rem,3.5vw,1.8rem)}
+.sec.fold>summary::after{content:"+";font-size:1.5rem;font-weight:600;color:var(--muted)}
+.sec.fold[open]>summary::after{content:"\2212"}
+.sec.fold>.sub{color:var(--muted);max-width:64ch;margin-bottom:24px}
+.match .w{color:var(--muted);font-weight:500}
+/* Leader and comparison pages: secondary sections fold. */
+.lp .lfold{border-top:1px solid var(--line-strong);padding-top:14px}
+.lp .lfold>summary{cursor:pointer;font-family:var(--display);font-weight:var(--hw);font-size:1.15rem}
+.lp .lfold[open]>summary{margin-bottom:14px}
+.lp .lfold>p{max-width:66ch;margin-top:10px}
+.tw2{overflow-x:auto}
+.cmpt{width:100%;border-collapse:collapse;font-size:.93rem;table-layout:fixed}
+.cmpt th,.cmpt td{text-align:left;vertical-align:top;padding:10px 10px 10px 0;border-top:1px solid var(--line)}
+.cmpt thead th{border-top:0;font-size:1rem}
+.cmpt tbody th{font-weight:600;color:var(--muted);width:34%}
+.cmpt td.none{color:var(--muted)}
+.cmpt details{margin-top:4px}
+.cmpt summary{cursor:pointer;font-size:.82rem;color:var(--muted)}
+.cmpt details p{font-size:.85rem;color:var(--muted);margin-top:4px}
+.vsi{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.vsi h3{font-size:1rem}
+.vsi p{font-size:.92rem;margin-top:4px}
