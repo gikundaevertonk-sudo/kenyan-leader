@@ -14,7 +14,7 @@ var SIASA = require(path.join(root, "js", "data.js"));
 var DIMS = SIASA.DIMS, CONF = SIASA.CONF, L = SIASA.L;
 var SITE = "https://siasacompass.co.ke";
 var TODAY = new Date().toISOString().slice(0, 10);
-var V = { css: "8" }; // keep in step with the ?v= on css/styles.css in index.html
+var V = { css: "9" }; // keep in step with the ?v= on css/styles.css in index.html
 
 function esc(x) {
   return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) {

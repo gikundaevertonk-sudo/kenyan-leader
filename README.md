@@ -54,6 +54,7 @@ js/app.js               app logic (routing, quiz, scoring, rendering)
 scripts/validate-data.js  checks js/data.js
 scripts/build-single.js   builds dist/siasa-compass.html (one shareable file)
 scripts/build-leaders.js  builds leaders/ (one crawlable page per leader) and sitemap.xml
+scripts/build-share.js    builds r/<id>/ share pages and img/share/<id>.jpg link previews (needs Chrome or Edge, and network)
 ```
 
 ## Adding or editing a leader

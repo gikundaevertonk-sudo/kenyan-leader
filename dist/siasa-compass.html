@@ -51,13 +51,7 @@
   ]
 }
 </script>
-<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="icon" type="image/png" sizes="48x48" href="/img/favicon-48.png">
-<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2215%22%20fill%3D%22%2317132B%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23F5F4FA%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%206v2.5M16%2023.5V26M6%2016h2.5M23.5%2016H26%22%20stroke%3D%22%23F5F4FA%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%2F%3E%3Cg%20transform%3D%22rotate(35%2016%2016)%22%3E%3Cpath%20d%3D%22M16%207l3.6%209h-7.2z%22%20fill%3D%22%23F2B01E%22%2F%3E%3Cpath%20d%3D%22M16%2025l3.6-9h-7.2z%22%20fill%3D%22%23F5F4FA%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%221.5%22%20fill%3D%22%2317132B%22%2F%3E%3C%2Fsvg%3E">
 <meta name="theme-color" content="#17132B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -422,6 +416,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   .tabs button,.tabs a{font-size:.82rem;padding:8px 5px}
 }
 .xnote{margin:.35rem 0 0;font-size:.85em;font-style:italic;opacity:.8}
+.notice.from{margin:0 0 22px;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -1266,8 +1261,9 @@ function credit(l){var p=PHOTOS[l.id]; if(!p)return "";
   return esc(l.n)+': <a href="'+esc(safeUrl(p.file))+'" target="_blank" rel="noopener noreferrer">photo</a> by '+esc(p.artist)+', '+
     (p.licenseUrl?'<a href="'+esc(safeUrl(p.licenseUrl))+'" target="_blank" rel="noopener noreferrer">'+esc(p.license)+'</a>':esc(p.license))+', via Wikimedia';}
 
-return {load:load,avatar:avatar,credit:credit,get:function(id){return PHOTOS[id]||null}};
+return {load:load,avatar:avatar,credit:credit,get:function(id){return PHOTOS[id]||null},WIKI:WIKI,API:API};
 })();
+if(typeof module!=="undefined"&&module.exports)module.exports=SiasaPhotos; // scripts/build-share.js reads WIKI and API
 </script>
 <script>
 /* Sharing: native share sheet, social links, copy link, and a downloadable story-sized image card of the result.
@@ -1299,37 +1295,53 @@ function section(extra){
 }
 
 // o: {text: short post text, summary: full text summary, top: up to three ranked rows, tags: the user's lean labels}
+// The link shared is the top match's page in r/ (scripts/build-share.js), so link previews show that match, not the generic card.
 function bind(o){
-  var text=o.text, enc=encodeURIComponent, blob=null;
-  $("sh-x").href="https://twitter.com/intent/tweet?text="+enc(text)+"&url="+enc(SITE);
-  $("sh-wa").href="https://wa.me/?text="+enc(text+" "+SITE);
-  $("sh-fb").href="https://www.facebook.com/sharer/sharer.php?u="+enc(SITE)+"&quote="+enc(text);
-  $("sh-tg").href="https://t.me/share/url?url="+enc(SITE)+"&text="+enc(text);
-  $("sh-li").href="https://www.linkedin.com/sharing/share-offsite/?url="+enc(SITE);
-  $("sum").value=o.summary+" "+SITE;
+  var text=o.text, enc=encodeURIComponent, URL_=o.top.length?SITE+"r/"+enc(o.top[0].l.id)+"/":SITE;
+  $("sh-x").href="https://twitter.com/intent/tweet?text="+enc(text)+"&url="+enc(URL_);
+  $("sh-wa").href="https://wa.me/?text="+enc(text+" "+URL_);
+  $("sh-fb").href="https://www.facebook.com/sharer/sharer.php?u="+enc(URL_);
+  $("sh-tg").href="https://t.me/share/url?url="+enc(URL_)+"&text="+enc(text);
+  $("sh-li").href="https://www.linkedin.com/sharing/share-offsite/?url="+enc(URL_);
+  $("sum").value=o.summary+" "+URL_;
   var showSum=function(){$("sum").parentNode.open=true;$("sum").select()};
   $("sh-copy").addEventListener("click",function(){
     var done=function(){$("sh-copy").lastChild.textContent="Link copied"};
-    try{navigator.clipboard.writeText(text+" "+SITE).then(done,showSum)}catch(e){showSum()}
+    try{navigator.clipboard.writeText(text+" "+URL_).then(done,showSum)}catch(e){showSum()}
   });
-  var cv=$("card");
-  drawCard(cv,o.top,o.tags).then(function(){
-    try{cv.toBlob(function(b){blob=b},"image/png")}catch(e){} // a tainted canvas cannot be exported
-  });
+  // The card as a JPEG. If a photo tainted the canvas (no CORS), it is redrawn with initials so it can still be exported.
+  var cv=$("card"), blob=null;
+  var toBlob=function(){return new Promise(function(res,rej){try{cv.toBlob(function(b){b?res(b):rej()},"image/jpeg",0.9)}catch(e){rej(e)}})};
+  var ready=drawCard(cv,o.top,o.tags).then(toBlob).catch(function(){return drawCard(cv,o.top,o.tags,true).then(toBlob)})
+    .then(function(b){blob=b;return b},function(){return null});
   $("sh-img").addEventListener("click",function(){
-    var a=document.createElement("a"); a.download="siasa-compass-result.png";
-    try{a.href=cv.toDataURL("image/png")}catch(e){return}
-    document.body.appendChild(a); a.click(); a.remove();
+    ready.then(function(b){
+      if(!b)return;
+      var a=document.createElement("a"), u=window.URL.createObjectURL(b);
+      a.download="siasa-compass-result.jpg"; a.href=u;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){window.URL.revokeObjectURL(u)},4000);
+    });
   });
   if(navigator.share){
     var nb=$("sh-native"); nb.hidden=false;
-    nb.addEventListener("click",function(){
-      var data={title:"Siasa Compass",text:text,url:SITE};
-      if(blob&&window.File){
-        var f=new File([blob],"siasa-compass-result.png",{type:"image/png"});
-        if(navigator.canShare&&navigator.canShare({files:[f]}))data={files:[f],title:"Siasa Compass",text:text+" "+SITE};
+    var send=function(b){
+      var data={title:"Siasa Compass",text:text,url:URL_};
+      if(b&&window.File){
+        var f=new File([b],"siasa-compass-result.jpg",{type:"image/jpeg"});
+        // Apps that take a file often drop the url field, so the link goes in the text as well.
+        if(navigator.canShare&&navigator.canShare({files:[f]}))data={files:[f],title:"Siasa Compass",text:text+" "+URL_};
       }
-      navigator.share(data).catch(function(){});
+      return navigator.share(data);
+    };
+    nb.addEventListener("click",function(){
+      // Share at once if the image is ready: waiting can use up the tap, and some browsers then refuse to open the sheet.
+      if(blob){send(blob).catch(function(){});return}
+      nb.disabled=true;
+      ready.then(function(b){nb.disabled=false;return send(b)}).catch(function(e){
+        nb.disabled=false;
+        if(e&&e.name==="NotAllowedError")navigator.share({title:"Siasa Compass",text:text,url:URL_}).catch(function(){});
+      });
     });
   }
 }
@@ -1342,11 +1354,12 @@ function wrap(ctx,text,maxW){var ws=String(text).split(" "),lines=[],cur="";
   if(cur)lines.push(cur); return lines;}
 function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 
-function drawCard(cv,top,tags){
+// noPics: draw initials instead of photos.
+function drawCard(cv,top,tags,noPics){
   var ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
   var D='"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif', B='"Instrument Sans", "Segoe UI", system-ui, sans-serif';
   var fontsReady=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('800 80px "Bricolage Grotesque"'),document.fonts.load('600 40px "Instrument Sans"'),document.fonts.load('700 40px "Instrument Sans"')]).catch(function(){}):Promise.resolve();
-  var imgs=Promise.all(top.map(function(r){var p=SiasaPhotos.get(r.l.id);return p?loadImg(p.src):Promise.resolve(null)}));
+  var imgs=Promise.all(top.map(function(r){var p=!noPics&&SiasaPhotos.get(r.l.id);return p?loadImg(p.src):Promise.resolve(null)}));
   return Promise.all([fontsReady,imgs]).then(function(res){
     var pics=res[1];
     var g=ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,"#2A1690"); g.addColorStop(1,"#120E26");
@@ -1380,7 +1393,7 @@ function drawCard(cv,top,tags){
       ctx.strokeStyle=i===0?"#F2B01E":"rgba(255,255,255,.35)"; ctx.lineWidth=6; ctx.beginPath(); ctx.arc(cx+8,cy+86,76,0,7); ctx.stroke();
       var tx=300; ctx.textBaseline="alphabetic";
       ctx.fillStyle="#FFFFFF"; ctx.font="800 54px "+D; ctx.fillText(r.l.n,tx,cy+70);
-      ctx.fillStyle="#C9C0FF"; ctx.font="600 32px "+B; ctx.fillText("Close on "+r.close+" of "+r.n+" dimensions",tx,cy+112);
+      ctx.fillStyle="#C9C0FF"; ctx.font="600 32px "+B; ctx.fillText("Close on "+r.close+" of "+SIASA.DIMS.length+" dimensions",tx,cy+112);
       ctx.fillStyle="rgba(255,255,255,.15)"; rr(ctx,tx,cy+132,W-tx-110,16,8); ctx.fill();
       ctx.fillStyle="#F2B01E"; rr(ctx,tx,cy+132,Math.max(16,(W-tx-110)*r.score),16,8); ctx.fill();
     });
@@ -1392,7 +1405,7 @@ function drawCard(cv,top,tags){
     ctx.fillStyle="#C9C0FF"; ctx.font="500 30px "+B;
     ctx.fillText("Overlap with documented records. Not an endorsement.",88,by+130);
     // photo credits
-    var cr=top.filter(function(r){return SiasaPhotos.get(r.l.id)}).map(function(r){var p=SiasaPhotos.get(r.l.id);return r.l.n+": "+p.artist+", "+p.license});
+    var cr=noPics?[]:top.filter(function(r){return SiasaPhotos.get(r.l.id)}).map(function(r){var p=SiasaPhotos.get(r.l.id);return r.l.n+": "+p.artist+", "+p.license});
     if(cr.length){ctx.font="400 22px "+B; ctx.fillStyle="rgba(255,255,255,.6)";
       var lines=wrap(ctx,"Photos via Wikipedia / Wikimedia Commons. "+cr.join("; ")+".",W-176).slice(0,Math.max(1,Math.floor((H-24-(by+180))/28)+1));
       lines.forEach(function(l,i){ctx.fillText(l,88,by+180+i*28)});}
@@ -1729,6 +1742,16 @@ document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventLis
 document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.r;renderRecords()})});
 window.addEventListener("hashchange",route);
 renderHome();
+// Arriving from a shared result (r/<id>/ sends people to /?from=<id>): say whose record it was and offer the matching quiz.
+(function(){
+  var m=/[?&]from=([^&#]+)/.exec(location.search), id=m&&decodeURIComponent(m[1]), l=L.filter(function(x){return x.id===id})[0];
+  if(!l)return;
+  var k=l.now?"now":"all", p=document.createElement("p");
+  p.className="notice from";
+  p.innerHTML='A friend shared their result: their closest documented record is <b>'+esc(l.n)+'</b>. <a href="#quiz-'+k+'">Take the '+esc(SETS[k].name)+' quiz</a> and see where you land.';
+  $("v-home").insertBefore(p,$("v-home").firstChild);
+  track("from-share-"+id,"Arrived from shared result: "+l.n,true);
+})();
 route();
 // Photos arrive after the first render. Redraw the view on screen so it picks them up, keeping open profiles open.
 P.load().then(function(){

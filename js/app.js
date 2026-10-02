@@ -301,6 +301,16 @@ document.querySelectorAll(".nav .tabs button").forEach(function(b){b.addEventLis
 document.querySelectorAll("#rtoggle button").forEach(function(b){b.addEventListener("click",function(){rset=b.dataset.r;renderRecords()})});
 window.addEventListener("hashchange",route);
 renderHome();
+// Arriving from a shared result (r/<id>/ sends people to /?from=<id>): say whose record it was and offer the matching quiz.
+(function(){
+  var m=/[?&]from=([^&#]+)/.exec(location.search), id=m&&decodeURIComponent(m[1]), l=L.filter(function(x){return x.id===id})[0];
+  if(!l)return;
+  var k=l.now?"now":"all", p=document.createElement("p");
+  p.className="notice from";
+  p.innerHTML='A friend shared their result: their closest documented record is <b>'+esc(l.n)+'</b>. <a href="#quiz-'+k+'">Take the '+esc(SETS[k].name)+' quiz</a> and see where you land.';
+  $("v-home").insertBefore(p,$("v-home").firstChild);
+  track("from-share-"+id,"Arrived from shared result: "+l.n,true);
+})();
 route();
 // Photos arrive after the first render. Redraw the view on screen so it picks them up, keeping open profiles open.
 P.load().then(function(){

@@ -357,3 +357,4 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   .tabs button,.tabs a{font-size:.82rem;padding:8px 5px}
 }
 .xnote{margin:.35rem 0 0;font-size:.85em;font-style:italic;opacity:.8}
+.notice.from{margin:0 0 22px;color:var(--ink)}

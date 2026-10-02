@@ -55,5 +55,6 @@ function credit(l){var p=PHOTOS[l.id]; if(!p)return "";
   return esc(l.n)+': <a href="'+esc(safeUrl(p.file))+'" target="_blank" rel="noopener noreferrer">photo</a> by '+esc(p.artist)+', '+
     (p.licenseUrl?'<a href="'+esc(safeUrl(p.licenseUrl))+'" target="_blank" rel="noopener noreferrer">'+esc(p.license)+'</a>':esc(p.license))+', via Wikimedia';}
 
-return {load:load,avatar:avatar,credit:credit,get:function(id){return PHOTOS[id]||null}};
+return {load:load,avatar:avatar,credit:credit,get:function(id){return PHOTOS[id]||null},WIKI:WIKI,API:API};
 })();
+if(typeof module!=="undefined"&&module.exports)module.exports=SiasaPhotos; // scripts/build-share.js reads WIKI and API
