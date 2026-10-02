@@ -51,7 +51,13 @@
   ]
 }
 </script>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2215%22%20fill%3D%22%2317132B%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%2212%22%20fill%3D%22none%22%20stroke%3D%22%23F5F4FA%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M16%206v2.5M16%2023.5V26M6%2016h2.5M23.5%2016H26%22%20stroke%3D%22%23F5F4FA%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%2F%3E%3Cg%20transform%3D%22rotate(35%2016%2016)%22%3E%3Cpath%20d%3D%22M16%207l3.6%209h-7.2z%22%20fill%3D%22%23F2B01E%22%2F%3E%3Cpath%20d%3D%22M16%2025l3.6-9h-7.2z%22%20fill%3D%22%23F5F4FA%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%221.5%22%20fill%3D%22%2317132B%22%2F%3E%3C%2Fsvg%3E">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="48x48" href="/img/favicon-48.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <meta name="theme-color" content="#17132B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,10 +106,15 @@ button{font-family:inherit;font-size:inherit;color:inherit}
 .top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 86%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
 .nav{max-width:1040px;margin:0 auto;padding:10px max(20px,env(safe-area-inset-right)) 10px max(20px,env(safe-area-inset-left));display:flex;align-items:center;justify-content:space-between;gap:16px}
 .brand{font-family:var(--display);font-weight:var(--hw);font-size:1.25rem;letter-spacing:-.02em;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;min-height:44px;cursor:pointer}
+a.brand{text-decoration:none;color:inherit}
 .brand .compass{width:28px;height:28px;flex:none}
 .brand .compass .n{fill:var(--sun)}
 .brand .compass .hub{fill:var(--bg)}
 .tabs{display:flex;gap:2px;flex-wrap:wrap}
+.tabs a{position:relative;display:inline-flex;align-items:center;text-decoration:none;padding:8px 12px;min-height:44px;border-radius:8px;font-weight:600;font-size:.95rem;color:var(--muted)}
+.tabs a[aria-current="true"]{color:var(--fg)}
+.tabs a[aria-current="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:4px;height:2px;border-radius:2px;background:var(--ink)}
+@media (hover:hover){.tabs a:hover{color:var(--fg);background:var(--sunk)}}
 .tabs button{position:relative;border:0;background:transparent;padding:8px 12px;min-height:44px;border-radius:8px;font-weight:600;font-size:.95rem;cursor:pointer;color:var(--muted)}
 @media (hover:hover){.tabs button:hover{color:var(--fg);background:var(--sunk)}}
 .tabs button[aria-current="true"]{color:var(--fg)}
@@ -201,6 +212,8 @@ button.chip{cursor:pointer;min-height:40px}
 .match{counter-increment:rank;display:grid;grid-template-columns:2.2em auto minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:16px 0;border-top:1px solid var(--line)}
 .match::before{content:counter(rank);grid-row:1/3;font-family:var(--display);font-size:1.2rem;font-weight:var(--hw);color:var(--muted);text-align:right}
 .match:first-child{border-top:0}
+.match[hidden]{display:none}
+#show-more{margin-top:12px}
 .match:nth-child(-n+3)::before{color:var(--ink)}
 .match .ava{grid-row:1/3}
 .match .nm{font-weight:700;font-size:1.05rem}
@@ -222,6 +235,7 @@ button.chip{cursor:pointer;min-height:40px}
 @media (hover:hover){.dot:hover{transform:translateX(-50%) scale(1.12);z-index:3}}
 .dot.low{border-style:dashed}
 .dot.st{border-style:dotted;border-color:var(--tag-s)}
+.dot.hs{border-style:dotted;border-color:var(--tag-a)}
 .dot.top{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
 .dot.you{width:38px;height:38px;background:var(--sun);border-color:var(--sun);color:var(--on-sun);font-size:11px;z-index:2;box-shadow:0 0 0 3px color-mix(in srgb,var(--sun) 18%,transparent)}
 .dot.sel{outline:3px solid var(--sun);outline-offset:2px}
@@ -231,7 +245,7 @@ button.chip{cursor:pointer;min-height:40px}
 .dnote{margin-top:12px;font-size:.92rem;color:var(--muted);min-height:2.7em;padding:10px 14px;background:var(--surface);border-radius:10px;border:1px solid var(--line)}
 .legend{display:flex;gap:10px 18px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-bottom:8px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:50%;border:2px solid var(--fg);vertical-align:-2px;margin-right:6px}
-.legend i.f{background:var(--ink);border-color:var(--ink)} .legend i.d{border-style:dashed} .legend i.y{background:var(--sun);border-color:var(--sun)} .legend i.s{border-style:dotted;border-color:var(--tag-s)}
+.legend i.f{background:var(--ink);border-color:var(--ink)} .legend i.d{border-style:dashed} .legend i.y{background:var(--sun);border-color:var(--sun)} .legend i.s{border-style:dotted;border-color:var(--tag-s)} .legend i.h{border-style:dotted;border-color:var(--tag-a)}
 .share textarea{width:100%;min-height:96px;margin-top:10px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--fg);padding:12px;font-family:var(--body);font-size:.95rem;resize:vertical}
 .ava{width:46px;height:46px;border-radius:50%;object-fit:cover;object-position:50% 20%;background:var(--ink-soft);flex:none;display:grid;place-items:center;font-family:var(--display);font-size:.85rem;font-weight:var(--hw);color:var(--ink);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line)}
 .credits{margin-top:16px;font-size:.82rem;color:var(--muted)}
@@ -287,7 +301,7 @@ button.chip{cursor:pointer;min-height:40px}
 .pd .said{color:var(--muted)}
 .pd .did{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px}
 .tg{font-family:var(--body);font-size:.7rem;font-weight:700;border-radius:6px;padding:2px 6px;height:fit-content;margin-top:3px;color:#fff}
-.tg.D{background:var(--tag-d)} .tg.A{background:var(--tag-a)} .tg.I{background:var(--tag-i)} .tg.U{background:var(--tag-u)} .tg.S{background:var(--tag-s)}
+.tg.D{background:var(--tag-d)} .tg.A{background:var(--tag-a)} .tg.I{background:var(--tag-i)} .tg.U{background:var(--tag-u)} .tg.S{background:var(--tag-s)} .tg.H{background:var(--tag-a)}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tg{color:#0F0C1E}}
 :root[data-theme="dark"] .tg{color:#0F0C1E}
 .tend{display:grid;gap:12px}
@@ -298,6 +312,23 @@ button.chip{cursor:pointer;min-height:40px}
 .src a{overflow-wrap:anywhere}
 
 /* Method */
+/* Leader pages (leaders/*.html, built by scripts/build-leaders.js) */
+.seek{margin-top:28px;color:var(--muted);max-width:58ch}
+.lp{max-width:760px;display:grid;gap:26px;padding-bottom:0}
+.lp h1{font-size:clamp(2.2rem,6vw,3.4rem)}
+.lp h2{font-size:1.3rem;padding-top:14px;border-top:1px solid var(--line-strong);margin-bottom:14px}
+.lp .kicker{margin-bottom:0}
+.lp .lede{font-size:1.1rem;color:var(--muted)}
+.lp .cta{margin-top:0}
+.lp .crumbs{font-size:.88rem;color:var(--muted)}
+.lp .crumbs a{color:var(--muted)}
+.lp .how p,.lp section>p{max-width:66ch}
+.lp .xnote{font-size:.85rem;color:var(--muted);margin-top:6px}
+.olist,.dir{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.olist{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.dir li{display:grid;gap:2px;padding:12px 0;border-top:1px solid var(--line)}
+.dir li:first-child{border-top:0}
+.dir span{color:var(--muted);font-size:.92rem}
 .m{max-width:720px}
 .m h2{font-size:clamp(2rem,5vw,3rem)}
 .m h3{margin-top:40px;font-size:1.35rem;padding-top:14px;border-top:1px solid var(--line-strong)}
@@ -344,8 +375,8 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   .nav{flex-direction:column;align-items:stretch;gap:2px;padding-block:6px 0}
   .brand{align-self:flex-start}
   .tabs{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;margin-inline:-8px}
-  .tabs button{padding:8px;font-size:.88rem}
-  .tabs button[aria-current="true"]::after{left:8px;right:8px}
+  .tabs button,.tabs a{padding:8px;font-size:.88rem}
+  .tabs button[aria-current="true"]::after,.tabs a[aria-current="true"]::after{left:8px;right:8px}
   .cta .btn{flex:1 1 100%}
   .hero .lede{font-size:1.06rem}
   .rules{margin-top:44px;gap:24px}
@@ -388,7 +419,7 @@ noscript .notice{margin-top:0;margin-bottom:24px}
 @media (max-width:360px){
   .hero h1{font-size:2.1rem}
   .lead .who{font-size:1.15rem}
-  .tabs button{font-size:.82rem;padding:8px 5px}
+  .tabs button,.tabs a{font-size:.82rem;padding:8px 5px}
 }
 .xnote{margin:.35rem 0 0;font-size:.85em;font-style:italic;opacity:.8}
 </style>
@@ -413,8 +444,9 @@ noscript .notice{margin-top:0;margin-bottom:24px}
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two short quizzes. What leaders did counts most. What they said counts less.</p>
     <div class="paths" id="paths"></div>
+    <p class="seek">Looking for one leader? <a href="/leaders/">Browse the leader profiles</a>: what each said and did, with sources.</p>
     <div class="rules">
-      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those in power are judged on actions only.</p></div>
+      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those with real power are judged on actions only.</p></div>
       <div><h3>Words count less</h3><p>Promises count only if the record doesn't contradict them. Tagged <span class="tg S">S</span>.</p></div>
       <div><h3>No guessing</h3><p>Thin records are left out. This is not voting advice.</p></div>
     </div>
@@ -455,8 +487,10 @@ noscript .notice{margin-top:0;margin-bottom:24px}
     <ul>
       <li><b>Actions come first.</b> Laws, votes, spending, appointments, court cases, and how leaders treated courts, media and opponents.</li>
       <li><b>Words count less.</b> Where actions are thin, reported manifestos, speeches and interviews can place a leader. Tagged <span class="tg S">S</span>, drawn dotted, weighted at 60%.</li>
+      <li><b>Reports count least.</b> For people whose job is mostly words, such as MPs and senators, reported or attributed claims can fill a gap too. Tagged <span class="tg H">H</span> (hearsay), weighted at 40%, never used where actions exist.</li>
       <li><b>Contradicted words are dropped.</b> They stay visible in "said / did", marked as contradicted.</li>
-      <li><b>In power now? Only actions count.</b> The President, Deputy President and sitting governors can act, so their promises never count.</li>
+      <li><b>Real power now? Only actions count.</b> The President and sitting governors can act, so their promises and hearsay never count. With too little action on record, they stay out of your matches.</li>
+      <li><b>Little power of their own? Some grace.</b> Someone in office with limited power, such as the Deputy President, can still be placed by their words, at the lower weight.</li>
     </ul>
     <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
@@ -468,11 +502,12 @@ noscript .notice{margin-top:0;margin-bottom:24px}
       <li><span class="tg I">I</span> Interpretation: our reading. Open to challenge.</li>
       <li><span class="tg U">U</span> Unchecked: needs verification.</li>
       <li><span class="tg S">S</span> Stated position: a promise from someone not in power, weighted below actions.</li>
+      <li><span class="tg H">H</span> Hearsay: a report or claim about what someone did or said, not verified. Lightest weight.</li>
     </ul>
     <h3>Matching</h3>
-    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least three dimensions to appear in your matches.</p>
+    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
     <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
-    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
+    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
     <h3>Limits</h3>
     <ul>
       <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
@@ -492,19 +527,19 @@ noscript .notice{margin-top:0;margin-bottom:24px}
   <h3>How are leaders placed?</h3>
   <ul>
     <li><b>Actions come first.</b> Laws signed, votes, spending, appointments and court cases set a leader's placement wherever that evidence exists.</li>
-    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders in power now are judged on actions only.</li>
+    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders with real power now are judged on actions only.</li>
     <li><b>Sources are tagged.</b> Each line in a leader's record is marked as documented, attributed to a named source, our interpretation, a stated position, or not yet re-checked, so you can tell facts from claims.</li>
   </ul>
   <h3>Does Siasa Compass rank or endorse anyone?</h3>
   <p>No. It is a research draft built from public reporting up to 30 September 2026. It does not rank leaders, predict the 2027 election or endorse any politician or party. A match means your answers overlap with a leader's documented record, not that you should vote for them.</p>
   <h3>Where can I read Kenyan leaders' records?</h3>
   <p>The Records page lists every leader in the draft with what they said they would do next to what they did, the evidence behind each placement, and links to sources. Leaders with too little evidence are left out of matches rather than guessed at.</p>
-  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a></div>
+  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a><a class="btn sm ghost" href="/leaders/">Leader profiles</a></div>
 </section>
 <footer class="wrap site-foot">
   <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
-  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a>.</p>
+  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a>.</p>
   <div class="site-share">
     <h2>Share Siasa Compass</h2>
     <div class="sbtns">
@@ -584,12 +619,14 @@ var W={H:1,M:.8,L:.5};
 var CONF={H:"high",M:"medium",L:"low"};
 
 /* Leader fields:
-   now: part of the current political climate. exec: has held executive power. inPower: holds executive power now.
-   Evidence rule: actions set a placement. Stated positions (basis "S") may fill a dimension where the record is thin,
-   but never for someone in power now, and never where the record contradicts them. A contradicted promise is
+   now: part of the current political climate. exec: has held executive power. inPower: holds executive power now. limitedPower: holds office but with little power of their own
+   (for example the Deputy President), so their words may still count, at the usual lower weight.
+   Evidence rule: actions set a placement. Stated positions (basis "S") and reported or attributed claims (basis "H",
+   hearsay, the lightest weight) may fill a dimension where the record is thin, which is how people whose job is
+   mostly words (MPs, senators, activists) get a profile. Never for someone in power now, and never where the record contradicts them. A contradicted promise is
    kept in said[] with a fourth element "X" so the gap stays visible.
    reviewed: date (YYYY-MM-DD) the profile was last checked against sources; "" where unknown.
-   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, not allowed when inPower is set.
+   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, "H" = hearsay (reported or attributed, unverified). Neither is allowed when inPower is set, unless limitedPower is also set.
    said: [what they said they would do, what they did (or null), tag for the second part, "X" if contradicted].
    rec: [tag, text] lines, tag one of D A I U S. A U line has not been re-checked. */
 var L=[
@@ -615,20 +652,22 @@ var L=[
  suggests:"Pragmatic, executive-centred developmentalism with IMF-aligned fiscal consolidation, adjusting to coalition needs. Confidence is high that the record is large, and only medium that any single label fits.",
  src:[["Kenyans.co.ke: Ruto signs 2026 Finance Bill","https://www.kenyans.co.ke/news/124557-ruto-signs-2026-finance-bill-law"],["Nation: ODM, UDA joint talks team","https://nation.africa/kenya/news/politics/odm-uda-to-form-joint-talks-team-as-oburu-signals-start-of-2027-coalition-negotiations-5323202"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
-{id:"kindiki",now:1,exec:1,inPower:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
+{id:"kindiki",now:1,exec:1,inPower:1,limitedPower:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
  dims:{
   econ:[0,"L","As Deputy President he is a principal of the government whose mixed economic record is set out under William Ruto. No separate economic record of his own was found."],
   style:[-2,"M","A career insider: Senate Majority Leader, Senate Deputy Speaker, Interior CS and now Deputy President, all within the governing camp."],
+  inst:[1,"L","Says devolution is now too entrenched to be reversed and that national and county governments must cooperate, not compete (June 2025). A stated position from an office with little power of its own, so it counts at the lighter weight.","S"],
   liberty:[-2,"M","As Interior CS he declared in July 2023 that no more opposition protests would be allowed 'with or without notice', and he was in charge of policing during the 2023 and 2024 protests in which rights groups recorded dozens of deaths. He denies police brutality and abductions."]},
  said:[["Said in July 2024 that the government would investigate police brutality during the Finance Bill protests.","The Kenya Human Rights Commission later said he had justified excessive force before a parliamentary committee and called on him to resign. No outcome of the promised investigations was compiled in this pass.","A"]],
  rec:[
   ["D","Interior Cabinet Secretary from October 2022 to October 2024. Sworn in as Deputy President on 1 November 2024 after Rigathi Gachagua was impeached."],
   ["D","Warned Azimio in July 2023: 'No more protests, with or without notice.'"],
   ["A","In August 2026 Gachagua claimed Kindiki refused to oppose orders to deal harshly with 2024 protesters. Kindiki called the claims 'petty lies'. Neither account is proven."],
+  ["D","Said in June 2025 that devolution cannot be reversed and that national and county governments must work together rather than compete."],
   ["D","Removed as Senate Deputy Speaker in 2020 for siding with then Deputy President Ruto against President Kenyatta."]],
  contra:["Has dismissed allegations of police abuses that rights groups documented while he oversaw the police (interpretation)."],
  suggests:"On his record in office: an order-first security minister who became the President's deputy. His economic record is the government's, not his own.",
- src:[["Citizen: 'No more protests, with or without notice'","https://www.citizen.digital/news/no-more-protests-with-or-without-notice-interior-cs-kindiki-now-warns-azimio-n317081"],["Capital FM: Kindiki denies abductions, promises probe (July 2024)","https://www.capitalfm.co.ke/news/2024/07/govt-to-investigate-police-brutality-during-anti-finance-bill-protests-as-cs-kindiki-denies-abductions/"],["Nation: KHRC tells Kindiki to resign","https://nation.africa/kenya/news/khrc-tells-dp-kindiki-murkomen-to-resign-over-abductions-4880690"],["allAfrica: Kindiki replies to Gachagua (Aug 2026)","https://allafrica.com/stories/202608250085.html"],["Wikipedia: Kithure Kindiki (overview)","https://en.wikipedia.org/wiki/Kithure_Kindiki"]]},
+ src:[["Standard: Devolution on course, assures Kindiki","https://standardmedia.co.ke/national/article/2001522514/devolution-on-course-assures-kindiki"],["allAfrica: National and county governments must cooperate, not compete (June 2025)","https://allafrica.com/stories/202506240029.html"],["Citizen: 'No more protests, with or without notice'","https://www.citizen.digital/news/no-more-protests-with-or-without-notice-interior-cs-kindiki-now-warns-azimio-n317081"],["Capital FM: Kindiki denies abductions, promises probe (July 2024)","https://www.capitalfm.co.ke/news/2024/07/govt-to-investigate-police-brutality-during-anti-finance-bill-protests-as-cs-kindiki-denies-abductions/"],["Nation: KHRC tells Kindiki to resign","https://nation.africa/kenya/news/khrc-tells-dp-kindiki-murkomen-to-resign-over-abductions-4880690"],["allAfrica: Kindiki replies to Gachagua (Aug 2026)","https://allafrica.com/stories/202608250085.html"],["Wikipedia: Kithure Kindiki (overview)","https://en.wikipedia.org/wiki/Kithure_Kindiki"]]},
 
 {id:"gachagua",now:1,exec:1,reviewed:"2026-10-01",n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Partial record",
  dims:{
@@ -674,7 +713,7 @@ var L=[
  suggests:"A long-serving establishment figure now leading street-level opposition, with a pro-devolution, cost-of-living platform. Most of his placements rest on stated positions, which weigh less than actions. His ministerial decisions are the next thing to compile.",
  src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: Kalonzo's rise to VP","https://nation.africa/kenya/news/politics/kalonzo-musyoka-how-rise-to-vp-earned-him-watermelon-moniker--4792974"],["Capital FM: Kalonzo's 13-point agenda (June 2026)","https://capitalfm.africa/kalonzo-unveils-presidential-campaign-platform-pegged-on-economic-recovery-and-governance-reforms/"],["Star: Kalonzo's 13-point plan","https://www.the-star.co.ke/news/2026-06-07-kalonzos-13-point-campaign-plan-to-transform-kenya"],["People Daily: Kalonzo urges rejection of Finance Bill 2026","https://peopledaily.digital/inside-politics/kalonzo-pushes-for-rejection-of-finance-bill-2026"],["People Daily: Kalonzo's devolution agenda","https://peopledaily.digital/inside-politics/wavinya-ndeti-outlines-kalonzo-musyokas-agenda-on-devolution-equal-resource-distribution"],["Nation: leaders react to Supreme Court LGBTQ ruling (March 2023)","https://nation.africa/kenya/news/ruto-raila-united-in-dismissing-supreme-court-lgbtq-ruling-4143188"],["Star: Nairobi lockdown a symbol of resistance, say Kalonzo, Karua (June 2026)","https://www.the-star.co.ke/news/2026-06-25-nairobi-lockdown-a-symbol-of-resistance-say-kalonzo-karua"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
-{id:"matiangi",now:1,exec:1,reviewed:"",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
+{id:"matiangi",now:1,exec:1,reviewed:"2026-10-02",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","Led state-driven delivery programmes such as the exam overhaul and school-transition policy (interpretation; verify)."],
   inst:[-1,"L","A 2018 dispute over compliance with court orders happened under his Interior docket. Outcome not verified here."],
@@ -687,10 +726,13 @@ var L=[
   ["D","Held two of the most senior cabinet posts in the Kenyatta government."],
   ["D","Now Jubilee party leader and among the United Opposition principals."],
   ["A","Polled 12% in Infotrak's June 2026 survey and 7.7% in Mizani Africa's September 2026 poll. TIFA reported his support falling from 32% in August 2025 to 14% in June 2026."],
+  ["D","As Education CS from December 2015 he restructured the exams council (KNEC), disbanded its board and sacked nine board members over exam irregularities, and had national exam results released within about a month."],
+  ["A","His strict anti-cheating rules strained relations with teachers' unions, and some leaders called for his resignation after weak 2016 KCSE results. Reported by the Star; the cause of the results is disputed."],
+  ["A","Credited, in a Star profile, with hiring 100,000 police officers as Interior CS and improving the police-to-population ratio from 1:900 to 1:600. Official figures not checked here."],
   ["U","The Huduma Namba national ID registration drive he led was challenged in court in 2019 to 2020."]],
  contra:["Senior insider in the previous government now positioned as its alternative (interpretation)."],
  suggests:"A technocratic, state-delivery style of governing with an order-first approach to security, which his campaign promises repeat. Most placements here are low confidence.",
- src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["People Daily: 'No goon nonsense' if I'm elected","https://peopledaily.digital/inside-politics/matiangi-there-will-be-no-goon-nonsense-in-kenya-if-im-elected-president"],["People Daily: how Matiang'i would run government","https://peopledaily.digital/news/matiangi-explains-how-he-will-run-govt-if-elected-president"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ src:[["Star: This man Fred Okengo Matiang'i (April 2025)","https://www.the-star.co.ke/news/2025-04-30-this-man-fred-okengo-matiangi"],["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["People Daily: 'No goon nonsense' if I'm elected","https://peopledaily.digital/inside-politics/matiangi-there-will-be-no-goon-nonsense-in-kenya-if-im-elected-president"],["People Daily: how Matiang'i would run government","https://peopledaily.digital/news/matiangi-explains-how-he-will-run-govt-if-elected-president"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"karua",now:1,exec:1,reviewed:"",n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
  dims:{
@@ -745,10 +787,11 @@ var L=[
   ["D","Co-petitioner in the case in which the High Court declared the Housing Levy in the Finance Act 2023 unconstitutional in November 2023."],
   ["D","Filed petitions against the privatisation of Kenya Pipeline Company. Interim orders were refused in February 2026 and the case continues."],
   ["D","Gazetted a presidential exploratory committee in November 2024. Said in June 2026 he would announce his decision after receiving its report in early July. A formal declaration was not confirmed in this pass."],
+  ["D","The Supreme Court on 29 October 2024 partly allowed an appeal and declared the Finance Act 2023 constitutional, overturning the Court of Appeal's earlier ruling against it. The Housing Levy fight he helped start therefore did not end in a lasting court win."],
   ["A","Polled 0.4% as preferred opposition flag-bearer in Mizani Africa's September 2026 poll."]],
- contra:["Not assessed."],
+ contra:["Wins in the High Court were later reversed or overtaken on appeal (interpretation). The Housing Levy came back under a separate law."],
  suggests:"A checks-and-balances litigant who uses the courts against the executive and resists the sale of state assets.",
- src:[["Kenyans.co.ke: court ruling on Finance Act 2023","https://www.kenyans.co.ke/news/95083-court-issues-final-ruling-finance-act-2023"],["The EastAfrican: High Court quashes housing levy","https://www.theeastafrican.co.ke/tea/news/east-africa/kenya-high-court-quashes-housing-levy-4448000"],["Citizen: court declines to stop Kenya Pipeline privatisation","https://www.citizen.digital/article/high-court-declines-to-issue-orders-stopping-planned-privatisation-of-kenya-pipeline-n377946"],["Nation: Omtatah on his presidential decision (June 2026)","https://nation.africa/kenya/news/politics/-omtatah-i-ll-make-pronouncement-on-my-presidential-bid-next-month-5496264"],["Star: inside Omtatah's bid","https://www.the-star.co.ke/news/2024-11-29-inside-senator-omtatahs-bid-to-unseat-ruto-in-2027"],["People Daily: Omtatah on the Salasya arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ src:[["KPMG: Supreme Court declares Finance Act 2023 constitutional","https://assets.kpmg.com/content/dam/kpmg/ke/pdf/tax/2024/Supreme%20Court%20of%20Kenya%20Declares%20Finance%20Act,%202023%20as%20Constitutional%20-%20Tax%20Alert.pdf"],["Kenyans.co.ke: court ruling on Finance Act 2023","https://www.kenyans.co.ke/news/95083-court-issues-final-ruling-finance-act-2023"],["The EastAfrican: High Court quashes housing levy","https://www.theeastafrican.co.ke/tea/news/east-africa/kenya-high-court-quashes-housing-levy-4448000"],["Citizen: court declines to stop Kenya Pipeline privatisation","https://www.citizen.digital/article/high-court-declines-to-issue-orders-stopping-planned-privatisation-of-kenya-pipeline-n377946"],["Nation: Omtatah on his presidential decision (June 2026)","https://nation.africa/kenya/news/politics/-omtatah-i-ll-make-pronouncement-on-my-presidential-bid-next-month-5496264"],["Star: inside Omtatah's bid","https://www.the-star.co.ke/news/2024-11-29-inside-senator-omtatahs-bid-to-unseat-ruto-in-2027"],["People Daily: Omtatah on the Salasya arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"bmwangi",now:1,exec:0,reviewed:"2026-10-01",n:"Boniface Mwangi",ini:"BMw",role:"Photojournalist and human rights activist. 2027 presidential aspirant.",cls:"Clearly identifiable (rights, style)",
  dims:{
@@ -791,7 +834,8 @@ var L=[
  dims:{
   econ:[0,"L","Warns against off-book borrowing and debt, but his People's Party also promises free basic education with school meals from January 2028, paid for by redirecting CDF and bursary money. Points both ways.","S"],
   redis:[-1,"M","Voted yes on the Finance Bill 2024 at second reading while chairing the Budget Committee. Missed the June 2026 Finance Bill vote and apologised for it."],
-  style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."]},
+  style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."],
+  inst:[1,"L","Policy blueprint (17 August 2026): double judicial capacity within five years with 1.5% of national revenue, and put state digital systems in a company listed on the Nairobi Securities Exchange to reduce 'political patronage'. A stated plan, not yet tested in office.","S"]},
  said:[
   ["Fiscal discipline and scrutiny of public debt.",null,"S"],
   ["Free basic education with school meals for every learner from January 2028, without new taxes (People's Party, September 2026).",null,"S"],
@@ -801,43 +845,50 @@ var L=[
   ["D","On 22 September unveiled the first party officials, including a 24-year-old secretary general."],
   ["D","Removed as Budget Committee chair in March 2025."],
   ["D","Apologised on 27 June 2026 for being absent when the Finance Bill 2026 passed: 'No amount of explanation... should absolve me of the blame.'"],
+  ["D","Said on 17 August 2026 that oil and minerals should be used to deal with Kenya's debt, and that private power producers should be allowed to sell to the national grid."],
   ["D","Touring counties with Matiang'i and Siaya Governor James Orengo ahead of 2027."]],
  contra:["Long a Ruto ally and UDA insider, now campaigning against the president (interpretation)."],
  suggests:"A partial placement: he voted for the 2024 tax measures inside government and now campaigns on fiscal discipline from the opposition.",
- src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Eastleigh Voice: People's Party agenda","https://eastleighvoice.co.ke/politics/397744/ndindi-nyoro-outlines-peoples-party-agenda-and-calls-for-opposition-unity"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
+ src:[["Standard: Nyoro's proposals for Kenya's journey to Singapore","https://www.standardmedia.co.ke/politics/article/2001555563/nyoros-proposals-for-kenyas-journey-to-singapore"],["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Eastleigh Voice: People's Party agenda","https://eastleighvoice.co.ke/politics/397744/ndindi-nyoro-outlines-peoples-party-agenda-and-calls-for-opposition-unity"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
 
-{id:"babu",now:1,exec:0,reviewed:"",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
+{id:"babu",now:1,exec:0,reviewed:"2026-10-02",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
  dims:{
   redis:[1,"M","Voted no on the Finance Bill 2024 at second reading in June 2024."],
   style:[1,"M","Left ODM to run for Nairobi governor under The Mwananchi Party within the Linda Mwananchi formation."],
-  liberty:[1,"L","Youth-facing, rights-forward public messaging.","S"]},
+  liberty:[1,"L","Youth-facing, rights-forward public messaging.","S"],
+  econ:[1,"L","Has repeatedly said education should be free from primary to university, funded by the state, and that higher-education loans should be raised, not cut. His own stated position; he has not yet delivered it in office.","S"]},
  said:[
+  ["Free education at every level, and bigger HELB allocations. Plans bills on loans and on youth and women's access to government credit.",null,"S"],
   ["Wants to be Nairobi governor in 2027 and president in 2032, running on his MP record.",null,"S"],
   ["Free school meals for Nairobi public primary pupils, with food bought from parents' businesses (September 2026).",null,"S"]],
  rec:[
   ["D","Announced a 2027 Nairobi governorship bid and said he would seek the presidency in 2032."],
   ["D","Voted no on the Finance Bill 2024 at second reading."],
+  ["A","Has said he will not repay his own HELB loan, arguing that education is a right. Reported from his own remarks."],
   ["A","Polled 3% for president in Infotrak's June 2026 survey, though he is running for Nairobi governor."],
   ["A","A survey reported in July 2026 placed him first among MPs at 80% approval. Methodology not reviewed."],
   ["A","A High Court ruling nullifying an Embakasi East win has been reported. Appeal status and date not verified in this pass."]],
  contra:["Campaigns on his MP record while moving between political vehicles (interpretation)."],
- suggests:"Insufficient evidence for a policy placement. Documented pattern is youth-focused, anti-establishment positioning.",
- src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Capital FM: Babu pledges free school meals","https://capitalfm.africa/babu-pledges-free-school-meals-under-nairobi-governor-bid/"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
+ suggests:"Mostly words so far: free education at every level, a no vote on the 2024 Finance Bill and a youth-focused, anti-establishment style. Placements rest on his stated positions, not on delivery in office.",
+ src:[["Nairobi News: why Babu Owino won't repay his HELB loan","https://nairobinews.nation.africa/?p=159834"],["Education News: Babu Owino on higher education funding","https://educationnews.co.ke/?p=482049"],["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Capital FM: Babu pledges free school meals","https://capitalfm.africa/babu-pledges-free-school-meals-under-nairobi-governor-bid/"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
 
-{id:"salasya",now:1,exec:0,reviewed:"",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
+{id:"salasya",now:1,exec:0,reviewed:"2026-10-02",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
  dims:{
   style:[2,"L","Outspoken, populist positioning against the political class (low volume of policy evidence).","S"],
-  liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified)."],
-  redis:[1,"L","Voted no on the Finance Bill 2024 at second reading in June 2024."]},
- said:[["Running for president in 2027 against the political class.",null,"S"]],
+  liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified). Hearsay: counted at the lightest weight.","H"],
+  redis:[1,"L","Voted no on the Finance Bill 2024 at second reading in June 2024."],
+  inst:[1,"L","Defended the constituency and women's funds (CDF and NGAAF), saying cutting them would 'reduce them to beggars'. Speaking for money that is spent locally, in his own interest as an MP too.","S"]},
+ said:[["Running for president in 2027 against the political class.",null,"S"],
+  ["Keep the constituency development fund (CDF) and the women's fund. Said Raila wanted them cut so MPs would 'beg' for development.",null,"S"]],
  rec:[
   ["D","Declared a 2027 presidential bid."],
   ["D","Voted no on the Finance Bill 2024 at second reading."],
+  ["A","Said Raila Odinga wanted CDF and NGAAF reduced so MPs would have to beg for development. His own claim about a rival, not established fact."],
   ["A","His payslip and social-media earnings drew public debate about MPs' pay."],
   ["D","An arrest was publicly condemned by Senator Okiya Omtatah. Details and outcome not verified."]],
  contra:["Not assessed."],
- suggests:"Insufficient evidence. Highly visible, but this pass found little legislative or policy record.",
- src:[["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"]]},
+ suggests:"Mostly words so far: a populist, anti-establishment voice who voted against the 2024 Finance Bill and defends constituency funds. Little legislative record, so his placements are light.",
+ src:[["People Daily: ODM responds after Salasya's attack on Raila","https://peopledaily.digital/inside-politics/odm-responds-after-salasyas-attack-on-raila/amp"],["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"]]},
 
 {id:"wanga",now:1,exec:1,inPower:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
  dims:{
@@ -1135,9 +1186,9 @@ var L=[
  src:[["Wikipedia: Wangari Maathai (overview)","https://en.wikipedia.org/wiki/Wangari_Maathai"],["Wikipedia: Green Belt Movement","https://en.wikipedia.org/wiki/Green_Belt_Movement"]]}
 ];
 
-// Enforce the core rule: no words-based placement for anyone in power now.
+// Enforce the core rule: no words-based or hearsay placement for anyone in power now.
 L.forEach(function(l){Object.keys(l.dims).forEach(function(k){
-  if(l.inPower&&l.dims[k][3]==="S"){console.warn("Dropped stated placement for a leader in power",l.id,k);delete l.dims[k]}
+  if(l.inPower&&!l.limitedPower&&(l.dims[k][3]==="S"||l.dims[k][3]==="H")){console.warn("Dropped stated placement for a leader in power",l.id,k);delete l.dims[k]}
 })});
 
 var SETS={
@@ -1393,6 +1444,7 @@ function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
 function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
+  document.querySelector(".site-share").hidden=(v==="result"); // the result page has its own share section
   $("about").hidden=(v!=="home"); // the static About text sits under home only, so quiz views stay focused
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
@@ -1450,11 +1502,13 @@ function route(){
 }
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
-function matchable(l){return Object.keys(l.dims).length>=3}
+// Leaders need placements on at least MIN_DIMS dimensions to appear in matches. Fewer is too thin to compare fairly.
+var MIN_DIMS=4;
+function matchable(l){return Object.keys(l.dims).length>=MIN_DIMS}
 
 function renderHome(){
   $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
-    return '<div class="path"><span class="k">'+p.length+' leaders</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
+    return '<div class="path"><span class="k">'+p.length+' leaders · '+s.q.length+' questions · about 4 minutes</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
       '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
   }).join('');
   bindGo($("paths"));
@@ -1474,7 +1528,7 @@ function renderIntro(){
 function renderQ(){
   var s=S(),t=st(),q=s.q[t.idx];
   $("quiz-h").textContent=s.name+" quiz";
-  $("q-count").textContent=s.name+" · Question "+(t.idx+1)+" of "+s.q.length;
+  $("q-count").textContent="Question "+(t.idx+1)+" of "+s.q.length;
   $("q-topic").textContent=TOPIC[q[0]];
   $("q-bar").style.width=(t.idx/s.q.length*100)+"%";
   $("q-text").textContent=q[2];
@@ -1527,13 +1581,13 @@ function userScores(){
    "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
    "den" (evidence) is the sum of the confidence weights.
    Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
-   action-based one, so the mean is weighted by evidence type. */
-var GAP=3, BASIS={A:1,S:0.6};
+   action-based one, and a hearsay (H, reported or attributed) dimension counts BASIS.H, so the mean is weighted by evidence type. */
+var GAP=3, BASIS={A:1,S:0.6,H:0.4};
 function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
   return S().pool().map(function(l){
     var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]==="S"?"S":"A"];
+    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]]||BASIS.A;
       sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
     return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
   });
@@ -1541,8 +1595,8 @@ function compare(u){
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score||b.close-a.close});
-  var left=cmp.filter(function(r){return r.n<3});
+  var ranked=cmp.filter(function(r){return matchable(r.l)}).sort(function(a,b){return b.score-a.score||b.close-a.close});
+  var left=cmp.filter(function(r){return !matchable(r.l)});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
@@ -1563,14 +1617,17 @@ function renderResult(){
   html+=SiasaShare.section();
   html+='<p class="notice">Overlaps with records, not a recommendation.</p>';
   html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overall overlap, from 0% (opposite) to 100% (same).</p><div>';
-  ranked.forEach(function(r){
-    html+='<div class="match">'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
+  var SHOW=5;
+  ranked.forEach(function(r,i){
+    var miss=DIMS.length-r.n;
+    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+DIMS.length+'</b> dimensions'+(miss?' <small>('+miss+' with no record)</small>':'')+' <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
+  if(ranked.length>SHOW)html+='<button type="button" class="btn ghost" id="show-more">Show all '+ranked.length+' leaders</button>';
   var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
   html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
   html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle for the evidence.</p>'+
-    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
+    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></div>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">Too little evidence to compare. Read their records instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
   html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
@@ -1581,6 +1638,8 @@ function renderResult(){
     text:"My Siasa Compass result"+(tags.length?": "+tags.slice(0,3).join(", "):": centrist on most dimensions")+"."+close+" Where do you land?",
     summary:"My Siasa Compass result ("+s.name+"): "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+"."+close,
     top:ranked.slice(0,3),tags:tags});
+  var sm=$("show-more");
+  if(sm)sm.addEventListener("click",function(){$("v-result").querySelectorAll(".match[data-more]").forEach(function(x){x.hidden=false});sm.remove()});
   $("retake").addEventListener("click",start);
   $("other").addEventListener("click",function(){go(setHash(cur==="all"?"now":"all"))});
   $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){go("#leader-"+encodeURIComponent(x.dataset.open))})});
@@ -1592,7 +1651,7 @@ function drawTracks(u,top3){
   out.innerHTML="";
   DIMS.forEach(function(d){
     var items=[{you:true,v:u[d.k]}];
-    pool.forEach(function(l){var x=l.dims[d.k];if(x)items.push({l:l,v:x[0],conf:x[1],note:x[2],st:x[3]==="S"})});
+    pool.forEach(function(l){var x=l.dims[d.k];if(x)items.push({l:l,v:x[0],conf:x[1],note:x[2],st:x[3]==="S",hs:x[3]==="H"})});
     items.sort(function(a,b){return a.v-b.v});
     var rows=[];
     items.forEach(function(it){
@@ -1606,7 +1665,7 @@ function drawTracks(u,top3){
     var h=46+(rows.length-1)*32;
     var sec=document.createElement("div"); sec.className="dim";
     var dots=items.map(function(it,i){
-      var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"");
+      var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"")+(it.hs?" hs":"");
       var label=it.you?"You":it.l.ini;
       var lab=it.you?"You":it.l.n;
       return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+esc(lab)+'" title="'+esc(lab)+'" aria-pressed="false">'+esc(label)+'</button>';
@@ -1618,7 +1677,7 @@ function drawTracks(u,top3){
     sec.querySelectorAll(".dot").forEach(function(b){b.addEventListener("click",function(){
       var it=items[+b.dataset.i];
       sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel");x.setAttribute("aria-pressed","false")}); b.classList.add("sel"); b.setAttribute("aria-pressed","true");
-      sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":", based on actions")+"). "+it.note);
+      sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":it.hs?", based on hearsay (reports, lightest weight)":", based on actions")+"). "+it.note);
     })});
   });
 }
@@ -1626,17 +1685,18 @@ function drawTracks(u,top3){
 // How a leader's words are treated: in power, words never count; otherwise they count (tagged S, weighted below
 // actions) unless the record contradicts them.
 function basisLine(l){
+  if(l.inPower&&l.limitedPower)return 'In office, with limited power of their own. Actions first; words and reports count less.';
   if(l.inPower)return 'In power now. Judged on actions only.';
-  if(l.exec)return 'Held power before. Actions first; uncontradicted words count less.';
-  return 'Never held executive power. Actions first; stated positions count less.';
+  if(l.exec)return 'Held power before. Actions first; uncontradicted words and reports count less.';
+  return 'Never held executive power. Actions first; stated positions and reports count less.';
 }
 function leaderHTML(l){
   var tend=Object.keys(l.dims).map(function(k){var d=l.dims[k];
-    return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
+    return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':d[3]==="H"?', hearsay':'')+')</span><div class="why">'+(d[3]==="S"||d[3]==="H"?'<span class="tg '+d[3]+'">'+d[3]+'</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
   var rec=l.rec.map(function(r){return '<li><span class="tg '+esc(r[0])+'">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></li>'}).join('');
   var said=(l.said||[]).map(function(p){
     var note=p[3]==="X"?'<p class="xnote">Contradicted by the record. Not counted.</p>':
-      (l.inPower?'<p class="xnote">Made in power, so not counted.</p>':'');
+      (l.inPower&&!l.limitedPower?'<p class="xnote">Made in power, so not counted.</p>':'');
     return '<li><div class="said"><span class="lbl">Said they would</span>'+esc(p[0])+'</div>'+
       '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office yet. Counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
   var nu=uCount(l);
@@ -1644,7 +1704,7 @@ function leaderHTML(l){
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
-    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
+    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a> · <a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+

@@ -18,9 +18,10 @@ There are two quizzes: **Every leader** (independence generation to today) and *
 - **Actions come first.** Where there is action evidence on a dimension (laws signed, votes, decisions, spending, appointments, court cases), it sets the placement.
 - **Words can count, with less weight.** Where the record is thin, documented statements (manifestos, rally speeches, interviews reported by the press) may place a leader, tagged `S`. In the overall match an `S` dimension counts 60% as much as an action-based one (`BASIS` in `js/app.js`).
 - **Contradicted words are thrown out.** If the record contradicts a promise, it gets no `S` placement. Show it in `said` with a fourth element `"X"` so the gap is visible.
-- **In power now? Only actions.** Leaders currently holding executive power (`inPower: 1`: the President, Deputy President, sitting governors) never get `S` placements. The app drops them.
+- **Little power of their own? Some grace.** If a leader holds office but with little independent power (the Deputy President), set `limitedPower: 1` next to `inPower: 1`. Their words can then place them, at the usual lower weight.
+- **Real power now? Only actions.** Leaders currently holding executive power (`inPower: 1` without `limitedPower`: the President, sitting governors) never get `S` placements. The app drops them.
 - **Labels are not evidence.** Self-descriptions and party labels never count.
-- **Gaps are shown.** A leader needs placements on at least three dimensions to appear in matches. Others stay in Records.
+- **Gaps are shown.** A leader needs placements on at least four dimensions (`MIN_DIMS` in `js/app.js`) to appear in matches. Others stay in Records.
 
 ### Tags
 
@@ -30,6 +31,7 @@ There are two quizzes: **Every leader** (independence generation to today) and *
 | `A` | Attributed: a claim by a named source (journalist, group, rival). Not established fact. |
 | `I` | Interpretation: our reading of several actions together. Open to challenge. |
 | `U` | Not re-checked: written from general knowledge, needs verification before anyone relies on it. |
+| `H` | Hearsay: a report or claim about what a leader did or said, not verified. Lightest weight (40%); never for leaders in power now. Lets MPs and others whose work is mostly words get a profile. |
 | `S` | Stated position: what a leader not currently in power says they would do. Not used where the record contradicts it. |
 
 Each placement also has a confidence: `H` (high), `M` (medium) or `L` (low).
@@ -51,6 +53,7 @@ js/data.js              dimensions, questions, quiz sets and leaders (global SIA
 js/app.js               app logic (routing, quiz, scoring, rendering)
 scripts/validate-data.js  checks js/data.js
 scripts/build-single.js   builds dist/siasa-compass.html (one shareable file)
+scripts/build-leaders.js  builds leaders/ (one crawlable page per leader) and sitemap.xml
 ```
 
 ## Adding or editing a leader
@@ -98,6 +101,10 @@ node scripts/build-single.js
 
 Inlines the CSS and JavaScript into `dist/siasa-compass.html`, a single file that can be emailed or hosted anywhere. Never edit that file by hand; edit the sources and rebuild.
 
+## Leader pages (search visibility)
+
+The app itself is one page with hash routes, which search engines do not index per leader. `node scripts/build-leaders.js` writes a plain HTML page for every leader (`leaders/<id>/index.html`), a directory (`leaders/index.html`) and `sitemap.xml`, all from `js/data.js`. The pages need no JavaScript and carry their own title, description, canonical link and structured data, so a search for a leader's name can land on them. The generated files are committed, so **rerun the script and commit them whenever `js/data.js` changes**. If you bump the `?v=` on `css/styles.css` in `index.html`, bump `V.css` in the script too. After publishing, submit `https://siasacompass.co.ke/sitemap.xml` in Google Search Console.
+
 ## Corrections
 
-The footer's "Send it in" link currently points to the placeholder `mailto:CORRECTIONS_EMAIL` (see the TODO comment in `index.html`). Replace it with a real address or the repository's issues URL before publishing.
+The footer's "Send it in" link opens a new issue on the repository (`https://github.com/gikundaevertonk-sudo/kenyan-leader/issues`). Change the URL in `index.html` if corrections should go somewhere else.

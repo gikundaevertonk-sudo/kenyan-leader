@@ -62,7 +62,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=5">
+<link rel="stylesheet" href="css/styles.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -84,8 +84,9 @@
     <h1 tabindex="-1">Match your views to what leaders <span class="mark">did</span>.</h1>
     <p class="lede">Two short quizzes. What leaders did counts most. What they said counts less.</p>
     <div class="paths" id="paths"></div>
+    <p class="seek">Looking for one leader? <a href="/leaders/">Browse the leader profiles</a>: what each said and did, with sources.</p>
     <div class="rules">
-      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those in power are judged on actions only.</p></div>
+      <div><h3>Actions count most</h3><p>Laws, votes and decisions come first. Those with real power are judged on actions only.</p></div>
       <div><h3>Words count less</h3><p>Promises count only if the record doesn't contradict them. Tagged <span class="tg S">S</span>.</p></div>
       <div><h3>No guessing</h3><p>Thin records are left out. This is not voting advice.</p></div>
     </div>
@@ -126,8 +127,10 @@
     <ul>
       <li><b>Actions come first.</b> Laws, votes, spending, appointments, court cases, and how leaders treated courts, media and opponents.</li>
       <li><b>Words count less.</b> Where actions are thin, reported manifestos, speeches and interviews can place a leader. Tagged <span class="tg S">S</span>, drawn dotted, weighted at 60%.</li>
+      <li><b>Reports count least.</b> For people whose job is mostly words, such as MPs and senators, reported or attributed claims can fill a gap too. Tagged <span class="tg H">H</span> (hearsay), weighted at 40%, never used where actions exist.</li>
       <li><b>Contradicted words are dropped.</b> They stay visible in "said / did", marked as contradicted.</li>
-      <li><b>In power now? Only actions count.</b> The President, Deputy President and sitting governors can act, so their promises never count.</li>
+      <li><b>Real power now? Only actions count.</b> The President and sitting governors can act, so their promises and hearsay never count. With too little action on record, they stay out of your matches.</li>
+      <li><b>Little power of their own? Some grace.</b> Someone in office with limited power, such as the Deputy President, can still be placed by their words, at the lower weight.</li>
     </ul>
     <p>Labels are never evidence. Kenya's 1965 "African Socialism" paper protected private property. The policy counts, not the name.</p>
     <h3>The six dimensions</h3>
@@ -139,11 +142,12 @@
       <li><span class="tg I">I</span> Interpretation: our reading. Open to challenge.</li>
       <li><span class="tg U">U</span> Unchecked: needs verification.</li>
       <li><span class="tg S">S</span> Stated position: a promise from someone not in power, weighted below actions.</li>
+      <li><span class="tg H">H</span> Hearsay: a report or claim about what someone did or said, not verified. Lightest weight.</li>
     </ul>
     <h3>Matching</h3>
-    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least three dimensions to appear in your matches.</p>
+    <p>Your answers place you from -2 to +2 on each dimension. Leaders need evidence on at least four of the six dimensions to appear in your matches. Others stay in Records.</p>
     <p>Thin evidence is pulled toward neutral: high confidence keeps 100%, medium 80%, low 50%. So a weak record can't outrank a solid one.</p>
-    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
+    <p>Overlap is 100% at the same point and 0% at 3 points apart. The bar is the average, with stated positions at 60% and hearsay at 40%. "Close on" counts dimensions within 1 point. Your headline match is always #1.</p>
     <h3>Limits</h3>
     <ul>
       <li>Current profiles run to 30 September 2026. Alliances move fast.</li>
@@ -163,19 +167,19 @@
   <h3>How are leaders placed?</h3>
   <ul>
     <li><b>Actions come first.</b> Laws signed, votes, spending, appointments and court cases set a leader's placement wherever that evidence exists.</li>
-    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders in power now are judged on actions only.</li>
+    <li><b>Statements count less.</b> Where the record is thin, documented manifestos, speeches and interviews can place a leader, weighted below actions. Promises contradicted by the record are not counted, and leaders with real power now are judged on actions only.</li>
     <li><b>Sources are tagged.</b> Each line in a leader's record is marked as documented, attributed to a named source, our interpretation, a stated position, or not yet re-checked, so you can tell facts from claims.</li>
   </ul>
   <h3>Does Siasa Compass rank or endorse anyone?</h3>
   <p>No. It is a research draft built from public reporting up to 30 September 2026. It does not rank leaders, predict the 2027 election or endorse any politician or party. A match means your answers overlap with a leader's documented record, not that you should vote for them.</p>
   <h3>Where can I read Kenyan leaders' records?</h3>
   <p>The Records page lists every leader in the draft with what they said they would do next to what they did, the evidence behind each placement, and links to sources. Leaders with too little evidence are left out of matches rather than guessed at.</p>
-  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a></div>
+  <div class="cta about-cta"><a class="btn sm" href="#quiz-now">Current climate quiz</a><a class="btn sm" href="#quiz-all">Every leader quiz</a><a class="btn sm ghost" href="/leaders/">Leader profiles</a></div>
 </section>
 <footer class="wrap site-foot">
   <div class="flag-band" aria-hidden="true"><span></span><span></span><span></span></div>
   <span class="brand"><svg class="compass" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 5.5v2.5M16 24v2.5M5.5 16H8M24 16h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g transform="rotate(35 16 16)"><path class="n" d="M16 7l3.6 9h-7.2z"/><path d="M16 25l3.6-9h-7.2z" fill="currentColor"/></g><circle class="hub" cx="16" cy="16" r="1.5"/></svg>Siasa Compass</span>
-  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <!-- TODO: replace CORRECTIONS_EMAIL with the real address, or point this at the repo's GitHub issues URL. --><a href="mailto:CORRECTIONS_EMAIL?subject=Siasa%20Compass%20correction">Send it in</a>.</p>
+  <p class="foot">A research draft. It does not rank, predict or endorse. Spotted an error? <a href="https://github.com/gikundaevertonk-sudo/kenyan-leader/issues/new?title=Siasa%20Compass%20correction" target="_blank" rel="noopener noreferrer">Send it in</a>. <a href="/leaders/">Leader profiles</a>.</p>
   <div class="site-share">
     <h2>Share Siasa Compass</h2>
     <div class="sbtns">
@@ -193,9 +197,9 @@
 </footer>
 <!-- Visitor counts: GoatCounter (no cookies, no personal data). Views are counted from js/app.js, one per hash route. -->
 <script data-goatcounter="https://siasacompass.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="https://gc.zgo.at/count.js"></script>
-<script src="js/data.js?v=3"></script>
+<script src="js/data.js?v=6"></script>
 <script src="js/photos.js?v=2"></script>
 <script src="js/share.js?v=4"></script>
-<script src="js/app.js?v=5"></script>
+<script src="js/app.js?v=9"></script>
 </body>
 </html>

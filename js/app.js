@@ -16,6 +16,7 @@ function S(){return SETS[cur]}
 function st(){return ST[cur]}
 function dimOf(k){return DIMS.filter(function(x){return x.k===k})[0]}
 function show(v){clearPending();views.forEach(function(x){$("v-"+x).hidden=(x!==v)});
+  document.querySelector(".site-share").hidden=(v==="result"); // the result page has its own share section
   $("about").hidden=(v!=="home"); // the static About text sits under home only, so quiz views stay focused
   var tab=(v==="records"||v==="method")?v:(v==="home")?"":cur;
   document.querySelectorAll(".nav .tabs button").forEach(function(b){b.setAttribute("aria-current",b.dataset.tab===tab?"true":"false")});
@@ -73,11 +74,13 @@ function route(){
 }
 function words(d,v){var D=dimOf(d);
   if(v<=-1.2)return D.lo; if(v<=-0.4)return "Leans "+D.lo.toLowerCase(); if(v<0.4)return "Mixed"; if(v<1.2)return "Leans "+D.hi.toLowerCase(); return D.hi;}
-function matchable(l){return Object.keys(l.dims).length>=3}
+// Leaders need placements on at least MIN_DIMS dimensions to appear in matches. Fewer is too thin to compare fairly.
+var MIN_DIMS=4;
+function matchable(l){return Object.keys(l.dims).length>=MIN_DIMS}
 
 function renderHome(){
   $("paths").innerHTML=["now","all"].map(function(k){var s=SETS[k],p=s.pool();
-    return '<div class="path"><span class="k">'+p.length+' leaders</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
+    return '<div class="path"><span class="k">'+p.length+' leaders · '+s.q.length+' questions · about 4 minutes</span><h2>'+esc(s.name)+'</h2><p>'+s.lede+'</p>'+
       '<div class="cta"><button type="button" class="btn" data-go="'+esc(k)+'">Start the quiz</button><button type="button" class="btn ghost" data-rec="'+esc(k)+'">Read the records</button></div></div>';
   }).join('');
   bindGo($("paths"));
@@ -97,7 +100,7 @@ function renderIntro(){
 function renderQ(){
   var s=S(),t=st(),q=s.q[t.idx];
   $("quiz-h").textContent=s.name+" quiz";
-  $("q-count").textContent=s.name+" · Question "+(t.idx+1)+" of "+s.q.length;
+  $("q-count").textContent="Question "+(t.idx+1)+" of "+s.q.length;
   $("q-topic").textContent=TOPIC[q[0]];
   $("q-bar").style.width=(t.idx/s.q.length*100)+"%";
   $("q-text").textContent=q[2];
@@ -150,13 +153,13 @@ function userScores(){
    "close" is counted on the raw placement (no shrinking): within 1 point of you. It is the main figure shown.
    "den" (evidence) is the sum of the confidence weights.
    Actions outweigh words: in the overall score a stated-position (S) dimension counts BASIS.S as much as an
-   action-based one, so the mean is weighted by evidence type. */
-var GAP=3, BASIS={A:1,S:0.6};
+   action-based one, and a hearsay (H, reported or attributed) dimension counts BASIS.H, so the mean is weighted by evidence type. */
+var GAP=3, BASIS={A:1,S:0.6,H:0.4};
 function similarity(you,pos,conf){return Math.max(0,1-Math.abs(you-pos*W[conf])/GAP)}
 function compare(u){
   return S().pool().map(function(l){
     var keys=Object.keys(l.dims), sum=0, wt=0, ev=0, close=0;
-    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]==="S"?"S":"A"];
+    keys.forEach(function(k){var d=l.dims[k], b=BASIS[d[3]]||BASIS.A;
       sum+=b*similarity(u[k],d[0],d[1]); wt+=b; ev+=W[d[1]]; if(Math.abs(u[k]-d[0])<=1)close++;});
     return {l:l,n:keys.length,close:close,den:ev,score:wt?sum/wt:0};
   });
@@ -164,8 +167,8 @@ function compare(u){
 
 function renderResult(){
   var s=S(), u=userScores(), cmp=compare(u);
-  var ranked=cmp.filter(function(r){return r.n>=3}).sort(function(a,b){return b.score-a.score||b.close-a.close});
-  var left=cmp.filter(function(r){return r.n<3});
+  var ranked=cmp.filter(function(r){return matchable(r.l)}).sort(function(a,b){return b.score-a.score||b.close-a.close});
+  var left=cmp.filter(function(r){return !matchable(r.l)});
   var top3={}; ranked.slice(0,3).forEach(function(r){top3[r.l.id]=1});
   var tags=DIMS.filter(function(d){return Math.abs(u[d.k])>=0.6}).map(function(d){return words(d.k,u[d.k])});
   // The headline match is always the top of the ranked list, so it never disagrees with the list below it.
@@ -186,14 +189,17 @@ function renderResult(){
   html+=SiasaShare.section();
   html+='<p class="notice">Overlaps with records, not a recommendation.</p>';
   html+='<div class="sec"><h3>Closest documented records</h3><p class="sub">Overall overlap, from 0% (opposite) to 100% (same).</p><div>';
-  ranked.forEach(function(r){
-    html+='<div class="match">'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+r.n+'</b> dimensions <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
+  var SHOW=5;
+  ranked.forEach(function(r,i){
+    var miss=DIMS.length-r.n;
+    html+='<div class="match"'+(i>=SHOW?' data-more hidden':'')+'>'+P.avatar(r.l)+'<div class="nm">'+esc(r.l.n)+(cur==="all"?'<small>'+(r.l.now?'current':'earlier')+'</small>':'')+'</div><div class="cl"><b>Close on '+r.close+' of '+DIMS.length+'</b> dimensions'+(miss?' <small>('+miss+' with no record)</small>':'')+' <small>('+Math.round(r.score*100)+'% overlap)</small></div>'+
       '<div class="meter"><span style="width:'+Math.round(r.score*100)+'%"></span></div></div>';
   });
+  if(ranked.length>SHOW)html+='<button type="button" class="btn ghost" id="show-more">Show all '+ranked.length+' leaders</button>';
   var credits=ranked.map(function(r){return P.credit(r.l)}).filter(Boolean);
   html+='</div>'+(credits.length?'<details class="credits"><summary>Photo credits</summary><ul><li>'+credits.join('</li><li>')+'</li></ul></details>':'')+'</div>';
   html+='<div class="sec"><h3>Dimension by dimension</h3><p class="sub">Tap a circle for the evidence.</p>'+
-    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span></div><div id="tracks"></div></div>';
+    '<div class="legend"><span><i class="y"></i>You</span><span><i class="f"></i>Your closest three</span><span><i></i>Other leaders</span><span><i class="d"></i>Low confidence</span><span><i class="s"></i>Based on stated positions</span><span><i class="h"></i>Based on hearsay</span></div><div id="tracks"></div></div>';
   if(left.length)html+='<div class="sec"><h3>Not enough evidence to match yet</h3><p class="sub">Too little evidence to compare. Read their records instead.</p><div class="chips">'+
     left.map(function(r){return '<button type="button" class="chip" data-open="'+esc(r.l.id)+'">'+esc(r.l.n)+'</button>'}).join('')+'</div></div>';
   html+='<div class="cta"><button type="button" class="btn ghost" id="retake">Retake this quiz</button><button type="button" class="btn ghost" id="other">Try '+esc(SETS[cur==="all"?"now":"all"].name)+'</button></div>';
@@ -204,6 +210,8 @@ function renderResult(){
     text:"My Siasa Compass result"+(tags.length?": "+tags.slice(0,3).join(", "):": centrist on most dimensions")+"."+close+" Where do you land?",
     summary:"My Siasa Compass result ("+s.name+"): "+DIMS.map(function(d){return d.name+": "+words(d.k,u[d.k])}).join("; ")+"."+close,
     top:ranked.slice(0,3),tags:tags});
+  var sm=$("show-more");
+  if(sm)sm.addEventListener("click",function(){$("v-result").querySelectorAll(".match[data-more]").forEach(function(x){x.hidden=false});sm.remove()});
   $("retake").addEventListener("click",start);
   $("other").addEventListener("click",function(){go(setHash(cur==="all"?"now":"all"))});
   $("v-result").querySelectorAll("[data-open]").forEach(function(x){x.addEventListener("click",function(){go("#leader-"+encodeURIComponent(x.dataset.open))})});
@@ -215,7 +223,7 @@ function drawTracks(u,top3){
   out.innerHTML="";
   DIMS.forEach(function(d){
     var items=[{you:true,v:u[d.k]}];
-    pool.forEach(function(l){var x=l.dims[d.k];if(x)items.push({l:l,v:x[0],conf:x[1],note:x[2],st:x[3]==="S"})});
+    pool.forEach(function(l){var x=l.dims[d.k];if(x)items.push({l:l,v:x[0],conf:x[1],note:x[2],st:x[3]==="S",hs:x[3]==="H"})});
     items.sort(function(a,b){return a.v-b.v});
     var rows=[];
     items.forEach(function(it){
@@ -229,7 +237,7 @@ function drawTracks(u,top3){
     var h=46+(rows.length-1)*32;
     var sec=document.createElement("div"); sec.className="dim";
     var dots=items.map(function(it,i){
-      var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"");
+      var cls="dot"+(it.you?" you":"")+(it.l&&top3[it.l.id]?" top":"")+(it.conf==="L"?" low":"")+(it.st?" st":"")+(it.hs?" hs":"");
       var label=it.you?"You":it.l.ini;
       var lab=it.you?"You":it.l.n;
       return '<button type="button" class="'+cls+'" style="left:'+it.left+'%;top:'+(it.row*32+(it.you?1:5))+'px" data-i="'+i+'" aria-label="'+esc(lab)+'" title="'+esc(lab)+'" aria-pressed="false">'+esc(label)+'</button>';
@@ -241,7 +249,7 @@ function drawTracks(u,top3){
     sec.querySelectorAll(".dot").forEach(function(b){b.addEventListener("click",function(){
       var it=items[+b.dataset.i];
       sec.querySelectorAll(".dot").forEach(function(x){x.classList.remove("sel");x.setAttribute("aria-pressed","false")}); b.classList.add("sel"); b.setAttribute("aria-pressed","true");
-      sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":", based on actions")+"). "+it.note);
+      sec.querySelector(".dnote").textContent=it.you?("Your answers to the "+nq[d.k]+" "+TOPIC[d.k].toLowerCase()+" questions average out to: "+words(d.k,it.v)+"."):(it.l.n+": "+words(d.k,it.v)+" (evidence confidence "+CONF[it.conf]+(it.st?", based on stated positions":it.hs?", based on hearsay (reports, lightest weight)":", based on actions")+"). "+it.note);
     })});
   });
 }
@@ -249,17 +257,18 @@ function drawTracks(u,top3){
 // How a leader's words are treated: in power, words never count; otherwise they count (tagged S, weighted below
 // actions) unless the record contradicts them.
 function basisLine(l){
+  if(l.inPower&&l.limitedPower)return 'In office, with limited power of their own. Actions first; words and reports count less.';
   if(l.inPower)return 'In power now. Judged on actions only.';
-  if(l.exec)return 'Held power before. Actions first; uncontradicted words count less.';
-  return 'Never held executive power. Actions first; stated positions count less.';
+  if(l.exec)return 'Held power before. Actions first; uncontradicted words and reports count less.';
+  return 'Never held executive power. Actions first; stated positions and reports count less.';
 }
 function leaderHTML(l){
   var tend=Object.keys(l.dims).map(function(k){var d=l.dims[k];
-    return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':'')+')</span><div class="why">'+(d[3]==="S"?'<span class="tg S">S</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
+    return '<div><b>'+esc(dimOf(k).name)+':</b> '+esc(words(k,d[0]))+' <span class="why">('+esc(CONF[d[1]])+' confidence'+(d[3]==="S"?', stated position':d[3]==="H"?', hearsay':'')+')</span><div class="why">'+(d[3]==="S"||d[3]==="H"?'<span class="tg '+d[3]+'">'+d[3]+'</span> ':'')+esc(d[2])+'</div></div>'}).join('')||'<div class="why">No dimension has enough evidence to place this leader.</div>';
   var rec=l.rec.map(function(r){return '<li><span class="tg '+esc(r[0])+'">'+esc(r[0])+'</span><span>'+esc(r[1])+'</span></li>'}).join('');
   var said=(l.said||[]).map(function(p){
     var note=p[3]==="X"?'<p class="xnote">Contradicted by the record. Not counted.</p>':
-      (l.inPower?'<p class="xnote">Made in power, so not counted.</p>':'');
+      (l.inPower&&!l.limitedPower?'<p class="xnote">Made in power, so not counted.</p>':'');
     return '<li><div class="said"><span class="lbl">Said they would</span>'+esc(p[0])+'</div>'+
       '<div><span class="lbl">'+(l.exec?'What they did':'Record so far')+'</span><div class="did">'+(p[1]?'<span class="tg '+esc(p[2])+'">'+esc(p[2])+'</span><span>'+esc(p[1])+'</span>':'<span class="tg S">S</span><span>No record in office yet. Counts as a stated position.</span>')+'</div>'+note+'</div></li>'}).join('');
   var nu=uCount(l);
@@ -267,7 +276,7 @@ function leaderHTML(l){
   var src=l.src.map(function(s){return '<li><a href="'+esc(safeUrl(s[1]))+'" target="_blank" rel="noopener noreferrer">'+esc(s[0])+'</a></li>'}).join('');
   return '<details class="lead" id="lead-'+esc(l.id)+'"><summary>'+P.avatar(l)+'<span class="who">'+esc(l.n)+'</span><span class="cls">'+esc(l.cls)+'</span><span class="role">'+esc(l.role)+'</span></summary><div class="body">'+
     '<p class="basis">'+basisLine(l).replace(/^([^.]*\.)/,'<b>$1</b>')+'</p>'+
-    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a></p>'+
+    '<p class="meta">Last reviewed: '+(l.reviewed?esc(l.reviewed):'not recorded')+' · '+nu+' claim'+(nu===1?'':'s')+' not yet re-checked · <a href="#leader-'+esc(encodeURIComponent(l.id))+'">Link to this profile</a> · <a href="/leaders/'+esc(l.id)+'/">Full page</a></p>'+
     '<div><h5>What the record shows</h5><ul class="rec">'+rec+'</ul></div>'+
     (said?'<div><h5>'+(l.exec?'What they said, and what they did':'What they say they would do')+'</h5><ul class="pd">'+said+'</ul></div>':'')+
     '<div><h5>Where the evidence points, by dimension</h5><div class="tend">'+tend+'</div></div>'+

@@ -59,12 +59,14 @@ var W={H:1,M:.8,L:.5};
 var CONF={H:"high",M:"medium",L:"low"};
 
 /* Leader fields:
-   now: part of the current political climate. exec: has held executive power. inPower: holds executive power now.
-   Evidence rule: actions set a placement. Stated positions (basis "S") may fill a dimension where the record is thin,
-   but never for someone in power now, and never where the record contradicts them. A contradicted promise is
+   now: part of the current political climate. exec: has held executive power. inPower: holds executive power now. limitedPower: holds office but with little power of their own
+   (for example the Deputy President), so their words may still count, at the usual lower weight.
+   Evidence rule: actions set a placement. Stated positions (basis "S") and reported or attributed claims (basis "H",
+   hearsay, the lightest weight) may fill a dimension where the record is thin, which is how people whose job is
+   mostly words (MPs, senators, activists) get a profile. Never for someone in power now, and never where the record contradicts them. A contradicted promise is
    kept in said[] with a fourth element "X" so the gap stays visible.
    reviewed: date (YYYY-MM-DD) the profile was last checked against sources; "" where unknown.
-   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, not allowed when inPower is set.
+   dims: {k:[value -2..2, confidence, note, basis]}. basis "S" = stated position, "H" = hearsay (reported or attributed, unverified). Neither is allowed when inPower is set, unless limitedPower is also set.
    said: [what they said they would do, what they did (or null), tag for the second part, "X" if contradicted].
    rec: [tag, text] lines, tag one of D A I U S. A U line has not been re-checked. */
 var L=[
@@ -90,20 +92,22 @@ var L=[
  suggests:"Pragmatic, executive-centred developmentalism with IMF-aligned fiscal consolidation, adjusting to coalition needs. Confidence is high that the record is large, and only medium that any single label fits.",
  src:[["Kenyans.co.ke: Ruto signs 2026 Finance Bill","https://www.kenyans.co.ke/news/124557-ruto-signs-2026-finance-bill-law"],["Nation: ODM, UDA joint talks team","https://nation.africa/kenya/news/politics/odm-uda-to-form-joint-talks-team-as-oburu-signals-start-of-2027-coalition-negotiations-5323202"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
-{id:"kindiki",now:1,exec:1,inPower:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
+{id:"kindiki",now:1,exec:1,inPower:1,limitedPower:1,reviewed:"2026-10-01",n:"Kithure Kindiki",ini:"KK",role:"Deputy President since 1 November 2024. Interior CS 2022 to 2024. Tharaka-Nithi Senator 2013 to 2022. UDA.",cls:"Moderately identifiable",
  dims:{
   econ:[0,"L","As Deputy President he is a principal of the government whose mixed economic record is set out under William Ruto. No separate economic record of his own was found."],
   style:[-2,"M","A career insider: Senate Majority Leader, Senate Deputy Speaker, Interior CS and now Deputy President, all within the governing camp."],
+  inst:[1,"L","Says devolution is now too entrenched to be reversed and that national and county governments must cooperate, not compete (June 2025). A stated position from an office with little power of its own, so it counts at the lighter weight.","S"],
   liberty:[-2,"M","As Interior CS he declared in July 2023 that no more opposition protests would be allowed 'with or without notice', and he was in charge of policing during the 2023 and 2024 protests in which rights groups recorded dozens of deaths. He denies police brutality and abductions."]},
  said:[["Said in July 2024 that the government would investigate police brutality during the Finance Bill protests.","The Kenya Human Rights Commission later said he had justified excessive force before a parliamentary committee and called on him to resign. No outcome of the promised investigations was compiled in this pass.","A"]],
  rec:[
   ["D","Interior Cabinet Secretary from October 2022 to October 2024. Sworn in as Deputy President on 1 November 2024 after Rigathi Gachagua was impeached."],
   ["D","Warned Azimio in July 2023: 'No more protests, with or without notice.'"],
   ["A","In August 2026 Gachagua claimed Kindiki refused to oppose orders to deal harshly with 2024 protesters. Kindiki called the claims 'petty lies'. Neither account is proven."],
+  ["D","Said in June 2025 that devolution cannot be reversed and that national and county governments must work together rather than compete."],
   ["D","Removed as Senate Deputy Speaker in 2020 for siding with then Deputy President Ruto against President Kenyatta."]],
  contra:["Has dismissed allegations of police abuses that rights groups documented while he oversaw the police (interpretation)."],
  suggests:"On his record in office: an order-first security minister who became the President's deputy. His economic record is the government's, not his own.",
- src:[["Citizen: 'No more protests, with or without notice'","https://www.citizen.digital/news/no-more-protests-with-or-without-notice-interior-cs-kindiki-now-warns-azimio-n317081"],["Capital FM: Kindiki denies abductions, promises probe (July 2024)","https://www.capitalfm.co.ke/news/2024/07/govt-to-investigate-police-brutality-during-anti-finance-bill-protests-as-cs-kindiki-denies-abductions/"],["Nation: KHRC tells Kindiki to resign","https://nation.africa/kenya/news/khrc-tells-dp-kindiki-murkomen-to-resign-over-abductions-4880690"],["allAfrica: Kindiki replies to Gachagua (Aug 2026)","https://allafrica.com/stories/202608250085.html"],["Wikipedia: Kithure Kindiki (overview)","https://en.wikipedia.org/wiki/Kithure_Kindiki"]]},
+ src:[["Standard: Devolution on course, assures Kindiki","https://standardmedia.co.ke/national/article/2001522514/devolution-on-course-assures-kindiki"],["allAfrica: National and county governments must cooperate, not compete (June 2025)","https://allafrica.com/stories/202506240029.html"],["Citizen: 'No more protests, with or without notice'","https://www.citizen.digital/news/no-more-protests-with-or-without-notice-interior-cs-kindiki-now-warns-azimio-n317081"],["Capital FM: Kindiki denies abductions, promises probe (July 2024)","https://www.capitalfm.co.ke/news/2024/07/govt-to-investigate-police-brutality-during-anti-finance-bill-protests-as-cs-kindiki-denies-abductions/"],["Nation: KHRC tells Kindiki to resign","https://nation.africa/kenya/news/khrc-tells-dp-kindiki-murkomen-to-resign-over-abductions-4880690"],["allAfrica: Kindiki replies to Gachagua (Aug 2026)","https://allafrica.com/stories/202608250085.html"],["Wikipedia: Kithure Kindiki (overview)","https://en.wikipedia.org/wiki/Kithure_Kindiki"]]},
 
 {id:"gachagua",now:1,exec:1,reviewed:"2026-10-01",n:"Rigathi Gachagua",ini:"RG",role:"Deputy President 2022 to Oct 2024 (impeached). Former Mathira MP. Leader of DCP.",cls:"Partial record",
  dims:{
@@ -149,7 +153,7 @@ var L=[
  suggests:"A long-serving establishment figure now leading street-level opposition, with a pro-devolution, cost-of-living platform. Most of his placements rest on stated positions, which weigh less than actions. His ministerial decisions are the next thing to compile.",
  src:[["Star: Kalonzo edges Matiang'i as top opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["Nation: Kalonzo's rise to VP","https://nation.africa/kenya/news/politics/kalonzo-musyoka-how-rise-to-vp-earned-him-watermelon-moniker--4792974"],["Capital FM: Kalonzo's 13-point agenda (June 2026)","https://capitalfm.africa/kalonzo-unveils-presidential-campaign-platform-pegged-on-economic-recovery-and-governance-reforms/"],["Star: Kalonzo's 13-point plan","https://www.the-star.co.ke/news/2026-06-07-kalonzos-13-point-campaign-plan-to-transform-kenya"],["People Daily: Kalonzo urges rejection of Finance Bill 2026","https://peopledaily.digital/inside-politics/kalonzo-pushes-for-rejection-of-finance-bill-2026"],["People Daily: Kalonzo's devolution agenda","https://peopledaily.digital/inside-politics/wavinya-ndeti-outlines-kalonzo-musyokas-agenda-on-devolution-equal-resource-distribution"],["Nation: leaders react to Supreme Court LGBTQ ruling (March 2023)","https://nation.africa/kenya/news/ruto-raila-united-in-dismissing-supreme-court-lgbtq-ruling-4143188"],["Star: Nairobi lockdown a symbol of resistance, say Kalonzo, Karua (June 2026)","https://www.the-star.co.ke/news/2026-06-25-nairobi-lockdown-a-symbol-of-resistance-say-kalonzo-karua"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
-{id:"matiangi",now:1,exec:1,reviewed:"",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
+{id:"matiangi",now:1,exec:1,reviewed:"2026-10-02",n:"Fred Matiang'i",ini:"FM",role:"Education CS 2015 to 2018. Interior CS 2018 to 2022. Jubilee leader.",cls:"Insufficient (partial)",
  dims:{
   econ:[1,"L","Led state-driven delivery programmes such as the exam overhaul and school-transition policy (interpretation; verify)."],
   inst:[-1,"L","A 2018 dispute over compliance with court orders happened under his Interior docket. Outcome not verified here."],
@@ -162,10 +166,13 @@ var L=[
   ["D","Held two of the most senior cabinet posts in the Kenyatta government."],
   ["D","Now Jubilee party leader and among the United Opposition principals."],
   ["A","Polled 12% in Infotrak's June 2026 survey and 7.7% in Mizani Africa's September 2026 poll. TIFA reported his support falling from 32% in August 2025 to 14% in June 2026."],
+  ["D","As Education CS from December 2015 he restructured the exams council (KNEC), disbanded its board and sacked nine board members over exam irregularities, and had national exam results released within about a month."],
+  ["A","His strict anti-cheating rules strained relations with teachers' unions, and some leaders called for his resignation after weak 2016 KCSE results. Reported by the Star; the cause of the results is disputed."],
+  ["A","Credited, in a Star profile, with hiring 100,000 police officers as Interior CS and improving the police-to-population ratio from 1:900 to 1:600. Official figures not checked here."],
   ["U","The Huduma Namba national ID registration drive he led was challenged in court in 2019 to 2020."]],
  contra:["Senior insider in the previous government now positioned as its alternative (interpretation)."],
  suggests:"A technocratic, state-delivery style of governing with an order-first approach to security, which his campaign promises repeat. Most placements here are low confidence.",
- src:[["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["People Daily: 'No goon nonsense' if I'm elected","https://peopledaily.digital/inside-politics/matiangi-there-will-be-no-goon-nonsense-in-kenya-if-im-elected-president"],["People Daily: how Matiang'i would run government","https://peopledaily.digital/news/matiangi-explains-how-he-will-run-govt-if-elected-president"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ src:[["Star: This man Fred Okengo Matiang'i (April 2025)","https://www.the-star.co.ke/news/2025-04-30-this-man-fred-okengo-matiangi"],["Star: opposition pick (July 2026)","https://www.the-star.co.ke/news/2026-07-13-kalonzo-edges-matiangi-as-oppositions-top-pick"],["People Daily: 'No goon nonsense' if I'm elected","https://peopledaily.digital/inside-politics/matiangi-there-will-be-no-goon-nonsense-in-kenya-if-im-elected-president"],["People Daily: how Matiang'i would run government","https://peopledaily.digital/news/matiangi-explains-how-he-will-run-govt-if-elected-president"],["Nation: opposition principals meet","https://nation.africa/kenya/news/politics/karua-kalonzo-matiangi-gachagua-shape-2027-opposition-5021222"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"karua",now:1,exec:1,reviewed:"",n:"Martha Karua",ini:"MK",role:"Justice Minister 2005 to 2009 (and earlier Water Minister). Former Gichugu MP. Leader of PLP.",cls:"Moderately identifiable",
  dims:{
@@ -220,10 +227,11 @@ var L=[
   ["D","Co-petitioner in the case in which the High Court declared the Housing Levy in the Finance Act 2023 unconstitutional in November 2023."],
   ["D","Filed petitions against the privatisation of Kenya Pipeline Company. Interim orders were refused in February 2026 and the case continues."],
   ["D","Gazetted a presidential exploratory committee in November 2024. Said in June 2026 he would announce his decision after receiving its report in early July. A formal declaration was not confirmed in this pass."],
+  ["D","The Supreme Court on 29 October 2024 partly allowed an appeal and declared the Finance Act 2023 constitutional, overturning the Court of Appeal's earlier ruling against it. The Housing Levy fight he helped start therefore did not end in a lasting court win."],
   ["A","Polled 0.4% as preferred opposition flag-bearer in Mizani Africa's September 2026 poll."]],
- contra:["Not assessed."],
+ contra:["Wins in the High Court were later reversed or overtaken on appeal (interpretation). The Housing Levy came back under a separate law."],
  suggests:"A checks-and-balances litigant who uses the courts against the executive and resists the sale of state assets.",
- src:[["Kenyans.co.ke: court ruling on Finance Act 2023","https://www.kenyans.co.ke/news/95083-court-issues-final-ruling-finance-act-2023"],["The EastAfrican: High Court quashes housing levy","https://www.theeastafrican.co.ke/tea/news/east-africa/kenya-high-court-quashes-housing-levy-4448000"],["Citizen: court declines to stop Kenya Pipeline privatisation","https://www.citizen.digital/article/high-court-declines-to-issue-orders-stopping-planned-privatisation-of-kenya-pipeline-n377946"],["Nation: Omtatah on his presidential decision (June 2026)","https://nation.africa/kenya/news/politics/-omtatah-i-ll-make-pronouncement-on-my-presidential-bid-next-month-5496264"],["Star: inside Omtatah's bid","https://www.the-star.co.ke/news/2024-11-29-inside-senator-omtatahs-bid-to-unseat-ruto-in-2027"],["People Daily: Omtatah on the Salasya arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
+ src:[["KPMG: Supreme Court declares Finance Act 2023 constitutional","https://assets.kpmg.com/content/dam/kpmg/ke/pdf/tax/2024/Supreme%20Court%20of%20Kenya%20Declares%20Finance%20Act,%202023%20as%20Constitutional%20-%20Tax%20Alert.pdf"],["Kenyans.co.ke: court ruling on Finance Act 2023","https://www.kenyans.co.ke/news/95083-court-issues-final-ruling-finance-act-2023"],["The EastAfrican: High Court quashes housing levy","https://www.theeastafrican.co.ke/tea/news/east-africa/kenya-high-court-quashes-housing-levy-4448000"],["Citizen: court declines to stop Kenya Pipeline privatisation","https://www.citizen.digital/article/high-court-declines-to-issue-orders-stopping-planned-privatisation-of-kenya-pipeline-n377946"],["Nation: Omtatah on his presidential decision (June 2026)","https://nation.africa/kenya/news/politics/-omtatah-i-ll-make-pronouncement-on-my-presidential-bid-next-month-5496264"],["Star: inside Omtatah's bid","https://www.the-star.co.ke/news/2024-11-29-inside-senator-omtatahs-bid-to-unseat-ruto-in-2027"],["People Daily: Omtatah on the Salasya arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["Capital FM: Mizani Africa poll, September 2026","https://capitalfm.africa/mizani-poll-ruto-leads-kalonzo-sifuna-in-presidential-preference-survey/"]]},
 
 {id:"bmwangi",now:1,exec:0,reviewed:"2026-10-01",n:"Boniface Mwangi",ini:"BMw",role:"Photojournalist and human rights activist. 2027 presidential aspirant.",cls:"Clearly identifiable (rights, style)",
  dims:{
@@ -266,7 +274,8 @@ var L=[
  dims:{
   econ:[0,"L","Warns against off-book borrowing and debt, but his People's Party also promises free basic education with school meals from January 2028, paid for by redirecting CDF and bursary money. Points both ways.","S"],
   redis:[-1,"M","Voted yes on the Finance Bill 2024 at second reading while chairing the Budget Committee. Missed the June 2026 Finance Bill vote and apologised for it."],
-  style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."]},
+  style:[1,"M","Left UDA on 17 August 2026 and aligned with the opposition."],
+  inst:[1,"L","Policy blueprint (17 August 2026): double judicial capacity within five years with 1.5% of national revenue, and put state digital systems in a company listed on the Nairobi Securities Exchange to reduce 'political patronage'. A stated plan, not yet tested in office.","S"]},
  said:[
   ["Fiscal discipline and scrutiny of public debt.",null,"S"],
   ["Free basic education with school meals for every learner from January 2028, without new taxes (People's Party, September 2026).",null,"S"],
@@ -276,43 +285,50 @@ var L=[
   ["D","On 22 September unveiled the first party officials, including a 24-year-old secretary general."],
   ["D","Removed as Budget Committee chair in March 2025."],
   ["D","Apologised on 27 June 2026 for being absent when the Finance Bill 2026 passed: 'No amount of explanation... should absolve me of the blame.'"],
+  ["D","Said on 17 August 2026 that oil and minerals should be used to deal with Kenya's debt, and that private power producers should be allowed to sell to the national grid."],
   ["D","Touring counties with Matiang'i and Siaya Governor James Orengo ahead of 2027."]],
  contra:["Long a Ruto ally and UDA insider, now campaigning against the president (interpretation)."],
  suggests:"A partial placement: he voted for the 2024 tax measures inside government and now campaigns on fiscal discipline from the opposition.",
- src:[["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Eastleigh Voice: People's Party agenda","https://eastleighvoice.co.ke/politics/397744/ndindi-nyoro-outlines-peoples-party-agenda-and-calls-for-opposition-unity"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
+ src:[["Standard: Nyoro's proposals for Kenya's journey to Singapore","https://www.standardmedia.co.ke/politics/article/2001555563/nyoros-proposals-for-kenyas-journey-to-singapore"],["Nation: Nyoro joins United Opposition after UDA exit","https://nation.africa/kenya/news/politics/ndindi-nyoro-joins-united-opposition-after-uda-exit-5561664"],["People Daily: Nyoro joins People's Party","https://peopledaily.digital/inside-politics/ndindi-nyoro-joins-peoples-party-of-kenya"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Nation: Nyoro apologises over Finance Bill vote","https://nation.africa/kenya/news/politics/mp-ndindi-nyoro-apologises-over-finance-bill-vote-skip-seeks-four-weeks-to-decide-political-future-5511278"],["Star: Nyoro removed as Budget chair","https://www.the-star.co.ke/news/realtime/2025-03-18-nyoro-i-dont-know-why-i-was-removed-as-budget-chair"],["Eastleigh Voice: People's Party agenda","https://eastleighvoice.co.ke/politics/397744/ndindi-nyoro-outlines-peoples-party-agenda-and-calls-for-opposition-unity"],["Citizen: Nyoro on fuel prices and off-book borrowing","https://www.citizen.digital/news/mp-ndindi-nyoro-sounds-alarm-over-rising-fuel-prices-alleged-off-book-borrowing-n366338"]]},
 
-{id:"babu",now:1,exec:0,reviewed:"",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
+{id:"babu",now:1,exec:0,reviewed:"2026-10-02",n:"Babu Owino",ini:"BO",role:"Embakasi East MP since 2017. Nairobi governor aspirant.",cls:"Insufficient (partial)",
  dims:{
   redis:[1,"M","Voted no on the Finance Bill 2024 at second reading in June 2024."],
   style:[1,"M","Left ODM to run for Nairobi governor under The Mwananchi Party within the Linda Mwananchi formation."],
-  liberty:[1,"L","Youth-facing, rights-forward public messaging.","S"]},
+  liberty:[1,"L","Youth-facing, rights-forward public messaging.","S"],
+  econ:[1,"L","Has repeatedly said education should be free from primary to university, funded by the state, and that higher-education loans should be raised, not cut. His own stated position; he has not yet delivered it in office.","S"]},
  said:[
+  ["Free education at every level, and bigger HELB allocations. Plans bills on loans and on youth and women's access to government credit.",null,"S"],
   ["Wants to be Nairobi governor in 2027 and president in 2032, running on his MP record.",null,"S"],
   ["Free school meals for Nairobi public primary pupils, with food bought from parents' businesses (September 2026).",null,"S"]],
  rec:[
   ["D","Announced a 2027 Nairobi governorship bid and said he would seek the presidency in 2032."],
   ["D","Voted no on the Finance Bill 2024 at second reading."],
+  ["A","Has said he will not repay his own HELB loan, arguing that education is a right. Reported from his own remarks."],
   ["A","Polled 3% for president in Infotrak's June 2026 survey, though he is running for Nairobi governor."],
   ["A","A survey reported in July 2026 placed him first among MPs at 80% approval. Methodology not reviewed."],
   ["A","A High Court ruling nullifying an Embakasi East win has been reported. Appeal status and date not verified in this pass."]],
  contra:["Campaigns on his MP record while moving between political vehicles (interpretation)."],
- suggests:"Insufficient evidence for a policy placement. Documented pattern is youth-focused, anti-establishment positioning.",
- src:[["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Capital FM: Babu pledges free school meals","https://capitalfm.africa/babu-pledges-free-school-meals-under-nairobi-governor-bid/"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
+ suggests:"Mostly words so far: free education at every level, a no vote on the 2024 Finance Bill and a youth-focused, anti-establishment style. Placements rest on his stated positions, not on delivery in office.",
+ src:[["Nairobi News: why Babu Owino won't repay his HELB loan","https://nairobinews.nation.africa/?p=159834"],["Education News: Babu Owino on higher education funding","https://educationnews.co.ke/?p=482049"],["Star: MP record makes me fit for Nairobi governor","https://www.the-star.co.ke/news/2026-09-28-babu-mp-record-makes-me-fit-for-nairobi-governor"],["Capital FM: Babu pledges free school meals","https://capitalfm.africa/babu-pledges-free-school-meals-under-nairobi-governor-bid/"],["Law and Power Kenya: election ruling","https://lawandpowerkenya.com/babu-owino-loses-seat-irregularities-ground/"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"],["Kenyans.co.ke: Infotrak poll, June 2026","https://www.kenyans.co.ke/news/125200-ruto-maintains-lead-among-presidential-aspirants-2027-race-kalonzo-2nd-infotrak-poll"]]},
 
-{id:"salasya",now:1,exec:0,reviewed:"",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
+{id:"salasya",now:1,exec:0,reviewed:"2026-10-02",n:"Peter Salasya",ini:"PS",role:"Mumias East MP since 2022. 2027 presidential aspirant.",cls:"Insufficient evidence",
  dims:{
   style:[2,"L","Outspoken, populist positioning against the political class (low volume of policy evidence).","S"],
-  liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified)."],
-  redis:[1,"L","Voted no on the Finance Bill 2024 at second reading in June 2024."]},
- said:[["Running for president in 2027 against the political class.",null,"S"]],
+  liberty:[1,"L","An arrest drew condemnation from Senator Omtatah (charge and outcome not verified). Hearsay: counted at the lightest weight.","H"],
+  redis:[1,"L","Voted no on the Finance Bill 2024 at second reading in June 2024."],
+  inst:[1,"L","Defended the constituency and women's funds (CDF and NGAAF), saying cutting them would 'reduce them to beggars'. Speaking for money that is spent locally, in his own interest as an MP too.","S"]},
+ said:[["Running for president in 2027 against the political class.",null,"S"],
+  ["Keep the constituency development fund (CDF) and the women's fund. Said Raila wanted them cut so MPs would 'beg' for development.",null,"S"]],
  rec:[
   ["D","Declared a 2027 presidential bid."],
   ["D","Voted no on the Finance Bill 2024 at second reading."],
+  ["A","Said Raila Odinga wanted CDF and NGAAF reduced so MPs would have to beg for development. His own claim about a rival, not established fact."],
   ["A","His payslip and social-media earnings drew public debate about MPs' pay."],
   ["D","An arrest was publicly condemned by Senator Okiya Omtatah. Details and outcome not verified."]],
  contra:["Not assessed."],
- suggests:"Insufficient evidence. Highly visible, but this pass found little legislative or policy record.",
- src:[["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"]]},
+ suggests:"Mostly words so far: a populist, anti-establishment voice who voted against the 2024 Finance Bill and defends constituency funds. Little legislative record, so his placements are light.",
+ src:[["People Daily: ODM responds after Salasya's attack on Raila","https://peopledaily.digital/inside-politics/odm-responds-after-salasyas-attack-on-raila/amp"],["Kenyans.co.ke: presidential bid","https://www.kenyans.co.ke/news/111493-salasya-joins-long-list-2027-presidential-aspirants"],["People Daily: Omtatah on the arrest","https://peopledaily.digital/news/omtatah-condemns-dramatic-arrest-of-salasya-vows-to-fight-for-justice"],["KBC: how MPs voted on the Finance Bill 2024 (second reading)","https://www.kbc.co.ke/how-mps-voted-for-the-finance-bill-2024/"]]},
 
 {id:"wanga",now:1,exec:1,inPower:1,reviewed:"",n:"Gladys Wanga",ini:"GW",role:"Homa Bay Governor since 2022. Part of the ratified ODM leadership team.",cls:"Insufficient evidence",
  dims:{
@@ -610,9 +626,9 @@ var L=[
  src:[["Wikipedia: Wangari Maathai (overview)","https://en.wikipedia.org/wiki/Wangari_Maathai"],["Wikipedia: Green Belt Movement","https://en.wikipedia.org/wiki/Green_Belt_Movement"]]}
 ];
 
-// Enforce the core rule: no words-based placement for anyone in power now.
+// Enforce the core rule: no words-based or hearsay placement for anyone in power now.
 L.forEach(function(l){Object.keys(l.dims).forEach(function(k){
-  if(l.inPower&&l.dims[k][3]==="S"){console.warn("Dropped stated placement for a leader in power",l.id,k);delete l.dims[k]}
+  if(l.inPower&&!l.limitedPower&&(l.dims[k][3]==="S"||l.dims[k][3]==="H")){console.warn("Dropped stated placement for a leader in power",l.id,k);delete l.dims[k]}
 })});
 
 var SETS={

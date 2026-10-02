@@ -44,8 +44,8 @@ data.L.forEach(function (l, i) {
     if (!isNum(d[0]) || d[0] < -2 || d[0] > 2) err(at + "value must be a number between -2 and 2, got " + JSON.stringify(d[0]) + ".");
     if (CONFS.indexOf(d[1]) < 0) err(at + "confidence must be H, M or L, got " + JSON.stringify(d[1]) + ".");
     if (!nonEmpty(d[2])) err(at + "missing note.");
-    if (d[3] != null && d[3] !== "S") err(at + "basis must be omitted or 'S', got " + JSON.stringify(d[3]) + ".");
-    if (d[3] === "S" && l.inPower) err(at + "stated-position (S) placement on a leader currently in power; the app would drop it.");
+    if (d[3] != null && d[3] !== "S" && d[3] !== "H") err(at + "basis must be omitted, 'S' or 'H', got " + JSON.stringify(d[3]) + ".");
+    if ((d[3] === "S" || d[3] === "H") && l.inPower && !l.limitedPower) err(at + "stated-position (S) or hearsay (H) placement on a leader currently in power; the app would drop it. Set limitedPower if their office has little power of its own.");
   });
 
   (l.rec || []).forEach(function (r, j) {
@@ -62,6 +62,7 @@ data.L.forEach(function (l, i) {
     if (p[3] === "X" && !p[1]) err(at + "marked 'X' (contradicted) but has no 'did' text showing the contradiction.");
   });
   if (l.inPower && !l.exec) err(who + ": inPower is set but exec is not.");
+  if (l.limitedPower && !l.inPower) err(who + ": limitedPower is set but inPower is not.");
   if (!Array.isArray(l.contra) || !l.contra.length) err(who + ": 'contra' needs at least one line (use \"Not assessed.\").");
   if (!Array.isArray(l.src) || !l.src.length) err(who + ": needs at least one source.");
   (l.src || []).forEach(function (s, j) {
